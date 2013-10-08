@@ -45,8 +45,8 @@ class DBHandler
       year smallint unsigned NOT NULL,
       facultyid bigint(20) unsigned,
       PRIMARY KEY id (id),
-                FOREIGN KEY (facultyid) REFERENCES $usersTableName (id)
-              );";
+      FOREIGN KEY (facultyid) REFERENCES $usersTableName (id)
+    );";
     $wpdb->query($sql);
 
     // create child tables later
@@ -54,11 +54,11 @@ class DBHandler
     $sql = "CREATE TABLE $enrollmentsTableName (
       id bigint(20) NOT NULL AUTO_INCREMENT,
       courseid bigint(20),
-                studentid bigint(20) unsigned,
-                PRIMARY KEY id (id),
-                FOREIGN KEY (courseid) REFERENCES $coursesTableName (id),
-                FOREIGN KEY (studentid) REFERENCES $usersTableName (id)
-              );";
+      studentid bigint(20) unsigned,
+      PRIMARY KEY id (id),
+      FOREIGN KEY (courseid) REFERENCES $coursesTableName (id),
+      FOREIGN KEY (studentid) REFERENCES $usersTableName (id)
+    );";
     $wpdb->query($sql);
   }
 
@@ -74,13 +74,14 @@ class DBHandler
   {
     global $wpdb;
     $wpdb->show_errors(true);
-    $userTable = $wpdb->prefix . "users";
-    $userMetaTable = $wpdb->prefix . "usermeta";
+    $user         = $wpdb->prefix . "users";
+    $userMeta     = $wpdb->prefix . "usermeta";
+    $capabilities = $wpdb->prefix . "capabilities";
 
     $rows = $wpdb->get_results("SELECT u.ID as Id, u.display_name as Name 
-      FROM $userTable u INNER JOIN $userMetaTable up 
+      FROM $user u INNER JOIN $userMeta up 
       ON u.id = up.user_id 
-      WHERE up.meta_key = 'wp_capabilities' AND up.meta_value LIKE '%author%';");
+      WHERE up.meta_key = $capabilities AND up.meta_value LIKE '%author%';");
 
     return $rows;
   }
@@ -147,12 +148,16 @@ class DBHandler
   {
     global $wpdb;
     $wpdb->show_errors(true);
+    $enrollments = $wpdb->prefix . "enrollments";
+    $users       = $wpdb->prefix . "users";
+    $userMeta    = $wpdb->prefix . "usermeta";
+    $capabilities= $wpdb->prefix . "capabilities";
 
     $sql = "SELECT u.ID as Id, u.display_name as Name, 
-      (select studentid from wp_enrollments where courseid = " . $courseId . " AND studentid = u.id) as StudentId 
-      FROM wp_users u INNER JOIN wp_usermeta up 
+      (select studentid from $enrollments where courseid = " . $courseId . " AND studentid = u.id) as StudentId 
+      FROM $users u INNER JOIN $userMeta up 
       ON u.id = up.user_id 
-      WHERE up.meta_key = 'wp_capabilities' AND up.meta_value LIKE '%contributor%'";
+      WHERE up.meta_key = $capabilities AND up.meta_value LIKE '%contributor%'";
 
     $rows = $wpdb->get_results($sql);
 
@@ -191,14 +196,17 @@ class DBHandler
     $contents = "'" . $contents . "'";
     $contents = str_replace(",","','", $contents);
 
-    $tablename = $wpdb->prefix . "enrollments";
+    $enrollments  = $wpdb->prefix . "enrollments";
+    $users        = $wpdb->prefix . "users";
+    $usermeta     = $wpdb->prefix . "usermeta";
+    $capabilities = $wpdb->prefix . "capabilities";
 
     // insert into enrollments records of those students
     // who are not enrolled yet in specified course
     // for those who are already enrolled, nothing to be done
-    $sql = "INSERT INTO " . $tablename . "(courseId, studentId) SELECT " . $courseId . ", u.Id from wp_users u INNER JOIN " . 
-      " wp_usermeta up on u.Id = up.user_id WHERE up.meta_key = 'wp_capabilities' AND up.meta_value LIKE '%contributor%' " .
-      " AND u.user_email in (" . $contents . ") AND u.Id NOT IN (SELECT studentId from " . $tablename . " WHERE courseId=" . $courseId . ");";
+    $sql = "INSERT INTO {$enrollments} (courseId, studentId) SELECT {$courseId}, u.Id from {$users} u INNER JOIN ".
+      "{$usermeta} up on u.Id = up.user_id WHERE up.meta_key = {$capabilities} AND up.meta_value LIKE '%contributor%'".
+      "AND u.user_email in {$contents} AND u.Id NOT IN (SELECT studentId from {$enrollments} WHERE courseId={$courseId});";
 
     $wpdb->query($sql);
   }
@@ -207,15 +215,20 @@ class DBHandler
   {
     global $wpdb;
     $wpdb->show_errors(true);
+    
+    $users        = $wpdb->prefix . "users";
+    $posts        = $wpdb->prefix . "posts";
+    $term_relationships = $wpdb->prefix . "term_relationships";
+    $terms = $wpdb->prefix . "terms";
 
     // an assignment means who has no parent post
     // a submission means who has a parent post
     $sql = "SELECT p.id as AssignmentId, p.post_title as Title, p.post_date as Date, a.id as AuthorId, a.display_name as AuthorName 
-      FROM wp_posts p INNER JOIN wp_users a ON p.post_author = a.id
+      FROM {$posts} p INNER JOIN {$users} a ON p.post_author = a.id
       WHERE p.post_parent = 0 
       AND p.post_status = 'publish'
-      AND p.id IN (SELECT object_id FROM wp_term_relationships 
-      WHERE term_taxonomy_id = (SELECT term_id FROM wp_terms WHERE name = 'course:$courseId'));";
+      AND p.id IN (SELECT object_id FROM {$term_relationships} 
+      WHERE term_taxonomy_id = (SELECT term_id FROM {$terms} WHERE name = 'course:{$courseId}'));";
 
     $rows = $wpdb->get_results($sql);
 
@@ -317,10 +330,12 @@ class DBHandler
   {
     global $wpdb;
     $wpdb->show_errors(true);
+    $posts  = $wpdb->prefix . "posts";
+    $users  = $wpdb->prefix . "users";
 
     $sql = "SELECT p.id as SubmissionId, a.display_name as AuthorName, p.post_date as SubmissionDate
-      FROM wp_posts p INNER JOIN wp_users a ON p.post_author = a.id
-      WHERE p.post_parent = " . $assignmentId . " AND p.post_status = 'publish';";
+      FROM {$posts} p INNER JOIN {$users} a ON p.post_author = a.id
+      WHERE p.post_parent = {$assignmentId} AND p.post_status = 'publish';";
 
     $rows = $wpdb->get_results($sql);
 
