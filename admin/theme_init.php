@@ -1,6 +1,6 @@
 <?php
 
-add_action('init', 'create_default_pages', 9999);
+add_action('after_switch_theme', 'create_default_pages', 9999);
 function create_default_pages()
 {
   $default_pages = array(
