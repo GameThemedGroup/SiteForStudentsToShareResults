@@ -4,7 +4,15 @@ add_action('init', 'create_default_pages', 9999);
 function create_default_pages()
 {
   $default_pages = array(
-    'myclass'    =>  array(
+    'debug'    =>  array(
+      'post_name'     =>  'debug',
+      'post_title'    =>  'Debug',
+      'post_status'   =>  'publish',
+      'post_type'     =>  'page',
+      'meta'          =>  array(
+        '_wp_page_template'  => 'templates/debug.php',
+      ),
+    ),'myclass'    =>  array(
       'post_name'     =>  'my-class',
       'post_title'    =>  'My Class',
       'post_status'   =>  'publish',
