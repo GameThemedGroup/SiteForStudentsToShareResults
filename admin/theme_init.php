@@ -1,6 +1,19 @@
 <?php
 
-add_action('after_switch_theme', 'create_default_pages', 9999);
+// On theme initialization
+// Creates the database tables
+// *TODO* check if they already exist
+// *TODO* add versioning system for upgrades
+add_action('after_switch_theme', 'initialize_tables');
+function initialize_tables()
+{
+  global $gtcs12_db;
+
+  $gtcs12_db->RecreateTables();
+}
+
+
+add_action('after_switch_theme', 'create_default_pages');
 function create_default_pages()
 {
   $default_pages = array(
