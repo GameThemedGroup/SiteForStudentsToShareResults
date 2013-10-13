@@ -367,6 +367,20 @@ class GTCS12_DB
 
     wp_update_post($assignmentPost);
   }
+  
+  function AddUser($login, $password, $email, $firstname, $lastname, $role)
+  {
+    global $wpdb;
+
+    $userdata = array(
+      'user_login' => $login,
+      'user_pass' => $password,
+      'user_email' => $email,
+      'first_name' => $firstname,
+      'last_name' => $lastname,
+    );
+
+    return wp_insert_user($userdata);
+  }
 }
 ?>
-
