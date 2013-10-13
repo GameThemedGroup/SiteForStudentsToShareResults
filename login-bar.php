@@ -14,7 +14,7 @@
 	<?php endif; ?>
 	<?php if($user_info->user_level > 1):?>	
 		<br>[<a href="<?php echo site_url('/manage-assignments/') ?>" title="Manage Assignments">Manage Assignments</a>]	
-		<br>[<a href="<?php echo site_url('/manage-enrollments/') ?>" title="Manage Students">Manage Students</a>]	
+		<br>[<a href="<?php echo site_url('/manage-students/') ?>" title="Manage Students">Manage Students</a>]	
 	<?php endif; ?>
 	<br>[<a href="<?php echo wp_logout_url(); ?>" title="Log out of this account">Log Out</a>]			
 </div>
