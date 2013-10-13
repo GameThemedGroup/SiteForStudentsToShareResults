@@ -16,7 +16,18 @@ function initialize_tables()
 add_action('after_switch_theme', 'create_default_pages');
 function create_default_pages()
 {
+
+
   $default_pages = array(
+    'main'    =>  array(
+      'post_name'     =>  'main',
+      'post_title'    =>  'Main',
+      'post_status'   =>  'publish',
+      'post_type'     =>  'page',
+      'meta'          =>  array(
+        '_wp_page_template'  => 'templates/main.php',
+      ),
+    ),
     'debug'    =>  array(
       'post_name'     =>  'debug',
       'post_title'    =>  'Debug',
@@ -25,7 +36,8 @@ function create_default_pages()
       'meta'          =>  array(
         '_wp_page_template'  => 'templates/debug.php',
       ),
-    ),'myclass'    =>  array(
+    ),
+    'myclass'    =>  array(
       'post_name'     =>  'my-class',
       'post_title'    =>  'My Class',
       'post_status'   =>  'publish',
@@ -40,7 +52,7 @@ function create_default_pages()
       'post_status'   =>  'publish',
       'post_type'     =>  'page',
       'meta'          =>  array(
-        '_wp_page_template'  => 'templates/project-search.php',
+        '_wp_page_template'  => 'templates/projects-search.php',
       ),
     ),
     'profile'         =>  array(
@@ -61,7 +73,7 @@ function create_default_pages()
         '_wp_page_template'  => 'templates/manage-courses.php',
       ),
     ), 
-    'manageassignments'         =>  array(
+    'manageassignments' =>  array(
       'post_name'     =>  'manage-assignments',
       'post_title'    =>  'Manage Assignments',
       'post_status'   =>  'publish',
@@ -70,16 +82,16 @@ function create_default_pages()
         '_wp_page_template'  => 'templates/manage-assignments.php',
       ),
     ),
-    'managestuents'         =>  array(
+    'managestudents'   =>  array(
       'post_name'     =>  'manage-students',
       'post_title'    =>  'Manage Students',
       'post_status'   =>  'publish',
       'post_type'     =>  'page',
       'meta'          =>  array(
-        '_wp_page_template'  => 'templates/manage-students.php',
+        '_wp_page_template'  => 'templates/manage-enrollments.php',
       ),
     ),
-    'assignment'         =>  array(
+    'assignment'      =>  array(
       'post_name'     =>  'assignment',
       'post_title'    =>  'Assignment',
       'post_status'   =>  'publish',
@@ -101,6 +113,64 @@ function create_default_pages()
         }
       }
     }
+  }
+}
+
+add_action('after_switch_theme', 'create_default_menus');
+function create_default_menus()
+{
+  $page_id = array();
+  $page_id['main'] = get_page_by_title('Main')->ID;
+  $page_id['myclass'] = get_page_by_title('My Class')->ID;
+  $page_id['projects'] = get_page_by_title('Projects')->ID;
+
+  $default_menus = array(
+    'Main Menu' =>  array(
+      'location' => 'primary',
+      'menu-items' =>  array(
+        'Home' =>  array(
+          'menu-item-type'      =>  'post_type',
+          'menu-item-title'     =>  'Home',
+          'menu-item-object'    =>  'page',
+          'menu-item-object-id' =>  $page_id['main'],
+          'menu-item-status'    =>  'publish'
+        ),
+        'My Class' =>  array(
+          'menu-item-type'      =>  'post_type',
+          'menu-item-title'     =>  'Members',
+          'menu-item-object'    =>  'page',
+          'menu-item-object-id' =>  $page_id['myclass'],
+          'menu-item-status'    =>  'publish'
+        ),
+        'Projects' =>  array(
+          'menu-item-type'      =>  'post_type',
+          'menu-item-title'     =>  'Projects',
+          'menu-item-object'    =>  'page',
+          'menu-item-object-id' =>  $page_id['projects'],
+          'menu-item-status'    =>  'publish'
+        ),
+      )
+    )
+  );
+
+  // Creates the Default Menus
+  $menu_locations = array();
+  foreach($default_menus as $menu_name => $menu_args) {
+    $menu_exists = wp_get_nav_menu_object($menu_name);
+    
+    if(!$menu_exists) {
+      $menu_id = wp_create_nav_menu($menu_name);
+      foreach( $menu_args['menu-items'] as $menu_item ) {
+        // assigns the page, title, etc to the menu item
+        wp_update_nav_menu_item( $menu_id, 0, $menu_item );
+      }
+      $menu_locations[$menu_args['location']] = $menu_id;
+    }
+  }
+
+  if (isset($menu_locations)) {
+    // Assigns the menu to the correct menu location (Primary Menu, Footer Menu, etc.)
+    set_theme_mod('nav_menu_locations', array_map('absint', $menu_locations));
   }
 }
 ?>
