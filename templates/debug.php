@@ -11,32 +11,65 @@ get_header() ?>
 
 <?php
     
-    require('./wp-blog-header.php');
     require('DBHandler.php');
 
-    $dbHandler = new DBHandler;
+    global $gtcs12_db;
 
     $operation = $_GET['op'];
     $results = '';
 
     if ($operation) {
         if ($operation == 'recreate') {
-            $results = $dbHandler->RecreateTables();
+            $results = $gtcs12_db->RecreateTables();
         } else if ($operation == 'del') {
-            $results = $dbHandler->DeleteTables();
-        } else if ($operation == 'upload_test_data') {
-            $results = upload_test_data();
+            $results = $gtcs12_db->DeleteTables();
+        } else if ($operation == 'upload_courses') {
+            $results = upload_courses();
+        } else if ($operation == 'upload_users') {
+            $results = upload_users();
         } else {
             $results = 'unknown operation ' . $operation;
         }
     }
 
-function upload_test_data()
+
+function add_user_from_data($user)
+{
+  global $gtcs12_db;
+  $user_id = $gtcs12_db->AddUser(
+    $user->login, 
+    $user->password, 
+    $user->email, 
+    $user->firstname, 
+    $user->lastname, 
+    $user->role
+  );
+  return $user_id;
+}
+
+function upload_users()
 {
   $file = $_FILES;
+  // *TODO* document and check errors from 
+  // http://www.php.net/manual/en/features.file-upload.common-pitfalls.php
   if($file["file"]["error"] > 0)
     return "error uploading: " . $file["file"]["error"];
-  // *TODO* document and check errors from http://www.php.net/manual/en/features.file-upload.common-pitfalls.php
+
+  $data = json_decode(file_get_contents($file["file"]["tmp_name"]));
+  foreach ($data->users as $user) {
+    add_user_from_data($user);
+  }
+
+  return "Users created.";
+}
+
+function upload_courses()
+{
+  $file = $_FILES;
+  // *TODO* document and check errors from 
+  // http://www.php.net/manual/en/features.file-upload.common-pitfalls.php
+  if($file["file"]["error"] > 0)
+    return "error uploading: " . $file["file"]["error"];
 
   $data = json_decode(file_get_contents($file["file"]["tmp_name"]));
 
@@ -46,56 +79,7 @@ function upload_test_data()
 
   global $gtcs12_db;  
 
-  $professors = array(
-    4 => array(
-      'login' => 'ksung',
-      'password' => 'password',
-      'email' => 'ksung@mail.com',
-      'firstname' => 'Kelvin',
-      'lastname' => 'Sung',
-      'role' => 'author',
-    ),
-    1 => array(
-      'login' => 'czander',
-      'password' => 'password',
-      'email' => 'czander@mail.com',
-      'firstname' => 'Carol',
-      'lastname' => 'Zander',
-      'role' => 'author',
-    ),
-    2 => array(
-      'login' => 'tstewart',
-      'password' => 'password',
-      'email' => 'tstewart@mail.com',
-      'firstname' => 'Timothy',
-      'lastname' => 'Stewart',
-      'role' => 'author',
-    ),
-    3 => array(
-      'login' => 'mbernstein',
-      'password' => 'password',
-      'email' => 'mbernstein@mail.com',
-      'firstname' => 'Morris',
-      'lastname' => 'Bernstein',
-      'role' => 'author',
-    ),
-  );
-
-  $i = 0;
-
   foreach ($data->courses as $course) {
-    $i ++;
-    $professor = $professors[$i]; 
-
-    $professor_id = $gtcs12_db->AddUser(
-      $professor['login'], 
-      $professor['password'], 
-      $professor['email'], 
-      $professor['firstname'], 
-      $professor['lastname'], 
-      $professor['role']
-    );
-
     //*TODO* check for non-existent professor
     $professor = get_user_by('login', $course->professor);
     $professor_id = $professor->id;
@@ -106,7 +90,7 @@ function upload_test_data()
       $course->year, 
       $professor_id
     );
-    
+
     foreach ($course->assignments as $assignment) {
       $assignment_id = $gtcs12_db->CreateAssignment(
         $professor_id, 
@@ -117,17 +101,10 @@ function upload_test_data()
     }
 
     foreach ($course->students as $student) {
-      $student_id = $gtcs12_db->AddUser(
-        $student->login, 
-        $student->password, 
-        $student->email, 
-        $student->firstname, 
-        $student->lastname, 
-        $student->role
-      );
+      add_user_from_data($student);
     }
   }
-  return "Data Successfully Added";
+  return "Course Successfully Added";
 }
 ?>
 <html>
@@ -139,16 +116,26 @@ function upload_test_data()
                 <th>Operation link</th>
             </tr>
             <tr>
-                <td>Upload Test Data</td>
+                <td>Upload Users</td>
                 <td>
-                    <form action="?op=upload_test_data" method="post" enctype="multipart/form-data">
-                    <label for="file">Test Data</label>
+                    <form action="?op=upload_users" method="post" enctype="multipart/form-data">
+                    <label for="file">User Data</label>
                     <input type="file" name="file" id="file">
-                    <input type="submit" name="submit" value="Create">
+                    <input type="submit" name="upload-users" value="Upload">
                     </form>
                 </td>
             </tr>
             <tr>
+                <td>Upload Courses</td>
+                <td>
+                    <form action="?op=upload_courses" method="post" enctype="multipart/form-data">
+                    <label for="file">Course Data</label>
+                    <input type="file" name="file" id="file">
+                    <input type="submit" name="upload-courses" value="Upload">
+                    </form>
+                </td>
+            </tr>
+                        <tr>
                 <td>Recreate Tables</td>
                 <td><a href="<?php echo site_url('/debug/'); ?>?op=recreate">Recreate Tables</a></td>
             </tr>
