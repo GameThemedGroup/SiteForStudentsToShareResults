@@ -173,4 +173,14 @@ function create_default_menus()
     set_theme_mod('nav_menu_locations', array_map('absint', $menu_locations));
   }
 }
+
+// Changes the permalink settings to /%postname%/
+add_action('after_switch_theme', 'update_permalinks');
+function update_permalinks()
+{
+  if (get_option('permalink_structure') != '/%postname%/') {
+    global $wp_rewrite;
+    $wp_rewrite->set_permalink_structure('/%postname%/');
+  }
+}
 ?>
