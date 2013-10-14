@@ -46,9 +46,60 @@ function upload_test_data()
 
   global $gtcs12_db;  
 
+  $professors = array(
+    4 => array(
+      'login' => 'ksung',
+      'password' => 'password',
+      'email' => 'ksung@mail.com',
+      'firstname' => 'Kelvin',
+      'lastname' => 'Sung',
+      'role' => 'author',
+    ),
+    1 => array(
+      'login' => 'czander',
+      'password' => 'password',
+      'email' => 'czander@mail.com',
+      'firstname' => 'Carol',
+      'lastname' => 'Zander',
+      'role' => 'author',
+    ),
+    2 => array(
+      'login' => 'tstewart',
+      'password' => 'password',
+      'email' => 'tstewart@mail.com',
+      'firstname' => 'Timothy',
+      'lastname' => 'Stewart',
+      'role' => 'author',
+    ),
+    3 => array(
+      'login' => 'mbernstein',
+      'password' => 'password',
+      'email' => 'mbernstein@mail.com',
+      'firstname' => 'Morris',
+      'lastname' => 'Bernstein',
+      'role' => 'author',
+    ),
+  );
+
+  $i = 0;
+
   foreach ($data->courses as $course) {
-    $professor_id = $course->professorid;
-    
+    $i ++;
+    $professor = $professors[$i]; 
+
+    $professor_id = $gtcs12_db->AddUser(
+      $professor['login'], 
+      $professor['password'], 
+      $professor['email'], 
+      $professor['firstname'], 
+      $professor['lastname'], 
+      $professor['role']
+    );
+
+    //*TODO* check for non-existent professor
+    $professor = get_user_by('login', $course->professor);
+    $professor_id = $professor->id;
+
     $course_id = $gtcs12_db->AddCourse(
       $course->title, 
       $course->quarter, 
