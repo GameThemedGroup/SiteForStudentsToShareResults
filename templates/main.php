@@ -13,8 +13,9 @@ get_header();
 <div class="activityfeed">
 	<div id="pagetitle">Activity Feed</div>
 	<?php $comments = get_comments('number=8'); ?>
-	<?php foreach($comments as $comment) : ?>		
+	<?php foreach($comments as $comment) : ?>	
 		<div class="commentbox">
+		<?php echo get_avatar($comment->user_id, 92) ?>
 			<div id="commentcontent">
 				<?php echo $comment->comment_content; ?>
 			</div>
@@ -36,7 +37,13 @@ get_header();
 	<?php query_posts('posts_per_page=5'); ?>
 	<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
 		<div class="projectbox">
-			<img id="image" src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR50aIm-aqmY8doyUCZMwnzwbYiIG0eMeoIzRttRspGjlbiXbpv">
+			<div id="image"> 
+				<?php if(has_post_thumbnail()) {?>
+					<?php the_post_thumbnail(array(140,140)); ?>
+				<?php } else { ?> 
+					<img src="<?php bloginfo('template_directory'); ?>/images/blank-project.png" width="140" height="140" />
+				<?php } ?>
+			</div>
 			<div id="name">
 				<a href="<?php echo site_url('/?p=') . get_the_ID() ?>">
 					<?php the_title() ?>
@@ -47,7 +54,7 @@ get_header();
 					<?php the_author() ?> 
 				</a> | 
 				<?php the_time('m/d/y') ?> | 
-				Rating
+				<?php if(function_exists('the_ratings')) { the_ratings(); } ?>
 			</div>		
 			<div id="description">
 				<?php the_content() ?>

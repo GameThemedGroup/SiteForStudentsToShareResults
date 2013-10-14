@@ -17,7 +17,7 @@ get_header(); ?>
 	$course = $dbHandler->GetCourse($coursenum);
 	$professor = get_userdata($course->FacultyId);
 	$professor_link = site_url('/profile/?user=') . $course->FacultyId;
-	$students = $dbHandler->GetStudents(2);
+	$students = $dbHandler->GetStudents(6);
 	$assignments = $dbHandler->GetAllAssignments($coursenum);
 
 	//print_r($assignments);

@@ -2741,12 +2741,11 @@ p.comment-form-comment {
 	height:142px;
 }
 .projectbox #image {
-	border-style:solid;
-	border-width:1px;
-	border-color:#000;
+	margin:0px 1px 0px 1px;
 	float:left;
 	width:140px;
 	height:140px;
+	box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 2px;
 }
 .projectbox #name {
 	overflow:hidden;
@@ -2784,6 +2783,7 @@ p.comment-form-comment {
 .activityfeed {
 	float:left;
 	margin-left:15px;
+	width:600px;
 }
 /*----------------- Project Comments -----------------*/
 .projectcomments {
@@ -2791,26 +2791,33 @@ p.comment-form-comment {
 }
 /*----------------- Comments -----------------*/
 .commentbox {
-	float:left
-	font-size:13px; 
-	width:595px;
-	height:87px;
-	padding-bottom:15px;
+	float:left;
+	font-size:12px; 
+	width:600px;
+	margin-bottom:15px;
 }
 #commentheader {
 	font-family:"Impact", Charcoal, sans-serif;
 	font-size:20px;
 }
 #commentcontent {
-	padding:5px;
+	padding:4px 8px 4px 8px;
 	overflow:hidden;
-	height:60px;
-	background-color:rgb(230,230,230);
+	min-height:82px;
+	max-height:206px;
+	background-color:rgb(240,240,240);
+	border-style:solid;
+	border-width:1px 0px 0px 1px;
+	border-color:rgb(220,220,220);
 }
 #commentmeta {
+	margin-left:96px;
 	padding-left:5px;
 	overflow:hidden;
-	background-color:rgb(230,230,230);
+	background-color:rgb(248,248,248);
+	border-style:solid;
+	border-width:0px 0px 0px 1px;
+	border-color:rgb(230,230,230);
 }
 /*----------------- View Assignments -----------------*/
 .assignments {
@@ -2887,15 +2894,16 @@ p.comment-form-comment {
 
 
 /*--------------- Profile ----------------*/
+
 #profile {
 	width:720px;
 	float:left;
 	margin:0px 0px 20px 15px;
 }
-#avatar {
+.avatar {
 	float:left;
-	width:120px;
-	height:120px;
+	margin:0px 2px 0px 2px;
+	box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 2px;
 }
 #profilemeta {
 	width:580px;

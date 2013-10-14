@@ -94,7 +94,7 @@ get_header(); ?>
 			<?php } ?>
 		</a>
 		<div id="projectsearchmeta">
-			<div id="rating" class="projectsearchmetatag">9.5</div>
+			<div id="rating" class="projectsearchmetatag"><?php if(function_exists('the_ratings')) { the_ratings(); } ?></div>
 			<div class="projectsearchmetatag">
 				<?php echo wp_count_comments(get_the_ID())->approved . " Comments"; ?>
 			</div>
@@ -149,10 +149,10 @@ get_header(); ?>
 	$count = 0;
 	while($num_pages > $count) :
 		if($count == $currentpage)
-			echo "<b>";
+			echo "[";
 		echo "<a href=\"" . site_url('/project-search/') . $category . $order . $results . '&x=' . $count . "\">" . ($count + 1) . "</a>";
 		if($count == $currentpage)
-			echo "</b>";
+			echo "]";
 		$count++;
 	endwhile;
 	?>

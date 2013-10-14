@@ -44,7 +44,7 @@ get_header(); ?>
 	<div id='pagetitle'>
 		<?php echo $user_info->user_login ?>'s Profile
 	</div>   
-	<img id='avatar' src="<?php bloginfo('template_directory'); ?>/images/blank-user.png">
+	<?php echo get_avatar($user_info->ID, 120) ?>
 	<div id='profilemeta'>
  		<b>Name </b><?php echo $user_info->first_name . ' ' . $user_info->last_name; ?>
 	</div>
