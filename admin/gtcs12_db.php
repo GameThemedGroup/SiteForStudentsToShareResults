@@ -378,9 +378,13 @@ class GTCS12_DB
       'user_email' => $email,
       'first_name' => $firstname,
       'last_name' => $lastname,
+      'role' => $role,
     );
 
-    return wp_insert_user($userdata);
+    $id = wp_insert_user($userdata);
+    $user = new WP_User($id);
+    $user->add_role($role);
+    return $id; 
   }
 }
 ?>
