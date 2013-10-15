@@ -43,7 +43,7 @@ get_header(); ?>
 <div id="profile">
 	<div id='pagetitle'>
 		<?php echo $user_info->user_login ?>'s Profile
-	</div>   
+	</div>  
 	<?php echo get_avatar($user_info->ID, 120) ?>
 	<div id='profilemeta'>
  		<b>Name </b><?php echo $user_info->first_name . ' ' . $user_info->last_name; ?>
