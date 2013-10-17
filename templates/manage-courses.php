@@ -11,6 +11,12 @@ get_header(); ?>
 <?php
 global $gtcs12_db;
 
+if($_GET) {
+  $courseId = $_GET['del'];
+  //*TODO* verify parameter
+  $gtcs12_db->DeleteCourse($courseId);
+}
+
 if ($_POST)
 {
   //echo $_POST['title'];
@@ -87,7 +93,7 @@ $professors = $gtcs12_db->GetAllFaculty();
           <th class='manage-courses'><?php echo $course->Quarter; ?></th>
           <th class='manage-courses'><?php echo $course->Year; ?></th>
           <th class='manage-courses'><?php echo $course->FacultyName; ?></th>
-          <th class='manage-courses'>Delete</th>
+          <th class='manage-courses'><a href='<?php echo site_url('/manage-courses/') . "?del=" . $course->Id;?>'>Delete</a></th>
         </tr>
 <?php endforeach; ?>
       </tbody>
