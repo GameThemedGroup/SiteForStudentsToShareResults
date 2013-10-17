@@ -9,8 +9,7 @@
 get_header(); ?>
 
 <?php
-    require('DBHandler.php');
-    $dbHandler = new DBHandler;
+global $gtcs12_db;
 	
 	if ($_POST)
 	{
@@ -19,11 +18,10 @@ get_header(); ?>
 		//echo $_POST['year'];
 		//echo $_POST['faculty'];
 		//echo $_POST['description'];
-		$dbHandler->AddCourse($_POST['title'], $_POST['quarter'], $_POST['year'], $_POST['faculty']);
+		$gtcs12_db->AddCourse($_POST['title'], $_POST['quarter'], $_POST['year'], $_POST['faculty']);
 	}
 	
-	$rows = $dbHandler->GetAllCourses();
-	$professors = $dbHandler->GetAllFaculty();  
+	$professors = $gtcs12_db->GetAllFaculty();  
 ?>
 
 <!DOCTYPE html>
@@ -81,14 +79,17 @@ get_header(); ?>
 					<th class='manage-courses'>Action</th>
 				</tr>
 			</thead>
-			<tbody class='manage-courses'>
+      <tbody class='manage-courses'>
+<?php $courses = $gtcs12_db->GetAllCourses(); ?>
+<?php foreach($courses as $course) : ?> 
 				<tr>
-					<th class='manage-courses'>CSS 161: Fundamentals of Computing</th>
-					<th class='manage-courses'>Summer</th>
-					<th class='manage-courses'>2013</th>
-					<th class='manage-courses'>Kelvin Sung</th>
+        <th class='manage-courses'><?php echo $course->Name; ?></th>
+					<th class='manage-courses'><?php echo $course->Quarter; ?></th>
+					<th class='manage-courses'><?php echo $course->Year; ?></th>
+					<th class='manage-courses'><?php echo $course->FacultyName; ?></th>
 					<th class='manage-courses'>Delete</th>
-				</tr>
+        </tr>
+<?php endforeach; ?>
 			</tbody>
 		</table>
 	</div>
