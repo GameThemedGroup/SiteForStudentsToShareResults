@@ -63,18 +63,8 @@ class GTCS12_DB
 
   function GetAllFaculty()
   {
-    global $wpdb;
-    $wpdb->show_errors(true);
-    $user         = $wpdb->prefix . "users";
-    $userMeta     = $wpdb->prefix . "usermeta";
-    $capabilities = $wpdb->prefix . "capabilities";
-
-    $rows = $wpdb->get_results("SELECT u.ID as Id, u.display_name as Name 
-      FROM $user u INNER JOIN $userMeta up 
-      ON u.id = up.user_id 
-      WHERE up.meta_key = $capabilities AND up.meta_value LIKE '%author%';");
-
-    return $rows;
+    $result = get_users("role=author");
+    return $result;
   }
 
   function GetCourse($courseId)
@@ -150,9 +140,8 @@ class GTCS12_DB
       FROM $users u INNER JOIN $userMeta up 
       ON u.id = up.user_id 
       WHERE up.meta_key = $capabilities AND up.meta_value LIKE '%contributor%'";
-
+ 
     $rows = $wpdb->get_results($sql);
-
     return $rows;
   }
 
