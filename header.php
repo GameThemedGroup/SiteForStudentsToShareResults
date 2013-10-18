@@ -114,7 +114,7 @@
 					
 				<?php endif; // end check for featured image or standard header ?>
 			
-			<?php include "login-bar.php" ?>
+			<?php include "nav-links.php" ?>
 			<?php endif; // end check for removed header image ?>
 
 			<?php
