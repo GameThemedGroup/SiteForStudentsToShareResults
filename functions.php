@@ -6,6 +6,13 @@ $gtcs12_db = new GTCS12_DB();
 
 require_once('admin/theme_init.php');
 
+add_filter('login_redirect', login_redirect);
+function login_redirect() {
+  return site_url('/main');
+}
+
+
+
 /**
  * Set the content width based on the theme's design and stylesheet.
  */
