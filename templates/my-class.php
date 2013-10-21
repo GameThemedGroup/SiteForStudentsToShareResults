@@ -17,9 +17,10 @@ get_header(); ?>
 	$course = $dbHandler->GetCourse($coursenum);
 	$professor = get_userdata($course->FacultyId);
 	$professor_link = site_url('/profile/?user=') . $course->FacultyId;
-	$students = $dbHandler->GetStudents(6);
+	$students = $dbHandler->GetStudents($coursenum);
 	$assignments = $dbHandler->GetAllAssignments($coursenum);
 
+	//$dbHandler->UpdateStudentEnrollment(4, 7, false);
 	//print_r($assignments);
 	//$dbHandler->CreateAssignment(4, 6, 'Assignment Three', 'this is a description');
 	//$dbHandler->AddCourse("CSS 300", "Summer", 2013, 4);

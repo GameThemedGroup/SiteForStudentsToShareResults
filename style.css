@@ -699,7 +699,7 @@ a:hover {
 
 #main {
 	clear: both;
-	padding: 1.625em 0 0;
+	padding: 0 0 0;
 }
 .page-title {
 	color: #666;
@@ -2719,86 +2719,101 @@ p.comment-form-comment {
 #ie8 section.feature-image.large img {
 	width: 100%;
 }
+
 /*----------------- General -----------------*/
 #pagetitle {
 	font-family:Tahoma, Geneva, sans-serif;
 	font-size:25px;
+}
+#pagetitle-black {
+	font-family:Tahoma, Geneva, sans-serif;
+	padding-left:8px;
+	font-size:20px;
+	background-color:rgb(48,53,56);
+	color:white;
+	clear:right;
+}
+#pagetitle-border {
+	font-family:Tahoma, Geneva, sans-serif;
+	padding-left:8px;
+	font-size:20px;
+	clear:right;
+	border-style:solid;
+	border-width:0px 0px 1px 6px;
+	border-color:rgb(50,50,50);
 }
 #header1 {
 	font-family:Tahoma, Geneva, sans-serif;
 	font-size:20px;
 }
 /*----------------- Project Sidebar -----------------*/
-.projects {
+#project-sidebar {
+	padding:6px;
 	float:left;
-	margin-left:15px;
-	width:360px;
+	margin-left:10px;
+	width:310px;
 }
-.projectbox {
-	margin-bottom:10px;
-	float:left;
-	width:355px;
-	height:142px;
-}
-.projectbox #image {
-	margin:0px 1px 0px 1px;
-	float:left;
-	width:140px;
-	height:140px;
-	box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 2px;
-}
-.projectbox #name {
-	overflow:hidden;
-	float:left;
-	font-family:"Tahoma", Geneva, sans-serif;
-	padding-left:5px;
-	height:25px;
-	width:208px;
-	color:white; 
-	font-size:15px; 
+#project-sidebar-title {
+	font-family:Tahoma, Geneva, sans-serif;
+	padding-left:8px;
+	font-size:20px;
+	clear:right;
 	background-color:rgb(50,50,50);
+	color:white;
 }
-.projectbox #meta {
-	overflow:hidden;
-	width:208px;
+#project-sidebar-box {
+	height:100px;
+	width:100%;
 	float:left;
-	padding-left:5px;
-	font-size:12px; 
+	margin:4px 0px 0px 0px;
+	border-style:solid;
+	border-width:0px 1px 0px 0px;
+	border-color:rgb(225,225,225);
 }
-.projectbox #description {
-	overflow:hidden;
+#project-sidebar-image {
 	float:left;
-	width:205px;
-	height:90px;
-	padding:4px;
-	font-size:11px; 
-	background-color:rgba(0,0,0,0.1);
 }
-.sortbar {
-	float:left;
-	width:645px;
-	margin-bottom:5px;
+#project-sidebar-name {
+	font-family:Tahoma, Geneva, sans-serif;
+	font-size:17px;
+	height:27px;
+	padding-left:105px;
+	background-color:rgb(225,225,225);
+	border-style:solid;
+	border-width:1px 0px 0px 0px;
+	border-top-color:rgb(200,200,200);
+}
+#project-sidebar-meta {
+	font-size:13px;
+	clear:right;
+	height:22px;
+	padding-left:105px;
 }
 /*----------------- Activity Feed -----------------*/
 .activityfeed {
 	float:left;
-	margin-left:15px;
-	width:600px;
+	margin:0px 0px 10px 10px;
+	width:635px;
+	padding:6px;
 }
 /*----------------- Project Comments -----------------*/
 .projectcomments {
 	float:left;
 }
 /*----------------- Comments -----------------*/
+#activityfeed-title {
+	font-family:Tahoma, Geneva, sans-serif;
+	padding-left:8px;
+	font-size:20px;
+	clear:right;
+	background-color:rgb(50,50,50);
+	color:white;
+}
 .commentbox {
 	float:left;
 	font-size:12px; 
-	width:600px;
-	margin-bottom:15px;
-}
-#commentheader {
-	font-family:"Impact", Charcoal, sans-serif;
-	font-size:20px;
+	width:635px;
+	margin:4px 0px 2px 0px;
 }
 #commentcontent {
 	padding:4px 8px 4px 8px;
@@ -2810,42 +2825,19 @@ p.comment-form-comment {
 	border-width:1px 0px 0px 1px;
 	border-color:rgb(220,220,220);
 }
-#commentmeta {
+#commentmetabox {
 	margin-left:96px;
-	padding-left:5px;
+}
+#commentmeta {
+	float:left;
+	max-width:140px;
+	max-height:20px;
+	padding:0px 5px 0px 5px;
 	overflow:hidden;
 	background-color:rgb(248,248,248);
 	border-style:solid;
 	border-width:0px 0px 0px 1px;
 	border-color:rgb(230,230,230);
-}
-/*----------------- View Assignments -----------------*/
-.assignments {
-	padding-left:10px;
-}
-.assignments #header1 {
-	font-weight:bold;
-	float:left;
-	width:600px;
-}
-.assignments #header2 {
-	font-weight:bold;	
-	float:left;
-	width:370px;
-}
-.assignments #name { 
-	padding:5px;
-	width:600px;
-}
-.assignments #status { 
-	width:370px;
-}
-
-.assignments #style1 { 
-	background-color:rgb(200,200,200);
-}
-.assignments #style2 { 
-	background-color:rgb(240,240,240);
 }
 /*----------------- Login Bar -----------------*/
 #loginbar { 
@@ -2864,7 +2856,7 @@ p.comment-form-comment {
 .projectfull {
 	margin-left:15px;
 	float:left;
-	width:600px;
+	width:635px;
 	padding-bottom:3px;
 }
 .projectfull #title {
@@ -2890,11 +2882,7 @@ p.comment-form-comment {
 	border-width:1px;
 	border-color:rgb(230,230,230);
 }
-/*--------------- Post Comment ----------------*/
-
-
-/*--------------- Profile ----------------*/
-
+/*--------------- Profile Info ----------------*/
 #profile {
 	width:720px;
 	float:left;
@@ -2902,7 +2890,7 @@ p.comment-form-comment {
 }
 .avatar {
 	float:left;
-	margin:0px 2px 0px 2px;
+	margin:0px 4px 0px 0px;
 	box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 2px;
 }
 #profilemeta {
@@ -2914,35 +2902,54 @@ p.comment-form-comment {
 	border-width:0px 0px 1px 0px;
 	border-color:rgb(225,225,225);
 }
-#profile-recent-comments {
-	margin-left:15px;
-	float:left;
-	width:600px;
-}
-#profile-comment-box {
-	background-color:rgb(235,235,235);
-	width:700px;
-	margin-bottom:10px;
-	float:left;
-}
-#profile-comment-content {
-	padding:5px;
-	background-color:rgb(235,235,235);
-}
-#profile-comment-meta {
-	padding:0px 10px 0px 10px;
-	overflow:hidden;
-	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
-	font-size:14px;
+/*--------------- Profile Menu ----------------*/
+#profile-menu {
+	margin-left:10px;
+	font-size:13px;
+	width:720px;
 	float:left;
 	border-style:solid;
-	border-right-width:1px;
-	border-right-color:rgb(200,200,200);
-	border-bottom-width:1px;
-	border-bottom-color:rgb(180,180,180);
-	background-color:rgb(255,255,255);
+	border-width:0px 0px 4px 0px;
+	border-color:rgb(50,50,50);
 }
-
+#profile-menu-tab {
+	float:left;
+	margin:0px 2px 0px 0px;
+	padding:0px 8px 0px 8px;
+}
+#profile-menu-tab-selected {
+	float:left;
+	margin:0px 2px 0px 0px;
+	padding:0px 8px 0px 8px;
+	background-color:rgb(50,50,50);
+	color:white;
+}
+/*--------------- Profile Options ----------------*/
+#profile-options {
+	float:left;
+	width:220px;
+	margin-left:10px;
+	padding:5px;
+}
+#profile-options-title {
+	font-family:Tahoma, Geneva, sans-serif;
+	padding-left:8px;
+	font-size:17px;
+	clear:right;
+	background-color:rgb(50,50,50);
+	color:white;
+}
+ul.profile-options {
+	list-style-type:none;
+	margin:0px;
+}
+li.profile-options {
+	list-style-type:none;
+	padding:0px 0px 0px 5px;
+	border-style:solid;
+	border-width:0px 1px 1px 1px;
+	border-color:rgb(235,235,235);
+}
 /*--------------- Search Projects ----------------*/
 #projectsearch {
 	float:left;
@@ -3198,17 +3205,21 @@ li.assignment-list {
 	padding:5px 5px 5px 5px;
 	width:150px;
 }
-/*---------------- Create Course Form -----------------*/
+/*---------------- Manage Course Form -----------------*/
 select.create-course {
-	position:absolute;
-	left:270px;
+	position:relative;
 	width:160px;
 }
 input.create-course {
-	position:absolute;
-	left:270px;
+	position:relative;
 	height:18px;
 	width:300px;
+}
+p.create-course {
+	float:left;
+	width:60px;
+	padding:5px;
+	margin:0px;
 }
 #create-course-box {
 	margin:0px 0px 0px 15px;
@@ -3221,7 +3232,7 @@ input.create-course {
 	border-top-width:1px;
 	border-top-color:rgb(200,200,200);
 }
-/*---------------- Create Assignment Form -----------------*/
+/*---------------- Manage Assignment Form -----------------*/
 select.create-assignment {
 	left:280px;
 	width:160px;
@@ -3253,9 +3264,43 @@ img.create-assignment {
 	border-top-width:1px;
 	border-top-color:rgb(200,200,200);
 }
+/*---------------- Manage Profile Form -----------------*/
+select.manage-profile {
+	left:280px;
+	width:160px;
+	padding:3px 5px 3px 0px;
+}
+input.manage-profile {
+	width:300px;
+}
+p.manage-profile  {
+	float:left;
+	width:90px;
+	padding:3px 0px 3px 8px;
+	margin:0px;
+}
+#manage-profile-box {
+	margin:0px 0px 15px 15px;
+	width:420px;
+	float:left;
+}
+#manage-profile-field {
+	width:100%;
+	float:left;
+	background-color:rgb(235,235,235);
+	border-style:solid;
+	border-top-width:1px;
+	border-top-color:rgb(200,200,200);
+}
+/*------------ 404 Page ------------*/
+#notfound{
+	padding:20px 20px 20px 20px;
+	text-align:center;
+}
 /*------------- Table -------------*/
 #table {
-	margin:15px 0px 15px 15px;
+	float:left;
+	margin:10px 10px 15px 15px;
 }
 table  {
 	width:710px;
