@@ -137,7 +137,7 @@ function create_default_menus()
         ),
         'My Class' =>  array(
           'menu-item-type'      =>  'post_type',
-          'menu-item-title'     =>  'Members',
+          'menu-item-title'     =>  'My Class',
           'menu-item-object'    =>  'page',
           'menu-item-object-id' =>  $page_id['myclass'],
           'menu-item-status'    =>  'publish'
