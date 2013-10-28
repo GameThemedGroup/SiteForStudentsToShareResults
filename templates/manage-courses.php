@@ -9,38 +9,59 @@
 get_header(); ?>
 
 <?php
-global $gtcs12_db;
+	global $gtcs12_db;
 
-if($_GET) {
-  $courseId = $_GET['del'];
-  //*TODO* verify parameter
-  $gtcs12_db->DeleteCourse($courseId);
-}
+	//$gtcs12_db->AddCourse('testcourse', 'Summer', 1999, 2); // for testing
+	$current_user = wp_get_current_user();
 
-if ($_POST)
-{
-  //echo $_POST['title'];
-  //echo $_POST['quarter'];
-  //echo $_POST['year'];
-  //echo $_POST['faculty'];
-  //echo $_POST['description'];
-  $gtcs12_db->AddCourse($_POST['title'], $_POST['quarter'], $_POST['year'], $_POST['faculty']);
-}
+	if($_GET['del']) // has a course been marked for deletion
+	{
+		$course = $gtcs12_db->GetCourse($_GET['del']);
+		if($course) // does course exists
+		{
+			if($course->FacultyId == $current_user->ID) // does logged in user own course
+			{
+				$courseId = $_GET['del'];
+				$gtcs12_db->DeleteCourse($courseId);
+				$action = "deleted";
+			}
+			else 
+			{
+				$action = "owner error";
+			}
+		}
+		else 
+		{
+			$action = "found error";
+		}
+	}
 
-$professors = $gtcs12_db->GetAllFaculty();  
+	if ($_POST) 
+	{
+		$gtcs12_db->AddCourse($_POST['inptTitle'], $_POST['slctQuarter'], $_POST['slctYear'], $current_user->ID);
+	}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-  <form action="" method="post">
+<?php if($action == "owner error") : ?>
+	<div id="error-box">Error:You don't have ownership of that course</div>
+<?php elseif($action == "found error") : ?>
+	<div id="error-box">Error:Course not found</div>
+<?php elseif($action == "deleted") : ?>
+	<div id="action-box">Course deleted</div>
+<?php endif ?>
+
+	<form action="<?php echo site_url('/manage-courses/') ?>" method="post">
     <div id='create-course-box'>
-      <div id='pagetitle'>Create Course</div>		
-      <div id='create-course-field'>Title
-        <input class='create-course' type="text" name="title" required><br>
+			<div id='pagetitle'>Create Course</div>		
+      <div id='create-course-field'>
+		<p class="create-course">Title</p>
+        <input class='create-course' type="text" name="inptTitle" required><br>
       </div>
       <div id='create-course-field'>
-        Quarter 
-        <select class='create-course' name='quarter'>
+        <p class="create-course">Quarter</p>
+        <select class='create-course' name='slctQuarter'>
           <option value="Autumn">Autumn</option>
           <option value="Winter">Winter</option>
           <option value="Spring">Spring</option>
@@ -48,24 +69,16 @@ $professors = $gtcs12_db->GetAllFaculty();
         </select>
       </div>
       <div id='create-course-field'>
-        Year 
-        <select class='create-course' name='year'>
+        <p class="create-course">Year</p>
+        <select class='create-course' name='slctYear'>
 <?php for($x = 0; $x < 10; $x++)
 {
-  echo "<option>" . (date("Y") - $x) . "</option>";
+  echo "<option value=\"" . (date("Y") - $x) . "\">" . (date("Y") - $x) . "</option>";
 }
 ?>			
         </select>
       </div>
-      <div id='create-course-field'>
-        Faculty 
-        <select class='create-course' name='faculty'>
-          <?php foreach($professors as $professor): ?>
-            <option value="<?php echo $professor->Name ?>"><?php echo $professor->Name ?></option>
-          <?php endforeach; ?>
-        </select>
-      </div>
-      <div id='create-course-field' name='description'>
+      <div id='create-course-field' name='inptDescription'>
         Description
         <textarea cols="25" rows="10" autocomplete="off" name="description" required></textarea>
       </div>
@@ -75,27 +88,37 @@ $professors = $gtcs12_db->GetAllFaculty();
 
   <div id='table'>
     <div id='pagetitle'>Manage Courses</div>
-    <table class='manage-courses'>
-      <thead class='manage-courses'>
+    <table>
+      <thead>
         <tr>
-          <th class='manage-courses'>Title</th>
-          <th class='manage-courses'>Quarter</th>
-          <th class='manage-courses'>Year</th>
-          <th class='manage-courses'>Faculty</th>
-          <th class='manage-courses'>Action</th>
+          <th>Title</th>
+          <th>Quarter</th>
+          <th>Year</th>
+          <th>Faculty</th>
+          <th>Action</th>
         </tr>
       </thead>
-      <tbody class='manage-courses'>
+      <tbody>
 <?php $courses = $gtcs12_db->GetAllCourses(); ?>
+<?php if($courses) : ?>
 <?php foreach($courses as $course) : ?> 
         <tr>
-        <th class='manage-courses'><?php echo $course->Name; ?></th>
-          <th class='manage-courses'><?php echo $course->Quarter; ?></th>
-          <th class='manage-courses'><?php echo $course->Year; ?></th>
-          <th class='manage-courses'><?php echo $course->FacultyName; ?></th>
-          <th class='manage-courses'><a href='<?php echo site_url('/manage-courses/') . "?del=" . $course->Id;?>'>Delete</a></th>
+					<th><?php echo $course->Name; ?></th>
+          <th><?php echo $course->Quarter; ?></th>
+          <th><?php echo $course->Year; ?></th>
+          <th><?php echo $course->FacultyName; ?></th>
+          <th><a href='<?php echo site_url('/manage-courses/') . "?del=" . $course->Id;?>'>Delete</a></th>
         </tr>
 <?php endforeach; ?>
+<?php else : ?>
+				<tr>
+					<th>N/A</th>
+          <th>N/A</th>
+          <th>N/A</th>
+          <th>N/A</th>
+          <th>N/A</th>
+        </tr>
+<?php endif ?>
       </tbody>
     </table>
   </div>

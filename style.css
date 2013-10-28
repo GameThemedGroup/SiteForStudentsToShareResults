@@ -3207,23 +3207,21 @@ li.assignment-list {
 }
 /*---------------- Manage Course Form -----------------*/
 select.create-course {
-	position:relative;
 	width:160px;
 }
 input.create-course {
-	position:relative;
 	height:18px;
 	width:300px;
 }
 p.create-course {
 	float:left;
 	width:60px;
-	padding:5px;
+	padding:0px;
 	margin:0px;
 }
 #create-course-box {
 	margin:0px 0px 0px 15px;
-	width:600px;
+	width:700px;
 }
 #create-course-field {
 	background-color:rgb(235,235,235);
@@ -3236,9 +3234,9 @@ p.create-course {
 select.create-assignment {
 	left:280px;
 	width:160px;
+	padding:3px 5px 3px 0px;
 }
 input.create-assignment {
-	height:18px;
 	width:300px;
 }
 img.create-assignment {
@@ -3248,7 +3246,7 @@ img.create-assignment {
 }
 #create-assignment-box-left {
 	margin:0px 0px 0px 15px;
-	width:600px;
+	width:700px;
 	float:left;
 }
 #create-assignment-box-right {
@@ -3258,8 +3256,8 @@ img.create-assignment {
 	float:left;
 }
 #create-assignment-field {
+	padding:3px 0px 3px 8px;
 	background-color:rgb(235,235,235);
-	padding:5px 5px 5px 10px;
 	border-style:solid;
 	border-top-width:1px;
 	border-top-color:rgb(200,200,200);
@@ -3297,13 +3295,35 @@ p.manage-profile  {
 	padding:20px 20px 20px 20px;
 	text-align:center;
 }
+/*------------ Action Box ------------*/
+#action-box{
+	padding:10px;
+	margin:5px;
+	clear:both;
+	text-align:center;
+	border-style:solid;
+	border-width:1px;
+	border-color:rgb(220,220,220);
+	color:DarkTurquoise;
+}
+/*------------ Error Box ------------*/
+#error-box{
+	padding:10px;
+	margin:5px;
+	clear:both;
+	text-align:center;
+	border-style:solid;
+	border-width:1px;
+	border-color:rgb(220,220,220);
+	color:red;
+}
 /*------------- Table -------------*/
 #table {
 	float:left;
 	margin:10px 10px 15px 15px;
 }
 table  {
-	width:710px;
+	width:700px;
 }
 thead {
 	background-color:rgb(50,50,50);
@@ -3320,4 +3340,41 @@ th {
 	border-bottom-color:rgb(200,200,200);
 	border-left-width:1px;
 	border-left-color:white;
+}
+/*--------------- Options Box ----------------*/
+#options-box {
+	float:left;
+	width:220px;
+	margin:0px 0px 10px 10px;
+	padding:5px;
+}
+#options-title {
+	font-family:Tahoma, Geneva, sans-serif;
+	padding-left:8px;
+	font-size:17px;
+	clear:right;
+	background-color:rgb(50,50,50);
+	color:white;
+}
+ul.options {
+	list-style-type:none;
+	margin:0px;
+}
+li.options {
+	list-style-type:none;
+	padding:0px 0px 0px 5px;
+	border-style:solid;
+	border-width:0px 1px 1px 1px;
+	border-color:rgb(235,235,235);
+	overflow:hidden;
+}
+li.options-selected {
+	list-style-type:none;
+	padding:0px 0px 0px 5px;
+	border-style:solid;
+	border-width:0px 1px 1px 1px;
+	border-color:rgb(235,235,235);
+	background-color:rgb(235,235,235);
+	font-weight:bold;
+	overflow:hidden;
 }

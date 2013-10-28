@@ -10,33 +10,45 @@ get_header(); ?>
 
 <?php 
 	$user_info = get_userdata($_GET['user']); 
+	$comments_per_page = 8;
 
-	$args = array(
-		'author_email' => '',
-		'ID' => '',
-		'karma' => '',
-		'number' => 5,
-		'offset' => '',
-		'orderby' => '',
-		'order' => 'DESC',
-		'parent' => '',
-		'post_id' => 0,
-		'post_author' => '',
-		'post_name' => '',
-		'post_parent' => '',
-		'post_status' => '',
-		'post_type' => '',
-		'status' => 'approve',
-		'type' => '',
-		'user_id' => $_GET['user'],
-		'search' => '',
-		'count' => false,
-		'meta_key' => '',
-		'meta_value' => '',
-		'meta_query' => '',
-	); 
+	if($_GET['view'] == '' || $_GET['comments']) 
+	{
+		$args = array(
+			'author_email' => '',
+			'ID' => '',
+			'karma' => '',
+			'number' => 5,
+			'offset' => '',
+			'orderby' => '',
+			'order' => 'DESC',
+			'parent' => '',
+			'post_id' => 0,
+			'post_author' => '',
+			'post_name' => '',
+			'post_parent' => '',
+			'post_status' => '',
+			'post_type' => '',
+			'status' => 'approve',
+			'type' => '',
+			'user_id' => $_GET['user'],
+			'search' => '',
+			'count' => false,
+			'meta_key' => '',
+			'meta_value' => '',
+			'meta_query' => '',
+		); 
 
-	$comments = get_comments($args);
+		$comments = get_comments($args);
+		
+		$count_comments = count($comments);
+		$page_count = ceil($count_comments / $comments_per_page);
+		
+		if($_GET['x'])
+			$current_page = $_GET['x'];
+		else
+			$current_page = 1;
+	}
 ?>
 
 <!DOCTYPE html>
@@ -79,7 +91,7 @@ get_header(); ?>
 		<?php else : ?>
 			<div id="profile-menu-tab">
 		<?php endif ?>
-			<a href="<?php echo site_url('/profile/?user=' . $_GET['user'] . '&view=comments') ?>">Comments</a>
+			<a href="<?php echo site_url('/profile/?user=' . $_GET['user']) ?>">Comments</a>
 		</div>
 		<?php if($_GET['view'] == 'submissions') : ?>
 			<div id="profile-menu-tab-selected">
@@ -92,24 +104,29 @@ get_header(); ?>
 	
 	<?php if($_GET['view'] == '' || $_GET['view'] == 'comments'): ?>
 		<div class="activityfeed">
-			<?php foreach($comments as $comment) : ?>	
+			<?php $results_start = ($current_page - 1) * $comments_per_page;
+				  $results_end = $results_start + $comments_per_page; 
+				if($results_end > $count_comments)
+					$results_end = $count_comments;
+				  ?>
+			<?php for ($i = $results_start; $i < $results_end; $i++) : ?>	
 				<div class="commentbox">
-				<?php echo get_avatar($comment->user_id, 92) ?>
+				<?php echo get_avatar($comments[$i]->user_id, 92) ?>
 					<div id="commentcontent">
-						<?php echo $comment->comment_content; ?>
+						<?php echo $comments[$i]->comment_content; ?>
 					</div>
 					<div id="commentmetabox">
 						<div id="commentmeta">
-						<a href="<?php echo site_url('/profile/?user=') . $comment->user_id ?>"> 
-							<?php echo $comment->comment_author ?> 
+						<a href="<?php echo site_url('/profile/?user=') . $comments[$i]->user_id ?>"> 
+							<?php echo $comments[$i]->comment_author ?> 
 						</a> 
 						</div>
 						<div id="commentmeta">
-							<?php echo date('F d, Y', strtotime($comment->comment_date)) ?> 
+							<?php echo date('F d, Y', strtotime($comments[$i]->comment_date)) ?> 
 						</div>
 						<div id="commentmeta">
-						<a href="<?php echo site_url('/?p=') . $comment->comment_post_ID ?>">
-							<?php echo get_post($comment->comment_post_ID)->post_title; ?>
+						<a href="<?php echo site_url('/?p=') . $comments[$i]->comment_post_ID ?>">
+							<?php echo get_post($comments[$i]->comment_post_ID)->post_title; ?>
 						</a> 	
 						</div>
 						<?php if(current_user_can('moderate_comments')): ?>
@@ -119,8 +136,24 @@ get_header(); ?>
 						<?php endif ?>
 					</div>
 				</div>
-			<?php endforeach; ?>
+			<?php endfor; ?>
 		</div>
+		
+		<div id="resultspages">
+			Page
+			<?php
+			$count = 1;
+			while($count <= $page_count) :
+				if($count == $current_page)
+					echo "[";
+				echo "<a href=" . site_url('/profile/?user=' . $_GET['user'] . "&x=" . $count) . ">" . $count. "</a>";
+				if($count == $current_page)
+					echo "]";
+				$count++;
+			endwhile;
+			?>
+		</div>
+		
 	<?php elseif($_GET['view'] == 'submissions' ) : ?>
 		<div id="table">
 			<table>

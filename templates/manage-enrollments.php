@@ -1,83 +1,103 @@
 <?php
-/**
+/*
  * Template Name: Manage Enrollments
  */
 
 get_header(); ?>
 
 <?php
-    require('./wp-blog-header.php');
-    require('DBHandler.php');
+	global $gtcs12_db;
 
-    $dbHandler = new DBHandler;
-
-    $courseid = '';
+  $courseid = $_GET['courseid'];
+	
+	//$gtcs12_db->UpdateStudentEnrollment(29, 3, FALSE);
     
-    if ($_GET)
+  if ($_GET)
+  {
+    if ($_GET['courseid'])
     {
-        if ($_GET['courseid'])
+      $courseid = $_GET['courseid'];
+
+      if ($_GET['studentid'] && $_GET['op'])
+      {
+        $studentid = $_GET['studentid'];
+        $op = $_GET['op'];
+
+        if ($op == 'enroll')
         {
-            $courseid = $_GET['courseid'];
-
-            if ($_GET['studentid'] && $_GET['op'])
-            {
-                $studentid = $_GET['studentid'];
-                $op = $_GET['op'];
-
-                if ($op == 'enroll')
-                {
-                    $dbHandler->UpdateStudentEnrollment($courseid, $studentid, TRUE);
-                }
-                else if ($op == 'cancel')
-                {
-                    $dbHandler->UpdateStudentEnrollment($courseid, $studentid, FALSE);
-                }
-            }
+          $gtcs12_db->UpdateStudentEnrollment($courseid, $studentid, TRUE);
         }
+        else if ($op == 'cancel')
+        {
+          $gtcs12_db->UpdateStudentEnrollment($courseid, $studentid, FALSE);
+        }
+      }
     }
-    else if ($_POST)
-    {
-        $courseid = $_POST['courseid'];
+  }
+  else if ($_POST)
+  {
+    $courseid = $_POST['courseid'];
 
-        $dbHandler->EnrollStudentsViaFile($courseid, "filStudents");
-    }
+    $gtcs12_db->EnrollStudentsViaFile($courseid, "filStudents");
+  }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title></title>
-    </head>
-    <body>
-        <h2>Manage Enrollments</h2>
-        <table border="1">
-            <tr>
-                <th>Student Name</th>
-                <th>Enroll / Cancel</th>
-            </tr>
-            <?php
-                $rows = $dbHandler->GetStudents(6);
-
-                if ($rows)
-                {
-                    foreach($rows as $row)
-                    {
-                        echo "<tr>";
-                        echo "<td>" . $row->Name . "</td>";
-
-                        if ($row->StudentId == NULL)
-                        {
-                            echo "<td><a href='manageenrollments.php?courseid=" . $courseid . "&studentid=" . $row->Id . "&op=enroll'>Enroll</a></td>";
-                        }
-                        else
-                        {
-                            echo "<td><a href='manageenrollments.php?courseid=" . $courseid . "&studentid=" . $row->Id . "&op=cancel'>Cancel</a></td>";
-                        }
-                    }
-                }
-            ?>
-        </table>
+<html lang="en">	
+	<div id='table'>
+    <div id='pagetitle'>Manage Students</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+<?php $students = $gtcs12_db->GetStudents($courseid); ?>
+<?php if($students) : ?>
+<?php foreach($students as $student) : ?> 
+        <tr>
+					<th><?php echo $student->Name; ?></th>
+<?php if ($student->StudentId == NULL) : ?>
+          <th><a href='<?php echo site_url('manage-students/?courseid=' . $courseid . '&studentid=' . $student->Id . '&op=enroll') ?>'>Enroll</a></th>
+<?php else : ?>
+					<th><a href='<?php echo site_url('manage-students/?courseid=' . $courseid . '&studentid=' . $student->Id . '&op=cancel') ?>'>Cancel</a></th>
+<?php endif ?>
+        </tr>
+<?php endforeach; ?>
+<?php else : ?>
+				<tr>
+					<th>N/A</th>
+          <th>N/A</th>
+        </tr>
+<?php endif ?>
+      </tbody>
+    </table>
+  </div>
+	
+	<div id="options-box">
+		<div id="options-title">Courses</div>
+		<ul class="options">
+<?php $courses = $gtcs12_db->GetAllCourses(); ?>
+<?php foreach($courses as $course) : ?>
+<?php if($courseid == $course->Id) : ?>
+			<li class="options-selected">
+				<?php echo '[' . $course->Quarter . ']' ?>
+				<?php echo $course->Name ?>
+			</li>
+<?php else : ?> 
+			<li class="options">
+				<a href="<?php echo site_url('/manage-students/?courseid=' . $course->Id) ?>">
+					<?php echo '[' . $course->Quarter . ']' ?>
+					<?php echo $course->Name ?>
+				</a>
+			</li>
+<?php endif ?>
+<?php endforeach ?>
+		</ul>
+	</div> 
+	
         <br/>
         <h2>Enroll via file upload</h2>
         <form action="manageenrollments.php" method="post" enctype="multipart/form-data">
