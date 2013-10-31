@@ -64,104 +64,43 @@ function initialize_roles()
   }
 }
 
+// creates an array that can be used to create a wordpresss page 
+function default_page($name, $title, $template)
+{
+  return array( 
+    'post_name'     => $name,  
+    'post_title'    => $title,
+    'post_status'   => 'publish',
+    'post_type'     => 'page',
+    'meta'          => array(
+      '_wp_page_template'  => 'templates/'.$template, 
+    ),
+  );
+}
 
 add_action('after_switch_theme', 'create_default_pages');
 function create_default_pages()
 {
-
-
-  $default_pages = array(
-    'main'    =>  array(
-      'post_name'     =>  'main',
-      'post_title'    =>  'Main',
-      'post_status'   =>  'publish',
-      'post_type'     =>  'page',
-      'meta'          =>  array(
-        '_wp_page_template'  => 'templates/main.php',
-      ),
-    ),
-    'debug'    =>  array(
-      'post_name'     =>  'debug',
-      'post_title'    =>  'Debug',
-      'post_status'   =>  'publish',
-      'post_type'     =>  'page',
-      'meta'          =>  array(
-        '_wp_page_template'  => 'templates/debug.php',
-      ),
-    ),
-    'myclass'    =>  array(
-      'post_name'     =>  'my-class',
-      'post_title'    =>  'My Class',
-      'post_status'   =>  'publish',
-      'post_type'     =>  'page',
-      'meta'          =>  array(
-        '_wp_page_template'  => 'templates/my-class.php',
-      ),
-    ),
-    'projects'         =>  array(
-      'post_name'     =>  'projects',
-      'post_title'    =>  'Projects',
-      'post_status'   =>  'publish',
-      'post_type'     =>  'page',
-      'meta'          =>  array(
-        '_wp_page_template'  => 'templates/projects-search.php',
-      ),
-    ),
-    'profile'         =>  array(
-      'post_name'     =>  'profile',
-      'post_title'    =>  'Profile',
-      'post_status'   =>  'publish',
-      'post_type'     =>  'page',
-      'meta'          =>  array(
-        '_wp_page_template'  => 'templates/profile.php',
-      ),
-    ),   
-    'managecourses'         =>  array(
-      'post_name'     =>  'manage-courses',
-      'post_title'    =>  'Manage Courses',
-      'post_status'   =>  'publish',
-      'post_type'     =>  'page',
-      'meta'          =>  array(
-        '_wp_page_template'  => 'templates/manage-courses.php',
-      ),
-    ), 
-    'manageassignments' =>  array(
-      'post_name'     =>  'manage-assignments',
-      'post_title'    =>  'Manage Assignments',
-      'post_status'   =>  'publish',
-      'post_type'     =>  'page',
-      'meta'          =>  array(
-        '_wp_page_template'  => 'templates/manage-assignments.php',
-      ),
-    ),
-    'managestudents'   =>  array(
-      'post_name'     =>  'manage-students',
-      'post_title'    =>  'Manage Students',
-      'post_status'   =>  'publish',
-      'post_type'     =>  'page',
-      'meta'          =>  array(
-        '_wp_page_template'  => 'templates/manage-enrollments.php',
-      ),
-    ),
-    'assignment'      =>  array(
-      'post_name'     =>  'assignment',
-      'post_title'    =>  'Assignment',
-      'post_status'   =>  'publish',
-      'post_type'     =>  'page',
-      'meta'          =>  array(
-        '_wp_page_template'  => 'templates/assignment.php',
-      ),
-    ),
-  );
-
+  $default_pages = array();
+  $default_pages['main'] = default_page('main', 'Main', 'main.php');
+  $default_pages['debug'] = default_page('debug', 'Debug', 'debug.php'); 
+  $default_pages['my-class'] = default_page('my-class', 'MyClass', 'my-class.php'); 
+  $default_pages['projects'] = default_page('projects', 'Projects', 'projects-search.php');
+  $default_pages['profile'] = default_page('profile', 'Profile', 'profile.php'); 
+  $default_pages['managecourses'] = default_page('managecourses', 'Manage Courses', 'manage-courses.php'); 
+  $default_pages['manageassignments'] = default_page('manageassignments', 'Manage Assignments', 'manage-assignments.php'); 
+  $default_pages['assignment'] = default_page('assignment', 'Assignment', 'single-assignment.php'); 
+  $default_pages['managestudents'] = default_page('managestudents', 'Manage Students', 'manage-enrollments.php'); 
+  
   foreach( $default_pages as $key => $page ) {
     if(get_page_by_title($page['post_title']) != null) // do not need to recreate page
       continue;
 
-    if ( $id = wp_insert_post( $page ) ) {
-      if ( !empty( $page['meta'] ) ) {
-        foreach( $page['meta'] as $meta_key => $meta_value ) {
-          update_post_meta( $id, $meta_key, $meta_value );
+    if ($id = wp_insert_post($page)) {
+      if (!empty($page['meta'])) {
+        // iterate over the page's meta values
+        foreach($page['meta'] as $meta_key => $meta_value) {
+          update_post_meta($id, $meta_key, $meta_value);
         }
       }
     }
