@@ -123,11 +123,13 @@ get_header(); ?>
 			<tbody>
 <?php $assignments = get_posts('&orderby=date&tag=course:' . $course_ID); ?>
 <?php if($assignments) : ?>
-<?php foreach($assignments as $assignments) : ?> 
+<?php foreach($assignments as $assignment) : ?> 
 				<tr>
-					<th><?php echo $assignments->post_title; ?></th>
-					<th><?php echo date('F d, Y', strtotime($assignments->post_date)); ?></th>
-					<th><a href='<?php echo site_url('/manage-assignments/?id=' . $course_ID . '&del=' . $assignments->ID) ?>'>Delete</a></th></th>
+          <th><a href="<?php echo site_url('assignment?id=') . $assignment->ID; ?>">
+            <?php echo $assignment->post_title; ?></a>
+          </th>
+					<th><?php echo date('F d, Y', strtotime($assignment->post_date)); ?></th>
+					<th><a href='<?php echo site_url('/manage-assignments/?id=' . $course_ID . '&del=' . $assignment->ID) ?>'>Delete</a></th></th>
 				</tr>
 <?php endforeach; ?>
 <?php else : ?>
