@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Submitted Assignments
+ * Template Name: Assignment
  * Description: Shows information for an assignment and submissions.
  *
  * Author: Andrey Brushchenko
@@ -10,11 +10,11 @@ get_header(); ?>
 
 <?php 
 	require('DBHandler.php');
-    $dbHandler = new DBHandler;
+  $dbHandler = new DBHandler;
 
 	//$dbHandler->CreateSubmission(5, 4, 320, "submission9");
 	$user_info = get_userdata($_GET['user']); 	
-	$submissions = $dbHandler->GetAllSubmissions($_GET['assign']);
+	$submissions = $dbHandler->GetAllSubmissions($_GET['id']);
  	$assignment = get_post($_GET['assign']);
 ?>
 

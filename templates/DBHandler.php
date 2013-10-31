@@ -157,7 +157,7 @@ class DBHandler
       (select studentid from $enrollments where courseid = " . $courseId . " AND studentid = u.id) as StudentId 
       FROM $users u INNER JOIN $userMeta up 
       ON u.id = up.user_id 
-      WHERE up.meta_key = $capabilities AND up.meta_value LIKE '%contributor%'";
+      WHERE up.meta_key = '{$capabilities}' AND up.meta_value LIKE '%contributor%'";
 
     $rows = $wpdb->get_results($sql);
 

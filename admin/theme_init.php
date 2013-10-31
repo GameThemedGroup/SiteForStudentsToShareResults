@@ -12,6 +12,58 @@ function initialize_tables()
   $gtcs12_db->RecreateTables();
 }
 
+add_action('after_switch_theme', 'initialize_roles');
+function initialize_roles() 
+{
+  // remove the default roles
+  // remove_role('author');
+  // remove_role('editor');
+  // remove_role('contributor');
+  // remove_role('subscriber');
+  
+  // remove old roles so they can be updated
+  remove_role('teacher');
+  remove_role('student');
+
+  $result = add_role(
+    //'teacher', 
+    'author', 
+    //'Teacher',
+    'Author', 
+    array( 
+      'delete_posts' => true,
+      'delete_published_posts' => true,
+      'edit_posts' => true,
+      'edit_published_posts' => true,
+      'read' => true,
+      'upload_files' => true,
+    )
+  );
+
+  if ($result === null) {
+    echo "Error. Teacher role not created.";
+  }
+
+  $result = add_role(
+    'subscriber',
+    //'student',
+    'Subscriber',
+    //'Student',
+    array( 
+      'delete_posts' => true,
+      'delete_published_posts' => true,
+      'edit_posts' => true,
+      'edit_published_posts' => true,
+      'read' => true,
+      'upload_files' => true,
+    )
+  );
+  
+  if ($result === null) {
+    echo "Error. Student role not created.";
+  }
+}
+
 
 add_action('after_switch_theme', 'create_default_pages');
 function create_default_pages()

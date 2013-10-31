@@ -9,10 +9,8 @@
 <div id="loginbar">  
 	<b>Hello</b>, <?php echo $user_identity; ?>. 
 	<br>[<a href="<?php echo site_url('/profile/?user=') . get_current_user_id(); ?>">My Profile</a>]	
-	<?php if($user_info->user_level == 10):?>
+	<?php if(gtcs_user_has_role('author')):?>
 		<br>[<a href="<?php echo site_url('/manage-courses/') ?>" title="Manage Courses">Manage Courses</a>]	
-	<?php endif; ?>
-	<?php if($user_info->user_level > 1):?>	
 		<br>[<a href="<?php echo site_url('/manage-assignments/') ?>" title="Manage Assignments">Manage Assignments</a>]	
 		<br>[<a href="<?php echo site_url('/manage-students/') ?>" title="Manage Students">Manage Students</a>]	
 	<?php endif; ?>

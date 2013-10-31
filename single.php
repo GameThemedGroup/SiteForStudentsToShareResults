@@ -10,12 +10,14 @@
 get_header(); ?>
 
 <?php 
-	$time = current_time('mysql');
-	echo $_POST['time_stamp'];
-	if($_POST['comment']) {
+	//$time = current_time('mysql');
+	//echo $_POST['time_stamp'];
+	
+	if($_POST['comment']) 
+	{
 		$current_user = wp_get_current_user();
 		
-		$data = array(
+		$args = array(
     		'comment_post_ID' => get_the_ID(),
     		'comment_author' => $current_user->display_name,
     		'comment_author_email' => $current_user->user_email,
@@ -30,7 +32,7 @@ get_header(); ?>
     		'comment_approved' => 1 );
 
 		//print_r(array_values($data));
-		wp_insert_comment($data);
+		wp_insert_comment($args);
 	}
 
 	//echo 'x=' . $_POST['comment'];
@@ -58,8 +60,8 @@ get_header(); ?>
 		<div class="projectcomments">
 			<div id="header1">All Comments</div>
 			<?php 
-				$args = array('post_id' => $_GET['p']);
-				$comments = get_comments($args); 
+				$comment_args = array('post_id' => get_the_ID());
+				$comments = get_comments($comment_args); 
 			?>
 			<?php foreach($comments as $comment) : ?>		
 				<div class="commentbox">
