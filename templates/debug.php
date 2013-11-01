@@ -10,9 +10,6 @@
 get_header() ?>
 
 <?php
-    
-    require('DBHandler.php');
-
     global $gtcs12_db;
 
     $operation = $_GET['op'];
