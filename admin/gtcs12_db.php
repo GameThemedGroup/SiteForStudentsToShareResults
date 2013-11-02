@@ -216,14 +216,13 @@ class GTCS12_DB
     return $rows;
   }
 
-  // Uploads a file from $_FILES and returns the file location
-  //
+  // Uploads a file from $_FILES and returns its absolute file path
+  // 
   // @param file_index the index of $_FILES where the file is located
-  // @param title      the title to be used by the wordpress media library 
-  //TODO check and handle errors
-  function UploadFile($file_index, $title)
+  // TODO check and handle errors
+  function UploadFile($file_index)
   {
-    //TODO find out if there are any problems usig ABSPATH 
+    //TODO find out if there are any problems using ABSPATH 
     if (!function_exists('wp_handle_upload')) 
       require_once( ABSPATH . 'wp-admin/includes/file.php' );
 
@@ -235,39 +234,46 @@ class GTCS12_DB
     $uploaded_file = wp_handle_upload($file, $upload_overrides);
 
     // TODO limit file types here?
-    $uploaded_file_type =  wp_check_filetype(basename($file[$file_index]['name']));
-    $file_type = $uploaded_file_type['type']; 
     
+    return $uploaded_file['file'];
+  } 
+
+  // Uploads a file from $_FILES and attaches it to a post
+  //
+  // @param post_id       the id of the post the media is being added to
+  // @param file_index    the index in $_FILES where the file is located 
+  // @param title         the title to be used by the wordpress media library 
+  // @param type_value    the value for the post's 'type' meta_key
+  // @param is_featured_image   if true, the file will be used as the post's featured image
+  function AttachFileToPost($post_id, $file_index, $title, $type_value, $is_featured_image)
+  {
+    $file_name = $_FILES[$file_index]['name'];
+    
+    $uploaded_file_type = wp_check_filetype(basename($file_name));
+
+    $file_type = $uploaded_file_type['type']; 
+
     $attachment_args = array(
       'post_mime_type' => $file_type, 
       'post_title' => $title,
       'post_content' => '',
       'post_status' => 'inherit'
     );
-
-    $file_location = $uploaded_file['file']; 
-
-    // TODO handle errors
-    require_once(ABSPATH . 'wp-admin/includes/image.php');
-    $attach_data = wp_generate_attachment_metadata($attach_id, $file_location);
-    wp_update_attachment_metadata($attach_id, $attach_data);
     
-    return $uploaded_file['file'];
-  }
+    $file_location = $this->UploadFile($file_index);
 
-  // @param file_location the absolute path of the file
-  // @param type_value    the value for the post's 'type' meta_key
-  // @param post_id       the id of the post the media is being added to
-  // @param is_featured_image   if true, the file will be used as the post's featured image
-  function AttachFileToPost($file_location, $type_value, $post_id, $is_featured_image)
-  {
     $attach_id = wp_insert_attachment($attachment_args, $file_location, $post_id); 
     $meta_key = "type";
-    $meta_value = $type;
+    $meta_value = $type_value;
     update_post_meta($attach_id, $meta_key, $meta_value);
 
     if($is_featured_image) { 
-      update_post_meta($post_id, '_thumbnail_id_', $attach_id); 
+      // TODO handle errors
+      require_once(ABSPATH . 'wp-admin/includes/image.php');
+      $attach_data = wp_generate_attachment_metadata($attach_id, $file_location);
+      wp_update_attachment_metadata($attach_id, $attach_data);
+
+      update_post_meta($post_id, '_thumbnail_id', $attach_id); 
     }
     
     return $attach_id;
