@@ -30,13 +30,13 @@ if ($_POST)
 
   $submission_id = $gtcs12_db->CreateSubmission($student_id, $course_id, $assignment_id, $description);
 
-  $jar_location = $gtcs12_db->UploadFile('jar', $title);
-  $gtcs12_db->AttachFileToPost($jar_location, 'jar', $submission_id, false); 
+  $gtcs12_db->AttachFileToPost($submission_id, 'jar', $title, 'jar', false); 
 
   if(isset($_FILES['image'])) {
-    $image_location = $gtcs12_db->UploadFile('image', $title);
-    $gtcs12_db->AttachFileToPost($image_location, 'image', $submission_id, true); 
+    var_dump($_FILES);
+    $gtcs12_db->AttachFileToPost($submission_id, 'image', $title, 'image', true); 
   } 
+ 
 }
 ?>
 
@@ -81,10 +81,10 @@ if ($_POST)
 
       <label for="desc">Description</label>
       <input type="text" name="description" id="desc" required><br /> 
-    
+   
       <label for="jar">Jar File</label>
       <input type="file" name="jar" id="jar" required><br />
-      
+  
       <label for="image">Image</label>
       <input type="file" name="image" id="image"><br />
 
