@@ -22,44 +22,21 @@ global $gtcs12_db;
 
 if ($_POST) 
 {
-  $f = $_FILES;
-  echo "Files: " . $f;
-  var_dump($f);
-  
-  //$student_id = get_current_user_id(); 
+  $student_id = get_current_user_id(); 
    
-  //$description = $_POST['description'];
-  //$course_id = 0; // TODO why is the course id needed for submissions?
+  $description = $_POST['description'];
+  $title = $_POST['title'];
+  $course_id = 0; // TODO why is the course id needed for submissions?
 
-  //$gtcs12_db->CreateSubmission($student_id, $course_id, $assignment_id, $description); 
+  $submission_id = $gtcs12_db->CreateSubmission($student_id, $course_id, $assignment_id, $description);
 
+  $jar_location = $gtcs12_db->UploadFile('jar', $title);
+  $gtcs12_db->AttachFileToPost($jar_location, 'jar', $submission_id, false); 
 
-  // TODO research how attachments are handled
-  /*
-  if($_FILES) {
-    echo "Entering Upload <br />";
-    var_dump($_FILES);
-    //if (!function_exists( 'wp_handle_upload' ) ) require_once( ABSPATH . 'wp-admin/includes/file.php' );
-    $file = $_FILES['jar[]'];
-    $upload_overrides = array('test_form' => false);
-    $movefile = wp_handle_upload($file, $upload_overrides);
-    if ($movefile) {
-      echo "File is valid, and was successfully uploaded.\n";
-      var_dump($movefile);
-    } else {
-      echo "Possible file upload attack!\n";
-    }
-  }
-   */
-
-/*
-  // prepare paths of images and jar files
-  $imageFileName = $authorId . '_' . $courseId . '_' . $assignmentId . '.png'; // only .png supported now
-  $jarFileName = $authorId . '_' . $courseId . '_' . $assignmentId . '.jar';
-
-  // upload the files and get their destination paths
-  $destFilePaths = $gtcs12_db->UploadFiles("filAssignment", array($imageFileName, $jarFileName));
-*/
+  if(isset($_FILES['image'])) {
+    $image_location = $gtcs12_db->UploadFile('image', $title);
+    $gtcs12_db->AttachFileToPost($image_location, 'image', $submission_id, true); 
+  } 
 }
 ?>
 
@@ -99,9 +76,18 @@ if ($_POST)
   <form action="" method="post" enctype="multipart/form-data">
       Submit Assignment 
     <div>
+      <label for="title">Title</label>
+      <input type="text" name="title" id="title" required><br /> 
+
+      <label for="desc">Description</label>
+      <input type="text" name="description" id="desc" required><br /> 
+    
       <label for="jar">Jar File</label>
       <input type="file" name="jar" id="jar" required><br />
-      <input type="text" name="description" id="desc"><br /> 
+      
+      <label for="image">Image</label>
+      <input type="file" name="image" id="image"><br />
+
       <input type="submit" name="submit-assignment" value="Submit Assignment"/> 
     </div>
   </form>
