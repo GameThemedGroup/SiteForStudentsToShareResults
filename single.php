@@ -46,18 +46,35 @@ get_header(); ?>
 			<?php echo $post->post_title; ?>
 		</div>
 		<div id='header1'>
-			by <?php the_author(); ?> 
-		</div>
-		
+      by <?php the_author(); ?>
+    </div>
+<?php/* 
+$args = array(
+  'post_type'   => 'attachment',
+  'meta_key'    => 'type',
+  'meta_value'  => 'image',
+  'numberposts' => 1,
+  'post_status' => 'any',
+  'post_parent' => $post->ID,
+);
+
+$attachments = get_posts($args);
+
+if ( $attachments ): 
+  foreach ( $attachments as $attachment ): 
+?>
+
+<img src="<?php echo wp_get_attachment_url($attachment->ID); ?>" />
+
+<?php endforeach; endif; */ ?>
 		<div id="meta">
-			<?php the_post_thumbnail( array(500,400) );?>
-			<?php include "share-box.php" ?>
-		</div>
-		<?php if(function_exists('the_ratings')) { the_ratings(); } ?>
-		<div id="description">
-			<?php echo $post->post_content;  ?>
-		</div>
-		<div class="projectcomments">
+			<?php the_post_thumbnail( array(300,300) );?>
+      <div id="description">
+        <?php echo $post->post_content;  ?>
+      </div>
+		  <?php if(function_exists('the_ratings')) { the_ratings(); } ?>
+      <?php include "share-box.php" ?>
+			<div class="projectcomments">
 			<div id="header1">All Comments</div>
 			<?php 
 				$comment_args = array('post_id' => get_the_ID());
@@ -82,7 +99,6 @@ get_header(); ?>
 				</div><!-- .activitybox -->
 			<?php endforeach; ?>
 		</div><!-- projectcomments -->
-
 		<?php if($post->comment_status) ?>
 		<div class="postcomment">
 			<form method="post">
@@ -91,6 +107,7 @@ get_header(); ?>
 				<input type="Submit" name="Submit"/>
 			</form>   
 		</div>
+		</div><!-- meta -->
 	</div><!-- projectfull -->
 
 	<div id="project-sidebar">
