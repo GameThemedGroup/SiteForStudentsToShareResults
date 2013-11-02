@@ -10,9 +10,6 @@
 get_header(); ?>
 
 <?php 
-	//$time = current_time('mysql');
-	//echo $_POST['time_stamp'];
-	
 	if($_POST['comment']) 
 	{
 		$current_user = wp_get_current_user();
@@ -35,7 +32,17 @@ get_header(); ?>
 		wp_insert_comment($args);
 	}
 
-	//echo 'x=' . $_POST['comment'];
+  $args = array(
+    'post_type'   => 'attachment',
+    'meta_key'    => 'type',
+    'meta_value'  => 'jar',
+    'numberposts' => 1,
+    'post_status' => 'any',
+    'post_parent' => $post->ID,
+  );
+
+  $attachments = get_posts($args);
+  $jar_file = $attachments[0];
 ?>
 
 <!DOCTYPE html>
@@ -48,27 +55,12 @@ get_header(); ?>
 		<div id='header1'>
       by <?php the_author(); ?>
     </div>
-<?php/* 
-$args = array(
-  'post_type'   => 'attachment',
-  'meta_key'    => 'type',
-  'meta_value'  => 'image',
-  'numberposts' => 1,
-  'post_status' => 'any',
-  'post_parent' => $post->ID,
-);
 
-$attachments = get_posts($args);
-
-if ( $attachments ): 
-  foreach ( $attachments as $attachment ): 
-?>
-
-<img src="<?php echo wp_get_attachment_url($attachment->ID); ?>" />
-
-<?php endforeach; endif; */ ?>
+<?php //endforeach; endif; ?>
 		<div id="meta">
-			<?php the_post_thumbnail( array(300,300) );?>
+      <?php the_post_thumbnail( array(300,300) );?>
+      <br />
+      <?php the_attachment_link($jar_file->ID, true); ?>
       <div id="description">
         <?php echo $post->post_content;  ?>
       </div>
