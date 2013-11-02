@@ -33,7 +33,6 @@ if ($_POST)
   $gtcs12_db->AttachFileToPost($submission_id, 'jar', $title, 'jar', false); 
 
   if(isset($_FILES['image'])) {
-    var_dump($_FILES);
     $gtcs12_db->AttachFileToPost($submission_id, 'image', $title, 'image', true); 
   } 
  
