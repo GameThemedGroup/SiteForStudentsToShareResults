@@ -85,7 +85,8 @@ function upload_courses()
       $course->title, 
       $course->quarter, 
       $course->year, 
-      $professor_id
+      $professor_id,
+      ""
     );
 
     foreach ($course->assignments as $assignment) {
