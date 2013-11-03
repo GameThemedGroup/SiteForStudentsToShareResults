@@ -44,33 +44,34 @@ if ($_POST)
 
 <!DOCTYPE html>
 <html lang="en">
-<!--
   <form action="" method="post">
-    <div id='create-assignment-box-left'>
-      <div id='pagetitle'>Assignment</div>
-      <div id='create-assignment-field'>
+    <div>
+      <div>Assignment</div>
+      <div>
         <?php if($is_teacher): ?><a href='#'>edit</a><?php endif; ?>
         <?php echo $assignment->post_title; ?> 
       </div>
-      <div id='create-assignment-field' name='description'>
+      <div name='description'>
         <?php if($is_teacher): ?><a href='#'>edit</a><?php endif; ?>
         <?php echo $assignment->post_content; ?> 
       </div>
-      <div id='create-assignment-field'>
+      <div>
         <?php if($is_teacher): ?><a href='#'>edit</a><?php endif; ?>
         Available Attachments <br />
         attachments go here
       </div>
     </div>
-    <div id='create-assignment-box-right'>
-      <div id='create-assignment-field'>
-        <?php if($is_teacher): ?><a href='#'>edit</a> <br /><?php endif; ?>
-        <input class='create-assignment' type="file" name="preview-image[]">
-        <img class='create-assignment' src="<?php bloginfo('template_directory'); ?>/images/blank-project.png">
+    <div>
+      <div>
+<?php if($is_teacher): ?>
+        <a href='#'>edit</a> 
+        <input type="file" name="preview-image[]"><br />
+<?php endif; ?>
+        <img src="<?php bloginfo('template_directory'); ?>/images/blank-project.png">
       </div>
     </div>
   </form>
--->
+<hr />
 <?php if($is_student): ?>
   <form action="" method="post" enctype="multipart/form-data">
       Submit Assignment 
