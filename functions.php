@@ -15,7 +15,7 @@ function login_redirect() {
 add_filter('upload_mimes', gtcs_add_custom_mime_types);
 function gtcs_add_custom_mime_types($existing_mimes)
 {
-  $existing_mimes['jar'] = 'application/java';
+  $existing_mimes['jar'] = 'application/x-java-applet';
   return $existing_mimes;
 }
 
