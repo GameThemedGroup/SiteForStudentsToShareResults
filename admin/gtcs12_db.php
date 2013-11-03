@@ -32,12 +32,14 @@ class GTCS12_DB
     $sql = "CREATE TABLE $coursesTableName (
       id bigint(20) NOT NULL AUTO_INCREMENT,
       name varchar(40) NOT NULL,
+      description longtext NOT NULL DEFAULT '',
       quarter varchar(20) NOT NULL,
       year smallint unsigned NOT NULL,
       facultyid bigint(20) unsigned,
       PRIMARY KEY id (id),
       FOREIGN KEY (facultyid) REFERENCES $usersTableName (id)
     );";
+
     $wpdb->query($sql);
 
     // create child tables later
@@ -57,6 +59,7 @@ class GTCS12_DB
   {
     self::DeleteTables();
     self::CreateTables();
+ error_log("Inside RecreateTables\n", 3, "error_log.txt");
 
     return "Tables recreated<br/>";
   }
@@ -67,7 +70,7 @@ class GTCS12_DB
     return $result;
   }
 
-  function GetCourse($courseId)
+  function GetCourseByCourseId($courseId)
   {
     global $wpdb;
     $wpdb->show_errors(true);
@@ -80,6 +83,41 @@ class GTCS12_DB
     return $rows;
   }
 
+  function GetCourseByStudentId($studentId)
+  {
+    error_log("Test get course by student id", 3, "error_log.txt");
+    global $wpdb;
+    $wpdb->show_errors(true);
+
+    $courses = $wpdb->prefix . "courses";
+    $enrollments = $wpdb->prefix . "enrollments";
+
+    $rows =/* $wpdb->get_row*/("SELECT c.name as Name, c.quarter as Quarter, c.year as Year FROM $courses as c INNER JOIN $enrollments as e ON c.id = e.courseid WHERE e.studentid = $studentId;");
+$result = $wpdb->get_results($rows);
+
+    foreach( $result as $results ) {
+
+        echo $results->Name;
+    }
+}
+
+  function GetCourseByFacultyId($facultyId)
+  {
+    global $wpdb;
+    $wpdb->show_errors(true);
+
+    $courses = $wpdb->prefix . "courses";
+
+    $rows = /*$wpdb->get_row*/("SELECT c.name as Name, c.quarter as Quarter, c.year as Year FROM $courses as c WHERE c.facultyid = $facultyId;");
+   $result = $wpdb->get_results($rows);
+
+    foreach( $result as $results ) 
+    {
+        echo $results->Name;
+    }
+  } 
+
+
   function GetAllCourses()
   {
     global $wpdb;
@@ -89,20 +127,26 @@ class GTCS12_DB
     $userTable = $wpdb->prefix . "users";
 
     $rows = $wpdb->get_results("SELECT c.Id as Id, c.name as Name, c.quarter as Quarter, c.year as Year, u.display_name as FacultyName
-      FROM $courseTable as c INNER JOIN $userTable u
-      ON c.facultyid = u.id");
+      FROM $courseTable as c INNER JOIN $userTable u ON c.facultyid = u.id;");
 
     return $rows;
   }
 
-  function AddCourse($courseName, $quarter, $year, $facultyId)
+  function AddCourse($courseName, $quarter, $year, $facultyId, $description)
   {
     global $wpdb;
     $wpdb->show_errors(true);
 
     $tablename = $wpdb->prefix . "courses";
 
-    $wpdb->insert($tablename, array ('name' => $courseName, 'quarter' => $quarter, 'year' => $year, 'facultyid' => $facultyId));
+    $wpdb->insert($tablename, 
+      array (
+        'name'        => $courseName, 
+        'quarter'     => $quarter, 
+        'year'        => $year, 
+        'facultyid'   => $facultyId,
+        'description' => $description,
+      ));
     return $wpdb->insert_id;
   }
 
@@ -133,14 +177,14 @@ class GTCS12_DB
     $enrollments = $wpdb->prefix . "enrollments";
     $users       = $wpdb->prefix . "users";
     $userMeta    = $wpdb->prefix . "usermeta";
-    $capabilities = $wpdb->prefix . "capabilities";
+    $capabilities= $wpdb->prefix . "capabilities";
 
     $sql = "SELECT u.ID as Id, u.display_name as Name, 
-      (select studentid from $enrollments where courseid = " . $courseId . " AND studentid = u.id) as StudentId 
-      FROM $users u INNER JOIN $userMeta up 
+      (select studentid from {$enrollments} where courseid = '{$courseId}' AND studentid = u.id) as StudentId 
+      FROM {$users} u INNER JOIN {$userMeta} up 
       ON u.id = up.user_id 
-      WHERE up.meta_key = '$capabilities' AND up.meta_value LIKE '%contributor%'";
- 
+      WHERE up.meta_key = '{$capabilities}' AND up.meta_value LIKE '%contributor%';";
+
     $rows = $wpdb->get_results($sql);
     return $rows;
   }
@@ -380,7 +424,7 @@ class GTCS12_DB
     $posts  = $wpdb->prefix . "posts";
     $users  = $wpdb->prefix . "users";
 
-    $sql = "SELECT p.id as SubmissionId, p.post_title as Title, a.display_name as AuthorName, p.post_date as SubmissionDate
+    $sql = "SELECT p.id as SubmissionId, a.display_name as AuthorName, p.post_date as SubmissionDate
       FROM {$posts} p INNER JOIN {$users} a ON p.post_author = a.id
       WHERE p.post_parent = {$assignmentId} AND p.post_status = 'publish';";
 
@@ -408,6 +452,26 @@ class GTCS12_DB
     return $postId;
   }
 
+ function GetSubmissions($studentId)
+  {
+    global $wpdb;
+    $wpdb->show_errors(true);
+    $posts  = $wpdb->prefix . "posts";
+    $users  = $wpdb->prefix . "users";
+
+    $sql = ("SELECT p.id as SubmissionId, p.post_name as AssignmentName
+      FROM {$posts} p WHERE p.post_author = $studentId AND p.post_status = 'publish';"); 
+
+    $rows = $wpdb->get_results($sql);
+    foreach($rows as $row)
+    {
+      echo $row->AssignmentName;
+    }  
+
+    return $rows;
+  }
+
+
   function UpdateSubmission($subId, $description)
   {
     global $wpdb;
@@ -419,7 +483,7 @@ class GTCS12_DB
 
     wp_update_post($assignmentPost);
   }
-  
+
   function AddUser($login, $password, $email, $firstname, $lastname, $role)
   {
     global $wpdb;
