@@ -247,11 +247,14 @@ class GTCS12_DB
   // @param is_featured_image   if true, the file will be used as the post's featured image
   function AttachFileToPost($post_id, $file_index, $title, $type_value, $is_featured_image)
   {
-    $file_name = $_FILES[$file_index]['name'];
-    
+    $file_name = $_FILES[$file_index]['name']; 
+
     $uploaded_file_type = wp_check_filetype(basename($file_name));
 
     $file_type = $uploaded_file_type['type']; 
+    
+    if($file_type['ext'] == false) // TODO add error log here
+      return; // attachment type not supported
 
     $attachment_args = array(
       'post_mime_type' => $file_type, 
