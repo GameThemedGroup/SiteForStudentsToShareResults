@@ -8,10 +8,13 @@
  */
 get_header(); ?>
 
-<?php 
-	$course_ID = $_GET['id'];
+<?php
+if(isset($_GET))
+  $course_ID = $_GET['id'];
+else
+  $course_ID = 1;
 
-	$course = $gtcs12_db->GetCourse($course_ID );
+	$course = $gtcs12_db->GetCourseByCourseID($course_ID);
 	$professor = get_userdata($course->FacultyId);
 	$professor_link = site_url('/profile/?user=') . $course->FacultyId;
 	$assignments = $gtcs12_db->GetAllAssignments($course_ID);

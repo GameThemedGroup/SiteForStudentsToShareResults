@@ -38,7 +38,13 @@ get_header(); ?>
 
 	if ($_POST) 
 	{
-		$gtcs12_db->AddCourse($_POST['inptTitle'], $_POST['slctQuarter'], $_POST['slctYear'], $current_user->ID);
+    $gtcs12_db->AddCourse(
+      $_POST['inptTitle'], 
+      $_POST['slctQuarter'], 
+      $_POST['slctYear'], 
+      $current_user->ID, 
+      $_POST['description']
+    );
 	}
 ?>
 
