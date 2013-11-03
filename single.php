@@ -60,7 +60,7 @@ get_header(); ?>
 		<div id="meta">
       <?php the_post_thumbnail( array(300,300) );?>
       <br />
-      <?php the_attachment_link($jar_file->ID, true); ?>
+      <a href="<?php echo site_url('/' . $post->post_name . '/' . $jar_file->post_name); ?>">Link</a>
       <div id="description">
         <?php echo $post->post_content;  ?>
       </div>
