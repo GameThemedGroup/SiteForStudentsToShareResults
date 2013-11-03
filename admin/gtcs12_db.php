@@ -377,7 +377,7 @@ class GTCS12_DB
     $posts  = $wpdb->prefix . "posts";
     $users  = $wpdb->prefix . "users";
 
-    $sql = "SELECT p.id as SubmissionId, a.display_name as AuthorName, p.post_date as SubmissionDate
+    $sql = "SELECT p.id as SubmissionId, p.post_title as Title, a.display_name as AuthorName, p.post_date as SubmissionDate
       FROM {$posts} p INNER JOIN {$users} a ON p.post_author = a.id
       WHERE p.post_parent = {$assignmentId} AND p.post_status = 'publish';";
 
@@ -386,14 +386,11 @@ class GTCS12_DB
     return $rows;
   }
 
-  function CreateSubmission($authorId, $courseId, $assignmentId, $description)
+  function CreateSubmission($title, $authorId, $courseId, $assignmentId, $description)
   {
-    global $wpdb;
-    $wpdb->show_errors(true);
-
     // save the assignment submission as post
     $assignmentPost = array(
-      'post_title'    => 'Assignment submission',
+      'post_title'    => $title, 
       'post_content'  => $description,
       'post_status'   => 'publish',
       'post_author'   => $authorId,

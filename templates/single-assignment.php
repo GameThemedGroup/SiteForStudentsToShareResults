@@ -28,9 +28,9 @@ if ($_POST)
   $title = $_POST['title'];
   $course_id = 0; // TODO why is the course id needed for submissions?
 
-  $submission_id = $gtcs12_db->CreateSubmission($student_id, $course_id, $assignment_id, $description);
+  $submission_id = $gtcs12_db->CreateSubmission($title, $student_id, $course_id, $assignment_id, $description);
 
-  $gtcs12_db->AttachFileToPost($submission_id, 'jar', $title, 'jar', false); 
+  $gtcs12_db->AttachFileToPost($submission_id, 'jar', 'Link', 'jar', false); 
 
   if(isset($_FILES['image'])) {
     $gtcs12_db->AttachFileToPost($submission_id, 'image', $title, 'image', true); 
@@ -97,6 +97,7 @@ if ($_POST)
     <div id='pagetitle'>Submitted Assignments</div>
       <thead class='manage-courses'>
         <tr>
+          <th class='manage-courses'>Title</th>
           <th class='manage-courses'>Author</th>
           <th class='manage-courses'>Date Posted</th>
           <th class='manage-courses'>Action</th>
@@ -112,6 +113,7 @@ if ($_POST)
 <?php else: ?>
   <?php foreach($submissions as $submission) : ?> 
         <tr>
+          <th class='manage-courses'><?php echo $submission->Title; ?></th>
           <th class='manage-courses'><?php echo $submission->AuthorName; ?></th>
           <th class='manage-courses'><?php echo $submission->SubmissionDate; ?></th>
           <th class='manage-courses'>
