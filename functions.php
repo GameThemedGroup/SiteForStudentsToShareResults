@@ -2,7 +2,7 @@
 
 require_once('admin/gtcs12_db.php');
 global $gtcs12_db;
-$gtcs12_db = new GTCS12_DB(); 
+$gtcs12_db = new GTCS12_DB(); // todo change these to static methods
 
 require_once('admin/theme_init.php');
 
@@ -11,11 +11,19 @@ function login_redirect() {
   return site_url('/main');
 }
 
+// Allows jar files to be uploaded to the media library
+add_filter('upload_mimes', gtcs_add_custom_mime_types);
+function gtcs_add_custom_mime_types($existing_mimes)
+{
+  $existing_mimes['jar'] = 'application/java';
+  return $existing_mimes;
+}
+
 /**
- * Credit: www.appthemes.com
  * Checks if a particular user has a role. 
  * Returns true if a match was found.
- *
+ * credit: www.appthemes.com
+ * 
  * @param string $role Role name.
  * @param int $user_id (Optional) The ID of a user. Defaults to the current user.
  * @return bool
