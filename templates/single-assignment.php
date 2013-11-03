@@ -108,7 +108,7 @@ if ($_POST)
 <?php $submissions = $gtcs12_db->GetAllSubmissions($assignment_id); ?>
 <?php if(count($submissions) == 0): ?>
         <tr>
-          <th class='manage-courses' colspan=3>No Submissions</th>
+          <th class='manage-courses' colspan=4>No Submissions</th>
         </tr>
 <?php else: ?>
   <?php foreach($submissions as $submission) : ?> 
