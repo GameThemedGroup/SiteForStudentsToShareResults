@@ -9,10 +9,9 @@
 get_header(); ?>
 
 <?php
-if(isset($_GET))
   $course_ID = $_GET['id'];
-else
-  $course_ID = 1;
+  if($course_ID == NULL)
+    $course_ID = 1;
 
 	$course = $gtcs12_db->GetCourseByCourseID($course_ID);
 	$professor = get_userdata($course->FacultyId);
