@@ -30,7 +30,7 @@ if ($_POST)
 
   $submission_id = $gtcs12_db->CreateSubmission($title, $student_id, $course_id, $assignment_id, $description);
 
-  $gtcs12_db->AttachFileToPost($submission_id, 'jar', 'Link', 'jar', false); 
+  $gtcs12_db->AttachFileToPost($submission_id, 'jar', $title, 'jar', false); 
 
   if(isset($_FILES['image'])) {
     $gtcs12_db->AttachFileToPost($submission_id, 'image', $title, 'image', true); 
