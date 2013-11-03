@@ -78,7 +78,7 @@ class GTCS12_DB
     $tablename = $wpdb->prefix . "courses";
 
     $rows = $wpdb->get_row("SELECT c.name as Name, c.quarter as Quarter, c.year as Year, c.facultyid as FacultyId
-      FROM $tablename as c WHERE c.id = $courseId");
+      FROM $tablename as c WHERE c.id = '$courseId'");
 
     return $rows;
   }
@@ -424,7 +424,7 @@ $result = $wpdb->get_results($rows);
     $posts  = $wpdb->prefix . "posts";
     $users  = $wpdb->prefix . "users";
 
-    $sql = "SELECT p.id as SubmissionId, a.display_name as AuthorName, p.post_date as SubmissionDate
+    $sql = "SELECT p.id as SubmissionId, p.post_title as Title, a.display_name as AuthorName, p.post_date as SubmissionDate
       FROM {$posts} p INNER JOIN {$users} a ON p.post_author = a.id
       WHERE p.post_parent = {$assignmentId} AND p.post_status = 'publish';";
 
