@@ -39,7 +39,6 @@ class GTCS12_DB
       PRIMARY KEY id (id),
       FOREIGN KEY (facultyid) REFERENCES $usersTableName (id)
     );";
-
     $wpdb->query($sql);
 
     // create child tables later
@@ -59,7 +58,6 @@ class GTCS12_DB
   {
     self::DeleteTables();
     self::CreateTables();
- error_log("Inside RecreateTables\n", 3, "error_log.txt");
 
     return "Tables recreated<br/>";
   }
@@ -77,7 +75,7 @@ class GTCS12_DB
 
     $tablename = $wpdb->prefix . "courses";
 
-    $rows = $wpdb->get_row("SELECT c.name as Name, c.quarter as Quarter, c.year as Year, c.facultyid as FacultyId
+    $rows = $wpdb->get_row("SELECT c.name as Name, c.quarter as Quarter, c.year as Year, c.facultyid as FacultyId, c.description as Description
       FROM $tablename as c WHERE c.id = '$courseId'");
 
     return $rows;
@@ -85,21 +83,23 @@ class GTCS12_DB
 
   function GetCourseByStudentId($studentId)
   {
-    error_log("Test get course by student id", 3, "error_log.txt");
+    //error_log("Test get course by student id", 3, "error_log.txt");
     global $wpdb;
     $wpdb->show_errors(true);
 
     $courses = $wpdb->prefix . "courses";
     $enrollments = $wpdb->prefix . "enrollments";
 
-    $rows =/* $wpdb->get_row*/("SELECT c.name as Name, c.quarter as Quarter, c.year as Year FROM $courses as c INNER JOIN $enrollments as e ON c.id = e.courseid WHERE e.studentid = $studentId;");
-$result = $wpdb->get_results($rows);
+    $rows =/* $wpdb->get_row*/("SELECT c.name as Name, c.quarter as Quarter, c.facultyid as FacultyId, c.year as Year FROM $courses as c INNER JOIN $enrollments as e ON c.id = e.courseid WHERE e.studentid = $studentId;");
+    $result = $wpdb->get_results($rows);
 
-    foreach( $result as $results ) {
+    //foreach( $result as $results ) 
+    //{
+    //    echo $results->Name;
+    //}
 
-        echo $results->Name;
-    }
-}
+    return $result;
+  }
 
   function GetCourseByFacultyId($facultyId)
   {
@@ -108,15 +108,16 @@ $result = $wpdb->get_results($rows);
 
     $courses = $wpdb->prefix . "courses";
 
-    $rows = /*$wpdb->get_row*/("SELECT c.name as Name, c.quarter as Quarter, c.year as Year FROM $courses as c WHERE c.facultyid = $facultyId;");
-   $result = $wpdb->get_results($rows);
+    $rows = /*$wpdb->get_row*/("SELECT c.id as Id, c.name as Name, c.quarter as Quarter, c.year as Year FROM $courses as c WHERE c.facultyid = $facultyId;");
+    $result = $wpdb->get_results($rows);
 
-    foreach( $result as $results ) 
-    {
-        echo $results->Name;
-    }
+    //foreach( $result as $results ) 
+    //{
+    //    echo $results->Name;
+    //}
+
+    return $result;
   } 
-
 
   function GetAllCourses()
   {
@@ -147,6 +148,7 @@ $result = $wpdb->get_results($rows);
         'facultyid'   => $facultyId,
         'description' => $description,
       ));
+
     return $wpdb->insert_id;
   }
 
@@ -240,7 +242,7 @@ $result = $wpdb->get_results($rows);
   {
     global $wpdb;
     $wpdb->show_errors(true);
-    
+
     $users        = $wpdb->prefix . "users";
     $posts        = $wpdb->prefix . "posts";
     $term_relationships = $wpdb->prefix . "term_relationships";
@@ -253,7 +255,7 @@ $result = $wpdb->get_results($rows);
       WHERE p.post_parent = 0 
       AND p.post_status = 'publish'
       AND p.id IN (SELECT object_id FROM {$term_relationships} 
-      WHERE term_taxonomy_id = (SELECT term_id FROM {$terms} WHERE name = 'course:{$courseId}'));";
+    WHERE term_taxonomy_id = (SELECT term_id FROM {$terms} WHERE name = 'course:{$courseId}'));";
 
     $rows = $wpdb->get_results($sql);
 
@@ -324,47 +326,6 @@ $result = $wpdb->get_results($rows);
     }
     
     return $attach_id;
-  }
-
-  function UploadFiles($fileVariable, $destFileNames)
-  {
-    $destFilePaths = array();
-
-    for($i = 0; $i < count($_FILES[$fileVariable]); $i++)
-    {
-      if ($_FILES[$fileVariable]['error'][$i] == 0)
-      {
-        $tempFileName = $_FILES[$fileVariable]['tmp_name'][$i];
-
-        if ($tempFileName)
-        {
-          $destFileName = $destFileNames[$i];
-
-          $destPath = "./uploads/$destFileName";                    
-
-          // move uploaded file
-          move_uploaded_file($tempFileName, $destPath);
-          // echo "uploaded from " . $tempFileName . " to " . $destPath . "<br/>";
-
-          array_push($destFilePaths, $destPath);
-        }
-      }
-    }
-
-    return $destFilePaths;
-  }
-
-  function GetAssignmentFilePaths($authorId, $courseId,  $assignmentId)
-  {
-    $imageFileName = $authorId . '_' . $courseId . '_' . $assignmentId . '.png'; // only .png supported now
-    $jarFileName = $authorId . '_' . $courseId . '_' . $assignmentId . '.jar';
-
-    $paths = array();
-
-    array_push($paths, "./uploads/" . $imageFileName);
-    array_push($paths, "./uploads/" . $jarFileName);
-
-    return  $paths;
   }
 
   function CreateAssignment($authorId, $courseId, $title, $description)
@@ -452,26 +413,6 @@ $result = $wpdb->get_results($rows);
     return $postId;
   }
 
- function GetSubmissions($studentId)
-  {
-    global $wpdb;
-    $wpdb->show_errors(true);
-    $posts  = $wpdb->prefix . "posts";
-    $users  = $wpdb->prefix . "users";
-
-    $sql = ("SELECT p.id as SubmissionId, p.post_name as AssignmentName
-      FROM {$posts} p WHERE p.post_author = $studentId AND p.post_status = 'publish';"); 
-
-    $rows = $wpdb->get_results($sql);
-    foreach($rows as $row)
-    {
-      echo $row->AssignmentName;
-    }  
-
-    return $rows;
-  }
-
-
   function UpdateSubmission($subId, $description)
   {
     global $wpdb;
@@ -482,6 +423,25 @@ $result = $wpdb->get_results($rows);
     $assignmentPost['post_content'] = $description;
 
     wp_update_post($assignmentPost);
+  }
+
+  function GetSubmissions($studentId)
+  {
+    global $wpdb;
+    $wpdb->show_errors(true);
+    $posts  = $wpdb->prefix . "posts";
+    $users  = $wpdb->prefix . "users";
+
+    $sql = ("SELECT p.id as SubmissionId, p.post_name as AssignmentName, p.post_date as Date
+      FROM {$posts} p WHERE p.post_author = $studentId AND p.post_status = 'publish' AND p.post_type = 'post';"); 
+
+    $rows = $wpdb->get_results($sql);
+    //foreach($rows as $row)
+    //{
+    //  echo $row->AssignmentName;
+    //}  
+
+    return $rows;
   }
 
   function AddUser($login, $password, $email, $firstname, $lastname, $role)
