@@ -87,10 +87,11 @@ function create_default_pages()
   $default_pages['my-class'] = default_page('my-class', 'MyClass', 'my-class.php'); 
   $default_pages['projects'] = default_page('projects', 'Projects', 'projects-search.php');
   $default_pages['profile'] = default_page('profile', 'Profile', 'profile.php'); 
+  $default_pages['manage-profile'] = default_page('manage-profile', 'Manage Profile', 'manage-profile.php'); 
   $default_pages['manage-courses'] = default_page('manage-courses', 'Manage Courses', 'manage-courses.php'); 
   $default_pages['manage-assignments'] = default_page('manage-assignments', 'Manage Assignments', 'manage-assignments.php'); 
   $default_pages['assignment'] = default_page('assignment', 'Assignment', 'single-assignment.php'); 
-  $default_pages['manage-students'] = default_page('manage-students', 'Manage Students', 'manage-enrollments.php'); 
+  $default_pages['manage-students'] = default_page('manage-students', 'Manage Students', 'manage-students.php'); 
   
   foreach( $default_pages as $key => $page ) {
     if(get_page_by_title($page['post_title']) != null) // do not need to recreate page
