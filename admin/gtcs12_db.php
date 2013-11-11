@@ -83,20 +83,14 @@ class GTCS12_DB
 
   function GetCourseByStudentId($studentId)
   {
-    //error_log("Test get course by student id", 3, "error_log.txt");
     global $wpdb;
     $wpdb->show_errors(true);
 
     $courses = $wpdb->prefix . "courses";
     $enrollments = $wpdb->prefix . "enrollments";
 
-    $rows =/* $wpdb->get_row*/("SELECT c.name as Name, c.quarter as Quarter, c.facultyid as FacultyId, c.year as Year FROM $courses as c INNER JOIN $enrollments as e ON c.id = e.courseid WHERE e.studentid = $studentId;");
+    $rows = ("SELECT c.id as Id, c.name as Name, c.quarter as Quarter, c.facultyid as FacultyId, c.year as Year FROM $courses as c INNER JOIN $enrollments as e ON c.id = e.courseid WHERE e.studentid = $studentId;");
     $result = $wpdb->get_results($rows);
-
-    //foreach( $result as $results ) 
-    //{
-    //    echo $results->Name;
-    //}
 
     return $result;
   }
@@ -108,13 +102,8 @@ class GTCS12_DB
 
     $courses = $wpdb->prefix . "courses";
 
-    $rows = /*$wpdb->get_row*/("SELECT c.id as Id, c.name as Name, c.quarter as Quarter, c.year as Year FROM $courses as c WHERE c.facultyid = $facultyId;");
+    $rows = "SELECT c.id as Id, c.name as Name, c.quarter as Quarter, c.year as Year FROM $courses as c WHERE c.facultyid = $facultyId;";
     $result = $wpdb->get_results($rows);
-
-    //foreach( $result as $results ) 
-    //{
-    //    echo $results->Name;
-    //}
 
     return $result;
   } 
@@ -185,7 +174,7 @@ class GTCS12_DB
       (select studentid from {$enrollments} where courseid = '{$courseId}' AND studentid = u.id) as StudentId 
       FROM {$users} u INNER JOIN {$userMeta} up 
       ON u.id = up.user_id 
-      WHERE up.meta_key = '{$capabilities}' AND up.meta_value LIKE '%contributor%';";
+      WHERE up.meta_key = '{$capabilities}' AND up.meta_value LIKE '%subscriber%';";
 
     $rows = $wpdb->get_results($sql);
     return $rows;
