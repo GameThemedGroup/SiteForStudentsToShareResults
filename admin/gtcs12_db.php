@@ -221,7 +221,7 @@ class GTCS12_DB
     // who are not enrolled yet in specified course
     // for those who are already enrolled, nothing to be done
     $sql = "INSERT INTO {$enrollments} (courseId, studentId) SELECT {$courseId}, u.Id from {$users} u INNER JOIN ".
-      "{$usermeta} up on u.Id = up.user_id WHERE up.meta_key = {$capabilities} AND up.meta_value LIKE '%contributor%'".
+      "{$usermeta} up on u.Id = up.user_id WHERE up.meta_key = {$capabilities} AND up.meta_value LIKE '%subscriber%'".
       "AND u.user_email in {$contents} AND u.Id NOT IN (SELECT studentId from {$enrollments} WHERE courseId={$courseId});";
 
     $wpdb->query($sql);
