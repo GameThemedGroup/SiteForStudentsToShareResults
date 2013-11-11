@@ -86,7 +86,7 @@ function upload_courses()
       $course->quarter, 
       $course->year, 
       $professor_id,
-      ""
+      $course->description 
     );
 
     foreach ($course->assignments as $assignment) {
@@ -99,7 +99,8 @@ function upload_courses()
     }
 
     foreach ($course->students as $student) {
-      add_user_from_data($student);
+      $student_id = add_user_from_data($student);
+      $gtcs12_db->UpdateStudentEnrollment($course_id, $student_id, true);
     }
   }
   return "Course Successfully Added";
