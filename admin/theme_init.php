@@ -108,7 +108,7 @@ function create_default_pages()
   }
 }
 
-add_action('after_switch_theme', 'create_default_menus');
+add_action('after_switch_theme', 'create_default_menus', 9999);
 function create_default_menus()
 {
   $page_id = array();
@@ -149,21 +149,20 @@ function create_default_menus()
   $menu_locations = array();
   foreach($default_menus as $menu_name => $menu_args) {
     $menu_exists = wp_get_nav_menu_object($menu_name);
-    
-    if(!$menu_exists) {
-      $menu_id = wp_create_nav_menu($menu_name);
-      foreach( $menu_args['menu-items'] as $menu_item ) {
-        // assigns the page, title, etc to the menu item
-        wp_update_nav_menu_item( $menu_id, 0, $menu_item );
-      }
-      $menu_locations[$menu_args['location']] = $menu_id;
+
+    if($menu_exists) {
+      wp_delete_nav_menu(intval($menu_exists->term_id));
     }
+
+    $menu_id = wp_create_nav_menu($menu_name);
+    foreach( $menu_args['menu-items'] as $menu_item ) {
+      // assigns the page, title, etc to the menu item
+      wp_update_nav_menu_item( $menu_id, 0, $menu_item );
+    }
+    $menu_locations[$menu_args['location']] = $menu_id;
   }
 
-  if (isset($menu_locations)) {
-    // Assigns the menu to the correct menu location (Primary Menu, Footer Menu, etc.)
-    set_theme_mod('nav_menu_locations', array_map('absint', $menu_locations));
-  }
+  set_theme_mod('nav_menu_locations', array_map('absint', $menu_locations));
 }
 
 // Changes the permalink settings to /%postname%/
