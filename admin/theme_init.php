@@ -94,8 +94,8 @@ function create_default_pages()
   $default_pages['manage-assignments'] = default_page('manage-assignments', 'Manage Assignments', 'manage-assignments.php'); 
   
   foreach( $default_pages as $key => $page ) {
-    if(get_page_by_title($page['post_title']) != null) // do not need to recreate page
-      continue;
+    if($old_page = get_page_by_title($page['post_title'])) // do not need to recreate page
+      wp_delete_post($old_page->ID, true);
 
     if ($id = wp_insert_post($page)) {
       if (!empty($page['meta'])) {

@@ -1,6 +1,6 @@
 <?php
 /*
- * Template Name: Manage Enrollments
+ * Template Name: Manage Students 
  */
 
 get_header(); ?>
