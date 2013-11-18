@@ -11,6 +11,9 @@ get_header(); ?>
 <?php 
 $current_user = wp_get_current_user();
 
+$is_student = gtcs_user_has_role('subscriber');
+$is_professor = gtcs_user_has_role('author');
+
 if($_GET['id'] != null)
 {
   $courseId = $_GET['id'];
@@ -18,8 +21,15 @@ if($_GET['id'] != null)
 }
 else
 {
-  $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID); 
-  $courseId = $courses[0]->Id;
+  if($is_student) {
+    $courses = $gtcs12_db->GetCourseByStudentId($current_user->ID);
+  }
+  elseif($is_professor) {
+    $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID); 
+  }
+
+  if($courses)
+    $course_ID = $courses[0]->Id;
 }
 
 $course = $gtcs12_db->GetCourseByCourseId($courseId);
@@ -27,16 +37,9 @@ $professor = get_userdata($course->FacultyId);
 $professor_link = site_url('/profile/?user=') . $course->FacultyId;
 $assignments = $gtcs12_db->GetAllAssignments($courseId);
 
-if($current_user->user_level >= 2) // author
+if($is_professor)
 {
-  if($course->FacultyId == $current_user->ID)
-  {
-    $isOwner = true;
-  }
-  else
-  {
-    $isOwner = false;
-  }
+  $isOwner = ($course->FacultyId == $current_user->ID);
 }
 
 //$gtcs12_db->UpdateStudentEnrollment($course_ID, 3, true)
