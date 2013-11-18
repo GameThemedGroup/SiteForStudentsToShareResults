@@ -83,14 +83,20 @@ class GTCS12_DB
 
   function GetCourseByStudentId($studentId)
   {
+    //error_log("Test get course by student id", 3, "error_log.txt");
     global $wpdb;
     $wpdb->show_errors(true);
 
     $courses = $wpdb->prefix . "courses";
     $enrollments = $wpdb->prefix . "enrollments";
 
-    $rows = ("SELECT c.id as Id, c.name as Name, c.quarter as Quarter, c.facultyid as FacultyId, c.year as Year FROM $courses as c INNER JOIN $enrollments as e ON c.id = e.courseid WHERE e.studentid = $studentId;");
+    $rows =/* $wpdb->get_row*/("SELECT c.name as Name, c.quarter as Quarter, c.facultyid as FacultyId, c.year as Year FROM $courses as c INNER JOIN $enrollments as e ON c.id = e.courseid WHERE e.studentid = $studentId;");
     $result = $wpdb->get_results($rows);
+
+    //foreach( $result as $results ) 
+    //{
+    //    echo $results->Name;
+    //}
 
     return $result;
   }
@@ -102,8 +108,13 @@ class GTCS12_DB
 
     $courses = $wpdb->prefix . "courses";
 
-    $rows = "SELECT c.id as Id, c.name as Name, c.quarter as Quarter, c.year as Year FROM $courses as c WHERE c.facultyid = $facultyId;";
+    $rows = /*$wpdb->get_row*/("SELECT c.id as Id, c.name as Name, c.quarter as Quarter, c.year as Year FROM $courses as c WHERE c.facultyid = $facultyId;");
     $result = $wpdb->get_results($rows);
+
+    //foreach( $result as $results ) 
+    //{
+    //    echo $results->Name;
+    //}
 
     return $result;
   } 
@@ -151,14 +162,14 @@ class GTCS12_DB
     $wpdb->query("DELETE FROM $tablename WHERE id = $courseId");
   }
 
-  function UpdateCourse($courseId, $courseName, $quarter, $year, $facultyId)
+  function UpdateCourse($courseId, $courseName, $quarter, $year, $facultyId, $description)
   {
     global $wpdb;
     $wpdb->show_errors(true);
 
     $tablename = $wpdb->prefix . "courses";
 
-    $wpdb->update($tablename, array ('name' => $courseName, 'quarter' => $quarter, 'year' => $year, 'facultyid' => $facultyId), array( 'Id' => $courseId ));
+    $wpdb->update($tablename, array ('name' => $courseName, 'quarter' => $quarter, 'year' => $year, 'facultyid' => $facultyId, 'description' => $description), array( 'Id' => $courseId ));
   }
 
   function GetStudents($courseId)
@@ -174,7 +185,7 @@ class GTCS12_DB
       (select studentid from {$enrollments} where courseid = '{$courseId}' AND studentid = u.id) as StudentId 
       FROM {$users} u INNER JOIN {$userMeta} up 
       ON u.id = up.user_id 
-      WHERE up.meta_key = '{$capabilities}' AND up.meta_value LIKE '%subscriber%';";
+      WHERE up.meta_key = '{$capabilities}' AND up.meta_value LIKE '%contributor%';";
 
     $rows = $wpdb->get_results($sql);
     return $rows;
@@ -221,7 +232,7 @@ class GTCS12_DB
     // who are not enrolled yet in specified course
     // for those who are already enrolled, nothing to be done
     $sql = "INSERT INTO {$enrollments} (courseId, studentId) SELECT {$courseId}, u.Id from {$users} u INNER JOIN ".
-      "{$usermeta} up on u.Id = up.user_id WHERE up.meta_key = {$capabilities} AND up.meta_value LIKE '%subscriber%'".
+      "{$usermeta} up on u.Id = up.user_id WHERE up.meta_key = {$capabilities} AND up.meta_value LIKE '%contributor%'".
       "AND u.user_email in {$contents} AND u.Id NOT IN (SELECT studentId from {$enrollments} WHERE courseId={$courseId});";
 
     $wpdb->query($sql);
@@ -262,14 +273,14 @@ class GTCS12_DB
       require_once( ABSPATH . 'wp-admin/includes/file.php' );
 
     $file = $_FILES[$file_index];
-    
+
     $upload_overrides = array('test_form' => false);
 
     // TODO handle errors
     $uploaded_file = wp_handle_upload($file, $upload_overrides);
 
     // TODO limit file types here?
-    
+
     return $uploaded_file['file'];
   } 
 
@@ -287,7 +298,7 @@ class GTCS12_DB
     $uploaded_file_type = wp_check_filetype(basename($file_name));
 
     $file_type = $uploaded_file_type['type']; 
-    
+
     if($file_type['ext'] == false) // TODO add error log here
       return; // attachment type not supported
 
@@ -297,7 +308,7 @@ class GTCS12_DB
       'post_content' => '',
       'post_status' => 'inherit'
     );
-    
+
     $file_location = $this->UploadFile($file_index);
 
     $attach_id = wp_insert_attachment($attachment_args, $file_location, $post_id); 
@@ -313,7 +324,7 @@ class GTCS12_DB
 
       update_post_meta($post_id, '_thumbnail_id', $attach_id); 
     }
-    
+
     return $attach_id;
   }
 
@@ -421,7 +432,7 @@ class GTCS12_DB
     $posts  = $wpdb->prefix . "posts";
     $users  = $wpdb->prefix . "users";
 
-    $sql = ("SELECT p.id as SubmissionId, p.post_name as AssignmentName, p.post_date as Date
+    $sql = ("SELECT p.id as SubmissionId, p.post_title as AssignmentName, p.post_date as Date
       FROM {$posts} p WHERE p.post_author = $studentId AND p.post_status = 'publish' AND p.post_type = 'post';"); 
 
     $rows = $wpdb->get_results($sql);
