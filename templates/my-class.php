@@ -28,8 +28,9 @@ else
     $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID); 
   }
 
+
   if($courses)
-    $course_ID = $courses[0]->Id;
+    $courseId = $courses[0]->Id;
 }
 
 $course = $gtcs12_db->GetCourseByCourseId($courseId);
