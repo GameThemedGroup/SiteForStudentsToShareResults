@@ -372,6 +372,69 @@ class GTCS12_DB
     return get_post($assignmentId);
   }
 
+  function DownloadAllSubmissions($assignmentId)
+  {
+    $allFilePaths = $this->ListSubmissionJars($assignmentId);
+    $zipLocation = $this->BuildSubmissionZipFile($allFilePaths);
+
+    echo "<br /> Path: " . $zipLocation['path'];
+    echo "<br /> Url:  " . $zipLocation['url'];
+  }
+
+  private function ListSubmissionJars($assignmentId)
+  {
+    $submissions = $this->GetAllSubmissions($assignmentId);
+    if(count($submissions) == 0)
+      return;
+
+    foreach($submissions as $submission) {
+      $jarQuery = array(
+        'post_type'   => 'attachment',
+        'meta_key'    => 'type',
+        'meta_value'  => 'jar',
+        'numberposts' => 1,
+        'post_status' => 'any',
+        'post_parent' => $submission->SubmissionId,
+      );
+
+      $jarAttachments = get_posts($jarQuery);
+      $jarFile = $jarAttachments[0];
+      $allFilePaths[] = get_attached_file($jarFile->ID);
+    }
+    return $allFilePaths;
+  }
+
+  private function BuildSubmissionZipFile($allFilePaths)
+  {
+    ini_set('max_execution_time', 0);
+
+    $zipPath = ABSPATH . get_option('upload_path') . "submissions.zip";
+    $zipDownloadLink = get_site_url() . trailingslashit(get_option('upload_path')) . 'submissions.zip';
+
+    $zipLocation['path'] = $zipPath;
+    $zipLocation['url'] = $zipDownloadLink;
+
+    $filesToZip = $allFilePaths;
+    if(count($filesToZip)){//check we have valid files
+
+      $zip = new ZipArchive;
+      $opened = $zip->open($zipPath, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
+
+      if( $opened !== true ){
+        die("cannot open zip file for writing. Please try again in a moment.");
+      }
+
+      foreach ($filesToZip as $file) {
+        $shortName = basename($file);
+        $zip->addFile($file, $shortName);
+      }
+
+      $zip->close();
+    }
+
+    return $zipLocation;
+  }
+
   function GetAllSubmissions($assignmentId)
   {
     global $wpdb;
