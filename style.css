@@ -75,8 +75,11 @@ body {
   padding: 0 2em;
 }
 #page {
-  margin: 2em auto;
+  margin: 0 auto;
   max-width: 1000px;
+  border-style:solid;
+  border-width:0px 2px 0px 2px;
+  border-color:rgb(65,65,65);
 }
 #branding hgroup {
   margin: 0 7.6%;
@@ -567,7 +570,7 @@ a:hover {
   clear: both;
   display: block;
   float: left;
-  margin: 0 auto 6px;
+  margin: 0 auto 0px;
   width: 100%;
 }
 #access ul {
@@ -2737,6 +2740,30 @@ footer.entry-meta a[rel=bookmark]:visited:after {
 
 /*----------------- General -----------------*/
 /* Used on more than one page */
+a:link { 
+  color:DodgerBlue; 
+}
+a:hover { 
+  color:DarkTurquoise; 
+}
+a:visited { 
+  text-decoration:none; 
+}  
+a:active { 
+  text-decoration:none; 
+}  
+
+hr {
+  margin:15px 0px 15px 0px;
+  float:left;
+  display:block;
+  width:742px;               
+  background-color:rgb(220,220,220);
+  height:1px;
+  
+}
+
+
 #pagetitle {
   font-family:Tahoma, Geneva, sans-serif;
   font-size:25px;
@@ -2762,16 +2789,15 @@ footer.entry-meta a[rel=bookmark]:visited:after {
   font-family:Tahoma, Geneva, sans-serif;
   font-size:20px;
 }
-img {
-  float:left;
-}
 .center {
   text-align:center;
 }
-a:link { color:DodgerBlue; }
-a:hover { color:DarkTurquoise; }
-a:visited { text-decoration:none; }  /* visited link */
-a:active { text-decoration:none; }  /* selected link */
+img {
+  float:left;
+  border-style:solid;
+  border-width:1px;
+  border-color:white;
+}
 /*----------------- Project Sidebar -----------------*/
 /* a sidebar that has a mini view of projects */
 #project-sidebar {
@@ -2855,6 +2881,10 @@ a:active { text-decoration:none; }  /* selected link */
   width:100%;
   margin:4px 0px 2px 5px;
 }
+#comment-image {
+  float:left;
+  margin-right:5px;
+}
 #commentcontent {
   padding:4px 8px 4px 8px;
   overflow:hidden;
@@ -2866,11 +2896,10 @@ a:active { text-decoration:none; }  /* selected link */
   border-color:rgb(220,220,220);
 }
 #commentmetabox {
-  margin-left:96px;
 }
 #commentmeta {
   float:left;
-  max-width:140px;
+  max-width:300px;
   max-height:20px;
   padding:0px 5px 0px 5px;
   overflow:hidden;
@@ -2948,10 +2977,10 @@ a:active { text-decoration:none; }  /* selected link */
   width:720px;
   padding:10px 5px 10px 5px;
   margin:0px 0px 15px 9px;
-  background-color:rgb(233,233,233);
+  background-color:rgb(218,218,218);
   border-style: solid;
-  border-width:0px 0px 1px 0px;
-  border-color:rgb(200,200,200);
+  border-width:0px 0px 3px 0px;
+  border-color:rgb(165,165,165);
   border-radius:0px 0px 7px 7px;
 }
 .avatar {
@@ -2969,7 +2998,7 @@ a:active { text-decoration:none; }  /* selected link */
   padding:2px;
   border-style:solid;
   border-width:0px 0px 1px 0px;
-  border-color:white;
+  border-color:rgb(240,240,240);
 }
 /*--------------- Profile Menu ----------------*/
 /* Menu for selecting submissions or comments made by owner of profile */
@@ -3041,55 +3070,6 @@ a.profile-menu-tab-selected {
   border-style:solid;
   border-left-width:1px;
   border-left-color:white;
-}
-/*--------------- Sidebar Menu ----------------*/
-/* a general sidebar menu used on many pages */
-#sidebar-menu {
-  float:right;
-  width:243px;
-  margin:9px 9px 9px 0px;
-}
-#sidebar-menu-title {
-  border-radius:5px 5px 0px 0px;
-  font-family:Tahoma, Geneva, sans-serif;
-  padding-left:5px;
-  font-size:17px;
-  background-color:rgb(50,50,50);
-  color:white;
-}
-ul.sidebar-menu {
-  list-style-type:none;
-  margin:0px;
-}
-li.sidebar-menu{
-  list-style-type:none;
-  padding:0px 0px 0px 5px;
-  border-style:solid;
-  border-width:1px 0px 0px 0px;
-  border-color:rgb(255,255,255);
-  background-color:rgb(233,233,233);
-  border-style: solid;
-  border-width:0px 0px 1px 0px;
-  border-color:rgb(200,200,200);
-}
-li.sidebar-menu-selected{
-  list-style-type:none;
-  font-weight:bold;
-  color:rgb(100,100,100);
-  padding:5px 0px 5px 5px;
-  background-color:rgb(250,250,250);
-  border-style: solid;
-  border-width:0px 0px 1px 0px;
-  border-color:rgb(200,200,200);
-}
-li.sidebar-menu-center{
-  text-align:center;
-  list-style-type:none;
-  padding:0px 0px 0px 5px;
-  background-color:rgb(233,233,233);
-  border-style: solid;
-  border-width:0px 0px 1px 0px;
-  border-color:rgb(200,200,200);
 }
 /*--------------- Search Projects ----------------*/
 /* the project box on the project search page */
@@ -3252,52 +3232,6 @@ input.filterselect {
   border-width:0px 0px 0px 0px;
   border-color:rgb(225,225,225);
 }
-/*---------------- Assignment -----------------*/
-#assignment-bar {
-  margin-left:15px;
-  float:left;
-  background-color:rgb(200,200,200);
-}
-ul.assignment-list {
-  margin:0px;
-  list-style:none;
-}
-li.assignment-list {
-  margin:8px;
-  width:160px;
-  padding:4px;
-  margin:1px 0px 1px 1px;
-  background-color:rgb(235,235,235);
-
-  border-style:solid;
-  border-width:1px;
-  border-color:white rgb(200,200,200) rgb(100,100,100) rgb(200,200,200);
-}
-#assignment-list-box {
-  background-color:rgb(125,125,125);
-  padding:1px;
-  float:left;
-  width:800px;
-}
-#assignment-desc {
-  float:left;
-  background-color:rgb(200,200,200);
-  background-color:white;
-  padding:3px;
-  margin-bottom:1px;
-  width:794px;
-  border-style:solid;
-  border-width:0px 0px 1px 0px;
-  border-color:rgb(225,225,225);
-}
-#assignment-box {
-  float:left;
-  width:794px;
-  height:600px;
-  padding:3px;
-  background-color:rgb(235,235,235);
-  background-color:white;
-}
 /*---------------- Assignment Submissions -----------------*/
 #assignment-info {
   margin:0px 0px 0px 15px;
@@ -3391,26 +3325,59 @@ p.create-student {
   width:90px;
   padding:0px;
   margin:0px;
+  font-weight:bold;
+  font-size:14px;
+}
+p.create-student-bottom {
+  float:left;
+  width:95px;
+  padding:0px;
+  margin:0px;
+  font-weight:bold;
+  font-size:14px;
 }
 input.create-student {
   width:300px;
+  border-style:solid;
+  border-width:1px;
+  border-color:rgb(180,180,180);
+}
+#create-student-title {
+  font-family:Tahoma, Geneva, sans-serif;
+  font-size:20px;
+  border-radius:5px 5px 0px 0px;
+  font-family:Tahoma, Geneva, sans-serif;
+  padding-left:8px;
+  background-color:rgb(50,50,50);
+  color:white;
 }
 #create-student-box-top {
-  margin:0px 0px 15px 15px;
+  margin:8px 0px 8px 8px;
   width:720px;
   float:left;
 }
 #create-student-box-bottom {
-  margin:0px 0px 0px 15px;
+  margin:8px 0px 8px 8px;
   width:720px;
   float:left;
 }
 #create-student-field {
   padding:3px 0px 3px 8px;
-  background-color:rgb(235,235,235);
+  background-color:rgb(225,225,225);
   border-style:solid;
-  border-top-width:1px;
-  border-top-color:rgb(200,200,200);
+  border-width:1px 1px 0px 1px;
+  border-color:rgb(210,210,210);
+  border-color:rgb(218,218,218);
+  border-top-color:rgb(185,185,185);
+}
+#create-student-buttons {
+  padding:0px 0px 2px 2px;
+  border-radius:0px 0px 5px 5px;
+  background-color:rgb(160,160,160);
+  border-style:solid;
+  border-width:1px 0px 2px 0px;
+  border-top-color:rgb(130,130,130);
+  border-bottom-color:rgb(110,110,110);
 }
 /*---------------- Manage Profile Form -----------------*/
 /* the form used to edit profles */
@@ -3474,24 +3441,154 @@ p.manage-profile  {
 /* general view of a table */
 #table {
   float:left;
-  margin:10px 10px 15px 15px;
-}
-table  {
+  margin:8px 0px 15px 8px;
   width:720px;
 }
-thead {
+#table-title {
+  font-family:Tahoma, Geneva, sans-serif;
+  font-size:20px;
+  border-radius:5px 5px 0px 0px;
+  margin-left:1px;
+  font-family:Tahoma, Geneva, sans-serif;
+  padding-left:8px;
   background-color:rgb(50,50,50);
   color:white;
 }
+table  {
+  width:100%;
+}
+thead {
+  background-color:rgb(160,160,160);
+  color:white;
+}
 tbody {
-  background-color:rgb(235,235,235);
+  background-color:rgb(218,218,218);
 }
 th {
-  decoration:none;
   padding:2px 8px 2px 8px;
   border-style:solid;
-  border-bottom-width:1px;
-  border-bottom-color:rgb(200,200,200);
-  border-left-width:1px;
-  border-left-color:white;
+  border-width:1px 0px 0px 1px;
+  border-color:white;
 }
+th.action {
+  text-align:center;
+  padding:2px 8px 2px 8px;
+  border-style:solid;
+  border-width:1px 0px 0px 1px;
+  border-color:white;
+  border-radius:0px 0px 5px 5px;
+  background:rgb(233,233,233);
+}
+/*--------------- Sidebar Menu ----------------*/
+/* a general sidebar menu used on many pages */
+#sidebar-menu {
+  float:right;
+  width:250px;
+  margin:8px 8px 0px 0px;
+}
+#sidebar-menu-title {
+  font-family:Tahoma, Geneva, sans-serif;
+  padding-left:5px;
+  font-size:17px;
+  background-color:rgb(50,50,50);
+  color:white;
+  border-radius:4px 4px 0px 0px;
+}
+ul.sidebar-menu {
+  list-style-type:none;
+  margin:0px;
+  padding:3px;
+  border-style:solid;
+  border-width:1px;
+  border-color:rgb(200,200,200);
+  background-color:rgb(233,233,233);
+  border-radius:0px 0px 4px 4px;
+}
+p.sidebar-menu-top {
+  height:23px;
+  font-size:17px;
+  margin:0px;
+  padding:0px 3px 0px 3px;
+}
+p.sidebar-menu-bottom {
+  height:19px;
+  font-size:12px;
+  margin:0px;
+  padding:0px 3px 0px 3px;
+}
+li.sidebar-menu{
+  list-style-type:none;
+  margin:4px 0px 4px 0px;
+  font-weight:bold;
+  color:rgb(100,100,100);
+  background-color:rgb(250,250,250);
+  border-style: solid;
+  border-width:1px 1px 1px 1px;
+  border-top-color:rgb(255,255,255);
+  border-bottom-color:rgb(200,200,200);
+  border-right-color:rgb(233,233,233);
+  border-left-color:rgb(233,233,233);
+  border-radius:3px;
+}
+li.sidebar-menu-center{
+  text-align:center;
+  list-style-type:none;
+  padding:0px 0px 0px 5px;
+  background-color:rgb(233,233,233);
+}
+/*--------------- Assignment Page ----------------*/
+#assignment-box {
+  margin:8px 0px 8px 8px;
+  width:720px;
+  float:left;
+}
+#assignment-title {
+  background-color:rgb(90,90,90);
+  padding:0px 0px 0px 8px;
+  font-size:18px;
+  font-weight:bold;
+  width:100%;
+  color:white;
+}
+#assignment-left {
+  float:left;
+
+  
+}
+#assignment-meta img {
+  
+}
+#assignment-meta {
+  border-style:solid;
+  border-width:0px 1px 1px 1px;
+  border-left-color:rgb(200,200,200);
+  border-right-color:rgb(200,200,200);
+  border-bottom-color:rgb(170,170,170);
+  background-color:rgb(233,233,233);
+  padding:5px;
+  font-size:13px;
+}
+#assignment-right {
+  margin:0px 0px 0px 2px;
+  float:left;
+  border-style:solid;
+  border-width:1px;
+  border-radius:4px;
+  border-color:rgb(220,220,220);
+  width:500px;
+  min-height:300px;
+}
+#assignment-button {
+  float:left;
+  width:164px;
+  margin:2px;
+  text-align:center;
+  padding:0px 3px 0px 3px;
+  border-style:solid;
+  border-width:1px;
+  border-color:rgb(200,200,200);
+  border-bottom-color:rgb(165,165,165);
+  background-color:rgb(233,233,233);
+  border-radius:4px;
+}
+

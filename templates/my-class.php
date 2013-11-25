@@ -9,47 +9,37 @@
 get_header(); ?>
 
 <?php 
-$current_user = wp_get_current_user();
+  $current_user = wp_get_current_user();
+  $is_student = gtcs_user_has_role('subscriber');
+  $is_professor = gtcs_user_has_role('author');
 
-$is_student = gtcs_user_has_role('subscriber');
-$is_professor = gtcs_user_has_role('author');
-
-if($_GET['id'] != null)
-{
-  $courseId = $_GET['id'];
-  $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID); 
-}
-else
-{
-  if($is_student) {
-    $courses = $gtcs12_db->GetCourseByStudentId($current_user->ID);
-  }
-  elseif($is_professor) {
+  if($_GET['id'] != null)
+  {
+    $courseId = $_GET['id'];
     $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID); 
   }
+  else
+  {
+    if($is_student) {
+      $courses = $gtcs12_db->GetCourseByStudentId($current_user->ID);
+    }
+    elseif($is_professor) {
+      $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID); 
+    }
 
+    if($courses)
+      $courseId = $courses[0]->Id;
+  }
 
-  if($courses)
-    $courseId = $courses[0]->Id;
-}
+  $course = $gtcs12_db->GetCourseByCourseId($courseId);
+  $professor = get_userdata($course->FacultyId);
+  $professor_link = site_url('/profile/?user=') . $course->FacultyId;
+  $assignments = $gtcs12_db->GetAllAssignments($courseId);
 
-$course = $gtcs12_db->GetCourseByCourseId($courseId);
-$professor = get_userdata($course->FacultyId);
-$professor_link = site_url('/profile/?user=') . $course->FacultyId;
-$assignments = $gtcs12_db->GetAllAssignments($courseId);
-
-if($is_professor)
-{
-  $isOwner = ($course->FacultyId == $current_user->ID);
-}
-
-//$gtcs12_db->UpdateStudentEnrollment($course_ID, 3, true)
-//$dbHandler->UpdateStudentEnrollment(4, 7, false);
-//print_r($assignments);
-//$dbHandler->CreateAssignment(4, 6, 'Assignment Three', 'this is a description');
-//$dbHandler->AddCourse("CSS 300", "Summer", 2013, 4);
-//$dbHandler->DeleteCourse(8)
-//$dbHandler->CreateAssignment(4, 4, "Assignment One", "this is a description this is a description this is a description");
+  if($is_professor)
+  {
+    $isOwner = ($course->FacultyId == $current_user->ID);
+  }
 ?>
 
 <!DOCTYPE html>
@@ -80,57 +70,59 @@ echo "[<a href=\"" . $professor_link . "\">" . $professor->user_login . '</a>]';
 
 <?php if($isOwner) : ?>
     <div id="sidebar-menu">
-        <div id="sidebar-menu-title">Courses</div>
+        <div id="sidebar-menu-title">My Courses</div>
       <ul class="sidebar-menu">
 <?php foreach($courses as $course) : ?>
 <?php   if($courseId == $course->Id) : ?>
-          <li class="sidebar-menu-selected">
-            <?php echo $course->Name ?>
-            <?php echo '[' . $course->Quarter . ' ' . $course->Year . ']'?>
+          <li class="sidebar-menu">
+            <p class="sidebar-menu-top"><?php echo $course->Name ?></p>
+            <p class="sidebar-menu-bottom"><?php echo $course->Quarter . ', ' . $course->Year ?></p>
           </li>
 <?php   else : ?> 
           <li class="sidebar-menu">
             <a href="<?php echo site_url('/my-class/?id=' . $course->Id) ?>">
-              <?php echo $course->Name ?>
-              <?php echo '[' . $course->Quarter . ' ' . $course->Year . ']' ?>
+              <p class="sidebar-menu-top"><?php echo $course->Name ?></p>
+              <p class="sidebar-menu-bottom"><?php echo $course->Quarter . ', ' . $course->Year ?></p>
             </a>
           </li>
 <?php   endif ?>
 <?php endforeach ?>
+          <li class="sidebar-menu-center"><a class="action" href="<?php echo site_url('/manage-courses/') ?>">Create course</a></li>
         </ul>
     </div>
 <?php endif ?>
 
     <div id="sidebar-menu">
         <div id="sidebar-menu-title">Students</div>
-<?php $students = $gtcs12_db->GetStudents($course_ID); ?>
+        <ul class="sidebar-menu">
+<?php $students = $gtcs12_db->GetStudents($courseId); ?>
 <?php if ($students) : ?>
 <?php   foreach($students as $student) : ?>
 <?php     if($student->StudentId != null) : ?>
-            <ul class="sidebar-menu">
               <li class="sidebar-menu">
-                <a href="<?php echo site_url('/manage-profile/?user=' . $currentUser->ID) ?>">Edit Profile</a>
+                <p class="sidebar-menu-top"><a href="<?php echo site_url('/profile/?user=' . $student->Id) ?>"><?php echo $student->Name ?></a></p>
               </li>
 <?php     endif ?>
 <?php   endforeach ?>
 <?php endif ?>
 <?php if($isOwner) : ?>
-        <li class="sidebar-menu-center"><a href="<?php echo site_url('/manage-students/?courseid=' . $courseId) ?>">Add students</a></li>
+        <li class="sidebar-menu-center"><a class="action" href="<?php echo site_url('/manage-students/?courseid=' . $courseId) ?>">Add students</a></li>
 <?php else : ?>
         <li class="sidebar-menu-center">There are no enrolled students</li>
 <?php endif ?>
         </ul>
     </div>
 
-    <div id="table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Assignment</th>
-                    <th>Date Posted</th>
-                </tr>
-            </thead>
-            <tbody>
+  <div id="table">
+    <div id='table-title'>Assignments</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Assignment</th>
+            <th>Date Posted</th>
+          </tr>
+        </thead>
+        <tbody>
 <?php 
 if($assignments) 
 {
@@ -152,7 +144,9 @@ elseif($isOwner == false)
 ?>
 <?php if($isOwner) : ?>
         <tr>
-          <th class="center" colspan="2"><a href="<?php echo site_url('/manage-assignments/?courseid=' . $courseId) ?>">Create an assignment</a></th>
+          <th class="action" colspan="2">
+            <a class="action" href="<?php echo site_url('/manage-assignments/?courseid=' . $courseId) ?>">Create an assignment</a>
+          </th>
         </tr>
 <?php endif ?>
             </tbody>
