@@ -13,104 +13,111 @@ get_header(); ?>
   $current_user = wp_get_current_user();
   $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID); 
    
-  if($_GET['id'] != null)
-    {
-        $courseId = $_GET['id'];
-    }
-    else
-    {
-        $courseId = $courses[0]->Id;
-    }
-     
-  if ($_GET)
+  if($_GET['courseid'] != null)
   {
-    if ($_GET['courseid'])
-    {
- 
-      if ($_GET['studentid'] && $_GET['op'])
-      {
-        $studentid = $_GET['studentid'];
-        $op = $_GET['op'];
- 
-        if ($op == 'enroll')
-        {
-          $gtcs12_db->UpdateStudentEnrollment($courseid, $studentid, TRUE);
-        }
-        else if ($op == 'cancel')
-        {
-          $gtcs12_db->UpdateStudentEnrollment($courseid, $studentid, FALSE);
-        }
-      }
-    }
+    $courseId = $_GET['courseid'];
   }
-  else if ($_POST)
+  else
   {
-    $gtcs12_db->EnrollStudentsViaFile($courseid, "filStudents");
+    $courseId = $courses[0]->Id;
+  }
+  
+  
+   
+  if ($_POST['op'] == 'create') // create new user
+  {  
+    $newUserId = $gtcs12_db->AddUser($_POST['inptUserName'], 'password', $_POST['inptEmail'], $_POST['inptFirstName'], $_POST['inptLastName'], 'subscriber');
+    $gtcs12_db->UpdateStudentEnrollment($courseId, $newUserId, true);
+  }
+  else if ($_POST['op'] == 'delete') // unenroll and delete student
+  {
+    $oldUserId = $_POST['studentid'];
+  
+    if(!function_exists('wp_delete_user')) 
+    {
+      include(ABSPATH . './wp-admin/includes/user.php'); 
+    }
+  
+    wp_delete_user($oldUserId);
+    $gtcs12_db->UpdateStudentEnrollment($courseId, $oldUserId, false);
+  }
+  else if($_POST['op'] == 'file')
+  {
+    //$gtcs12_db->EnrollStudentsViaFile($courseId, $fileVariable);
   }
 ?>
  
 <!DOCTYPE html>
-<html lang="en">  
-  <div id="create-student-box-top">
-    <div id='pagetitle'>Create Student</div>
-    <div id="create-student-field">               
-      <p class="create-student">Username</p>
-      <input class='create-student' type="text" name="inptTitle" value="<?php echo $assignment->post_title ?>" required>
-    </div>
-    <div id="create-student-field">   
-      <p class="create-student">First Name</p>
-      <input class='create-student' type="text" name="inptTitle" value="<?php echo $assignment->post_title ?>" required>
-    </div>
-    <div id="create-student-field">   
-      <p class="create-student">Last Name</p>
-      <input class='create-student' type="text" name="inptTitle" value="<?php echo $assignment->post_title ?>" required>
-    </div>  
-    <div id="create-student-field">   
-      <p class="create-student">Email</p>
-      <input class='create-student' type="text" name="inptTitle" value="<?php echo $assignment->post_title ?>" required>
-    </div>        
-    <input type="submit" value="Create"/> 
-    <a href="<?php echo site_url('/my-class/') ?>"><button type="button">Cancel</button></a>
-  </div>
- 
+<html lang="en">    
   <div id="sidebar-menu">
-        <div id="sidebar-menu-title">Courses</div>
-      <ul class="sidebar-menu">
+    <div id="sidebar-menu-title">My Courses  </div>
+    <ul class="sidebar-menu">
 <?php if($courses) : ?>
 <?php   foreach($courses as $course) : ?>
 <?php     if($courseId == $course->Id) : ?>
-            <li class="sidebar-menu-selected">
-              <?php echo $course->Name ?>
-              <?php echo '[' . $course->Quarter . ' ' . $course->Year . ']'?>
-            </li>
+      <li class="sidebar-menu">
+        <p class="sidebar-menu-top"><?php echo $course->Name ?></p>
+        <p class="sidebar-menu-bottom"><?php echo $course->Quarter . ', ' . $course->Year ?></p>
+      </li>
 <?php     else : ?> 
-            <li class="sidebar-menu">
-              <a href="<?php echo site_url('/manage-assignments/?courseid=' . $course->Id) ?>">
-                <?php echo $course->Name ?>
-                <?php echo '[' . $course->Quarter . ' ' . $course->Year . ']' ?>
-              </a>
-            </li>
+      <li class="sidebar-menu">
+        <a class="sidebar-menu" href="<?php echo site_url('/manage-students/?courseid=' . $course->Id) ?>">
+          <p class="sidebar-menu-top"><?php echo $course->Name ?></p>
+          <p class="sidebar-menu-bottom"><?php echo $course->Quarter . ', ' . $course->Year ?></p>
+        </a>
+      </li>
 <?php     endif ?>
 <?php   endforeach ?>
 <?php else : ?>
-        <li class="sidebar-menu-center">You have no courses</li>
+      <li class="sidebar-menu-center">You have no courses</li>
 <?php endif ?>
-        </ul>
-    </div>
-   
-  <div id="create-student-box-bottom">
-    <div id="create-student-field">   
-    Create using file
-    <form action="manageenrollments.php" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="courseid" value="<?php echo $courseid ?>">
-        <input type="file" name="filStudents">
-        <input type="submit"><input type="reset">
+    </ul>
+  </div>
+
+  <div id="create-student-box-top">
+    <div id='create-student-title'>Create student</div>
+    <form action="<?php echo site_url('/manage-students/?courseid=' . $courseId) ?>" method="post">
+      <div id="create-student-field">               
+        <p class="create-student">Username</p>
+        <input class='create-student' type="text" name="inptUserName" required>
+      </div>
+      <div id="create-student-field">   
+        <p class="create-student">First Name</p>
+        <input class='create-student' type="text" name="inptFirstName" required>
+      </div>
+      <div id="create-student-field">   
+        <p class="create-student">Last Name</p>
+        <input class='create-student' type="text" name="inptLastName" required>
+      </div>  
+      <div id="create-student-field">   
+        <p class="create-student">Email</p>
+        <input class='create-student' type="text" name="inptEmail" required>
+      </div> 
+      <div id="create-student-buttons">
+        <input type="hidden" name="op" value="create">    
+        <input type="submit" value="Create"/> 
+        <a href="<?php echo site_url('/my-class/') ?>"><button type="button">Cancel</button></a>
+      </div>
     </form>
-    </div>
   </div>
    
-    <div id='table'>
-    <div id='pagetitle'>Manage Students</div>
+  <div id="create-student-box-bottom">
+    <div id='create-student-title'>Create students via file</div>
+    <form action="manageenrollments.php" method="post" enctype="multipart/form-data">
+      <div id="create-student-field">   
+        <p class="create-student-bottom">Spreadsheet</p>
+        <input type="file" name="filStudents">
+      </div>
+      <div id="create-student-buttons">
+        <input type="hidden" name="courseid" value="<?php echo $courseid ?>">
+        <input type="submit">
+        <a href="<?php echo site_url('/my-class/') ?>"><button type="button">Cancel</button></a>
+      </div>
+    </form>
+  </div>
+   
+  <div id='table'>
+    <div id='table-title'>Manage enrolled students</div>
     <table>
       <thead>
         <tr>
@@ -119,22 +126,28 @@ get_header(); ?>
         </tr>
       </thead>
       <tbody>
-<?php $students = $gtcs12_db->GetStudents($courseid); ?>
-<?php if($students) : ?>
+<?php $students = $gtcs12_db->GetStudents($courseId); ?>
 <?php foreach($students as $student) : ?> 
+<?php   if ($student->StudentId != NULL) : ?>
         <tr>
-                    <th><?php echo $student->Name; ?></th>
-<?php if ($student->StudentId == NULL) : ?>
-          <th><a href='<?php echo site_url('manage-students/?courseid=' . $courseid . '&studentid=' . $student->Id . '&op=enroll') ?>'>Enroll</a></th>
-<?php else : ?>
-                    <th><a href='<?php echo site_url('manage-students/?courseid=' . $courseid . '&studentid=' . $student->Id . '&op=cancel') ?>'>Cancel</a></th>
-<?php endif ?>
-        </tr>
-<?php endforeach; ?>
-<?php else : ?>
-                <tr>
-                    <th>N/A</th>
-          <th>N/A</th>
+          <th><?php echo $student->Name; ?></th>
+          <th>
+            <form action="<?php echo site_url('/manage-students/') ?>" method="post">
+              <select name="op">
+                <option disabled="disabled" selected>Choose an action</option>
+                <option value="delete">Delete</option>
+              </select>   
+              <input type="hidden" name="studentid" value="<?php echo $student->Id ?>">              
+              <input type="hidden" name="courseid" value="<?php echo $courseId ?>">
+              <input type="submit" value="Confirm"/>  
+            </form>
+          </th>
+          <?php $studentCount++ ?>
+<?php   endif ?>
+<?php endforeach ?>
+<?php if($studentCount == 0) : ?>
+        <tr>
+          <th class="center" colspan="4">This course has no enrolled students</th>
         </tr>
 <?php endif ?>
       </tbody>
