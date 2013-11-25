@@ -317,7 +317,7 @@ class GTCS12_DB
     return $attach_id;
   }
 
-  function CreateAssignment($authorId, $courseId, $title, $description)
+  function CreateAssignment($authorId, $courseId, $title, $description, $link = "", $isEnabled = true)
   {
     global $wpdb;
     $wpdb->show_errors(true);
@@ -334,11 +334,13 @@ class GTCS12_DB
 
     // save post and get its id
     $postId = wp_insert_post($assignmentPost);    
+    add_post_meta($postId, "link", $link);
+    add_post_meta($postId, "isEnabled", $isEnabled);
 
     return $postId;
   }
 
-  function UpdateAssignment($assignmentId, $authorId, $courseId, $title, $description)
+  function UpdateAssignment($assignmentId, $authorId, $courseId, $title, $description, $link = "", $isEnabled = true)
   {
     global $wpdb;
     $wpdb->show_errors(true);
@@ -347,6 +349,9 @@ class GTCS12_DB
     $assignmentPost['ID'] = $assignmentId;
     $assignmentPost['post_title'] = $title;
     $assignmentPost['post_content'] = $description;
+
+    update_post_meta($assignmentId, "link", $link);
+    update_post_meta($assignmentId, "isEnabled", $isEnabled);
 
     wp_update_post($assignmentPost);
   }
@@ -425,10 +430,19 @@ class GTCS12_DB
       FROM {$posts} p WHERE p.post_author = $studentId AND p.post_status = 'publish' AND p.post_type = 'post';"); 
 
     $rows = $wpdb->get_results($sql);
-    //foreach($rows as $row)
-    //{
-    //  echo $row->AssignmentName;
-    //}  
+
+    return $rows;
+  }
+
+  function GetSubmissionBySubmissionName($submissionName)
+  {
+    global $wpdb;
+    $wpdb->show_errors(true);
+    $posts = $wpdb->prefix . "posts";
+
+    $sql = ("SELECT p.id as SubmissionId FROM $posts WHERE p.post_name = $submissionName AND p.post_parent > 0;");
+    
+    $rows = $wpdb->get_results($sql);  
 
     return $rows;
   }
@@ -451,5 +465,6 @@ class GTCS12_DB
     $user->add_role($role);
     return $id; 
   }
+
 }
 ?>
