@@ -10,33 +10,34 @@
 get_header(); ?>
 
 <?php 
-if($_GET) {
-  $assignment_id = $_GET["id"];
-} 
-
-if($assignment_id) {
-  $assignment = get_post($assignment_id);
-}
-
-global $gtcs12_db;
-
-if ($_POST) 
-{
-  $student_id = get_current_user_id(); 
-   
-  $description = $_POST['description'];
-  $title = $_POST['title'];
-  $course_id = 0; // TODO why is the course id needed for submissions?
-
-  $submission_id = $gtcs12_db->CreateSubmission($title, $student_id, $course_id, $assignment_id, $description);
-
-  $gtcs12_db->AttachFileToPost($submission_id, 'jar', $title, 'jar', false); 
-
-  if(isset($_FILES['image'])) {
-    $gtcs12_db->AttachFileToPost($submission_id, 'image', $title, 'image', true); 
+  if($_GET) {
+    $assignment_id = $_GET["id"];
   } 
- 
-}
+
+  if($assignment_id) {
+    $assignment = get_post($assignment_id);
+  }
+
+
+  if ($_POST) 
+  {
+    $student_id = get_current_user_id(); 
+     
+    $description = $_POST['description'];
+    $title = $_POST['title'];
+    $course_id = 0; // TODO why is the course id needed for submissions?
+
+    $submission_id = $gtcs12_db->CreateSubmission($title, $student_id, $course_id, $assignment_id, $description);
+
+    $gtcs12_db->AttachFileToPost($submission_id, 'jar', $title, 'jar', false); 
+
+    if(isset($_FILES['image'])) {
+      $gtcs12_db->AttachFileToPost($submission_id, 'image', $title, 'image', true); 
+    } 
+  }
+  
+  $submissions = $gtcs12_db->GetAllSubmissions($assignment_id); 
+  $submissionCount = count($submissions);
 ?>
 
 <?php $is_teacher = gtcs_user_has_role('author'); ?>
@@ -44,80 +45,45 @@ if ($_POST)
 
 <!DOCTYPE html>
 <html lang="en">
-  <form action="" method="post">
-    <div>
-      <div>Assignment</div>
-      <div>
-        <?php if($is_teacher): ?><a href='#'>edit</a><?php endif; ?>
-        <?php echo $assignment->post_title; ?> 
-      </div>
-      <div name='description'>
-        <?php if($is_teacher): ?><a href='#'>edit</a><?php endif; ?>
-        <?php echo $assignment->post_content; ?> 
-      </div>
-      <div>
-        <?php if($is_teacher): ?><a href='#'>edit</a><?php endif; ?>
-        Available Attachments <br />
-        attachments go here
-      </div>
+  <div id="assignment-box">
+    <div id="assignment-left">
+      <img src="<?php bloginfo('template_directory'); ?>/images/blank-project.png" width="200" height="200">
+      <div id="assignment-meta"><?php echo $submissionCount ?> Submissions</div>
+      <div id="assignment-meta"><?php echo date('F d, Y', strtotime($assignment->post_date)) ?> </div>
+      <div id="assignment-meta"><a>Source</a></div>
     </div>
-    <div>
-      <div>
-<?php if($is_teacher): ?>
-        <a href='#'>edit</a> 
-        <input type="file" name="preview-image[]"><br />
-<?php endif; ?>
-        <img src="<?php bloginfo('template_directory'); ?>/images/blank-project.png">
-      </div>
+    <div id="assignment-right">
+      <div id="assignment-title"><?php echo $assignment->post_title; ?> </div>
+      <?php echo $assignment->post_content; ?> 
     </div>
-  </form>
-<hr />
-<?php if($is_student): ?>
-  <form action="" method="post" enctype="multipart/form-data">
-      Submit Assignment 
-    <div>
-      <label for="title">Title</label>
-      <input type="text" name="title" id="title" required><br /> 
-
-      <label for="desc">Description</label>
-      <input type="text" name="description" id="desc" required><br /> 
-   
-      <label for="jar">Jar File</label>
-      <input type="file" name="jar" id="jar" required><br />
   
-      <label for="image">Image</label>
-      <input type="file" name="image" id="image"><br />
+  </div>
 
-      <input type="submit" name="submit-assignment" value="Submit Assignment"/> 
-    </div>
-  </form>
-<?php endif; ?>
+  
 
   <div id='table'>	
-    <table class='manage-courses'>
-    <div id='pagetitle'>Submitted Assignments</div>
-      <thead class='manage-courses'>
+    <div id='table-title'>Manage enrolled students</div>
+    <table>
+      <thead>
         <tr>
-          <th class='manage-courses'>Title</th>
-          <th class='manage-courses'>Author</th>
-          <th class='manage-courses'>Date Posted</th>
-          <th class='manage-courses'>Action</th>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Date Posted</th>
+          <th>Action</th>
         </tr>
       </thead>
-      <tbody class='manage-courses'>
-
-<?php $submissions = $gtcs12_db->GetAllSubmissions($assignment_id); ?>
+      <tbody>
 <?php if(count($submissions) == 0): ?>
         <tr>
-          <th class='manage-courses' colspan=4>No Submissions</th>
+          <th class="center" colspan="4">There are no submissions</th>
         </tr>
 <?php else: ?>
   <?php foreach($submissions as $submission) : ?> 
         <tr>
-          <th class='manage-courses'><?php echo $submission->Title; ?></th>
-          <th class='manage-courses'><?php echo $submission->AuthorName; ?></th>
-          <th class='manage-courses'><?php echo $submission->SubmissionDate; ?></th>
-          <th class='manage-courses'>
+          <th><?php echo $submission->Title; ?></th>
+          <th><?php echo $submission->AuthorName; ?></th>
+          <th><?php echo $submission->SubmissionDate; ?></th>
+          <th>
             <a href="<?php echo site_url('?p=') . $submission->SubmissionId; ?>">view</a>
           </th>
         </tr>
