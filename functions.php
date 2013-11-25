@@ -160,54 +160,26 @@ function twentyeleven_setup() {
 
 	// Default custom headers packaged with the theme. %s is a placeholder for the theme template directory URI.
 	register_default_headers( array(
-		'wheel' => array(
-			'url' => '%s/images/headers/wheel.jpg',
-			'thumbnail_url' => '%s/images/headers/wheel-thumbnail.jpg',
-			/* translators: header image description */
-			'description' => __( 'Wheel', 'twentyeleven' )
+		'ghost_light' => array(
+			'url' => '%s/images/headers/ghost_light.png',
+			'thumbnail_url' => '%s/images/headers/ghost_light - thumbnail.png',
+			'description' => __( 'Ghost Light', 'twentyeleven' )
 		),
-		'shore' => array(
-			'url' => '%s/images/headers/shore.jpg',
-			'thumbnail_url' => '%s/images/headers/shore-thumbnail.jpg',
-			/* translators: header image description */
-			'description' => __( 'Shore', 'twentyeleven' )
+		'match_three' => array(
+			'url' => '%s/images/headers/match_three.png',
+			'thumbnail_url' => '%s/images/headers/match_three - thumbnail.png',
+			'description' => __( 'Match Three', 'twentyeleven' )
 		),
-		'trolley' => array(
-			'url' => '%s/images/headers/trolley.jpg',
-			'thumbnail_url' => '%s/images/headers/trolley-thumbnail.jpg',
-			/* translators: header image description */
-			'description' => __( 'Trolley', 'twentyeleven' )
+		'rainbow_road' => array(
+			'url' => '%s/images/headers/rainbow_road.png',
+			'thumbnail_url' => '%s/images/headers/rainbow_road - thumbnail.png',
+			'description' => __( 'Rainbow Road', 'twentyeleven' )
 		),
-		'pine-cone' => array(
-			'url' => '%s/images/headers/pine-cone.jpg',
-			'thumbnail_url' => '%s/images/headers/pine-cone-thumbnail.jpg',
-			/* translators: header image description */
-			'description' => __( 'Pine Cone', 'twentyeleven' )
+		'space_smasher' => array(
+			'url' => '%s/images/headers/space_smasher.png',
+			'thumbnail_url' => '%s/images/headers/space_smasher - thumbnail.png',
+			'description' => __( 'Space Smasher', 'twentyeleven' )
 		),
-		'chessboard' => array(
-			'url' => '%s/images/headers/chessboard.jpg',
-			'thumbnail_url' => '%s/images/headers/chessboard-thumbnail.jpg',
-			/* translators: header image description */
-			'description' => __( 'Chessboard', 'twentyeleven' )
-		),
-		'lanterns' => array(
-			'url' => '%s/images/headers/lanterns.jpg',
-			'thumbnail_url' => '%s/images/headers/lanterns-thumbnail.jpg',
-			/* translators: header image description */
-			'description' => __( 'Lanterns', 'twentyeleven' )
-		),
-		'willow' => array(
-			'url' => '%s/images/headers/willow.jpg',
-			'thumbnail_url' => '%s/images/headers/willow-thumbnail.jpg',
-			/* translators: header image description */
-			'description' => __( 'Willow', 'twentyeleven' )
-		),
-		'hanoi' => array(
-			'url' => '%s/images/headers/hanoi.jpg',
-			'thumbnail_url' => '%s/images/headers/hanoi-thumbnail.jpg',
-			/* translators: header image description */
-			'description' => __( 'Hanoi Plant', 'twentyeleven' )
-		)
 	) );
 }
 endif; // twentyeleven_setup
