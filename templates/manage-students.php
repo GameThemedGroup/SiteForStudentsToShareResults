@@ -12,24 +12,19 @@ get_header(); ?>
 <?php
   $current_user = wp_get_current_user();
   $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID); 
-   
-  if($_GET['courseid'] != null)
-  {
-    $courseId = $_GET['courseid'];
-  }
-  else
-  {
-    $courseId = $courses[0]->Id;
-  }
   
-  
-   
-  if ($_POST['op'] == 'create') // create new user
+  $courseId = $courses ? $courses[0]->Id : '';
+
+  $operation = $_POST ? $_POST['op'] : '';
+
+  if(!$operation) // do nothing
+  {}
+  else if ($operation == 'create') // create new user
   {  
     $newUserId = $gtcs12_db->AddUser($_POST['inptUserName'], 'password', $_POST['inptEmail'], $_POST['inptFirstName'], $_POST['inptLastName'], 'subscriber');
     $gtcs12_db->UpdateStudentEnrollment($courseId, $newUserId, true);
   }
-  else if ($_POST['op'] == 'delete') // unenroll and delete student
+  else if ($operation = 'delete') // unenroll and delete student
   {
     $oldUserId = $_POST['studentid'];
   
@@ -41,9 +36,10 @@ get_header(); ?>
     wp_delete_user($oldUserId);
     $gtcs12_db->UpdateStudentEnrollment($courseId, $oldUserId, false);
   }
-  else if($_POST['op'] == 'file')
+  else if($operation == 'file')
   {
-    //$gtcs12_db->EnrollStudentsViaFile($courseId, $fileVariable);
+    $courseid = $_POST['courseid'];
+    $gtcs12_db->EnrollStudentsViaFile($courseid, 'studentdata');
   }
 ?>
  
@@ -127,6 +123,7 @@ get_header(); ?>
       </thead>
       <tbody>
 <?php $students = $gtcs12_db->GetStudents($courseId); ?>
+<?php $studentCount = 0; ?>
 <?php foreach($students as $student) : ?> 
 <?php   if ($student->StudentId != NULL) : ?>
         <tr>
@@ -138,7 +135,7 @@ get_header(); ?>
                 <option value="delete">Delete</option>
               </select>   
               <input type="hidden" name="studentid" value="<?php echo $student->Id ?>">              
-              <input type="hidden" name="courseid" value="<?php echo $courseId ?>">
+              <input type="hidden" name="courseid" value="<?php echo $courseId; ?>">
               <input type="submit" value="Confirm"/>  
             </form>
           </th>
