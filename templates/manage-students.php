@@ -24,7 +24,7 @@ get_header(); ?>
     $newUserId = $gtcs12_db->AddUser($_POST['inptUserName'], 'password', $_POST['inptEmail'], $_POST['inptFirstName'], $_POST['inptLastName'], 'subscriber');
     $gtcs12_db->UpdateStudentEnrollment($courseId, $newUserId, true);
   }
-  else if ($operation = 'delete') // unenroll and delete student
+  else if ($operation === 'delete') // unenroll and delete student
   {
     $oldUserId = $_POST['studentid'];
   
@@ -99,13 +99,14 @@ get_header(); ?>
    
   <div id="create-student-box-bottom">
     <div id='create-student-title'>Create students via file</div>
-    <form action="manageenrollments.php" method="post" enctype="multipart/form-data">
+    <form action="<?php echo get_permalink(); ?>" method="post" enctype="multipart/form-data">
       <div id="create-student-field">   
         <p class="create-student-bottom">Spreadsheet</p>
-        <input type="file" name="filStudents">
+        <input type="file" name="studentdata">
       </div>
       <div id="create-student-buttons">
-        <input type="hidden" name="courseid" value="<?php echo $courseid ?>">
+        <input type="hidden" name="courseid" value="<?php echo $courseId; ?>">
+        <input type="hidden" name="op" value="file">
         <input type="submit">
         <a href="<?php echo site_url('/my-class/') ?>"><button type="button">Cancel</button></a>
       </div>
