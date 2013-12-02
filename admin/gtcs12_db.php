@@ -197,34 +197,65 @@ class GTCS12_DB
     }
   }
 
-  function EnrollStudentsViaFile($courseId, $fileVariable)
+  // Creates ane enrolls students into the course using the CSV file in $_FILES
+  // 
+  // The CSV file begins with a header row and contains the student's data in the
+  // following format:  
+  //    Login, Password, Email Address, First Name, Last Name, Display Name 
+  //    bbob, p@ss!1, bbob@example.com, Billy, Bob, TheAwesomeBillyBob 
+  // 
+  // @param courseid  the course id of the course to enroll the student into
+  // @param fileindex the index in $_FILES of the csv containing the student data 
+  function EnrollStudentsViaFile($courseid, $fileindex)
   {
-    global $wpdb;
-    $wpdb->show_errors(true);
+    if(!$courseid) {
+      trigger_error(__FUNCTION__ . " - Course ID not provided.", E_USER_WARNING);
+      return;
+    }
 
-    $tempFileName = $_FILES[$fileVariable]['tmp_name'];
+    $file = $_FILES[$fileindex]['tmp_name'];
+    
+    if(!$file) {
+      trigger_error(__FUNCTION__ . " - file was not provided.", E_USER_WARNING);
+      return;
+    }
 
-    // read comma separated file into a string
-    $contents = file_get_contents($tempFileName);
+    // breaks the file into an array containing each line of the file
+    $fileContents = explode("\n", file_get_contents($file));
+    array_shift($fileContents); // remove the header values
 
-    // replace each , with ',' and beginning with ', 
-    // so a,b,c becomes 'a','b','c'
-    $contents = "'" . $contents . "'";
-    $contents = str_replace(",","','", $contents);
+    foreach($fileContents as $studentData) {
+      // parses the csv for one student's data
+      list($login, $password, $email, $firstname, $lastname, $displayname) = explode(",", $studentData);
+      $role = 'subscriber'; // student role
 
-    $enrollments  = $wpdb->prefix . "enrollments";
-    $users        = $wpdb->prefix . "users";
-    $usermeta     = $wpdb->prefix . "usermeta";
-    $capabilities = $wpdb->prefix . "capabilities";
+      $userdata = array(
+        'user_login' => $login,
+        'user_pass' => $password,
+        'user_email' => $email,
+        'first_name' => $firstname,
+        'last_name' => $lastname,
+        'display_name' => $displayname,
+        'role' => $role,
+      );
+      
+      // Creates the user
+      $studentid = wp_insert_user($userdata);
 
-    // insert into enrollments records of those students
-    // who are not enrolled yet in specified course
-    // for those who are already enrolled, nothing to be done
-    $sql = "INSERT INTO {$enrollments} (courseId, studentId) SELECT {$courseId}, u.Id from {$users} u INNER JOIN ".
-      "{$usermeta} up on u.Id = up.user_id WHERE up.meta_key = {$capabilities} AND up.meta_value LIKE '%subscriber%'".
-      "AND u.user_email in {$contents} AND u.Id NOT IN (SELECT studentId from {$enrollments} WHERE courseId={$courseId});";
+      if(is_wp_error($studentid)) {
+        if(array_key_exists('existing_user_login', $studentid->errors)) {
+          echo "Sorry, the username {$login} already exists! <br />";
+        }
+        continue;
+      } 
 
-    $wpdb->query($sql);
+      $user = new WP_User($studentid);
+      $user->add_role($role);
+     
+      // Enrolls the user 
+      $doEnroll = true;
+      $this->UpdateStudentEnrollment($courseid, $studentid, $doEnroll); 
+    } 
   }
 
   function GetAllAssignments($courseId)
