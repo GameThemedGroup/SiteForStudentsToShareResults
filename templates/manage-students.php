@@ -50,7 +50,7 @@ get_header(); ?>
 <!DOCTYPE html>
 <html lang="en">    
   <div id="sidebar-menu">
-    <div id="sidebar-menu-title">My Courses  </div>
+    <div id="sidebar-menu-title">Courses</div>
     <ul class="sidebar-menu">
 <?php if($courses) : ?>
 <?php   foreach($courses as $course) : ?>
@@ -78,19 +78,19 @@ get_header(); ?>
     <div id='create-student-title'>Create student</div>
     <form action="<?php echo site_url('/manage-students/?courseid=' . $courseId) ?>" method="post">
       <div id="create-student-field">               
-        <p class="create-student">Username</p>
+        <p class="create-student-top">Username</p>
         <input class='create-student' type="text" name="inptUserName" required>
       </div>
       <div id="create-student-field">   
-        <p class="create-student">First Name</p>
+        <p class="create-student-top">First Name</p>
         <input class='create-student' type="text" name="inptFirstName" required>
       </div>
       <div id="create-student-field">   
-        <p class="create-student">Last Name</p>
+        <p class="create-student-top">Last Name</p>
         <input class='create-student' type="text" name="inptLastName" required>
       </div>  
       <div id="create-student-field">   
-        <p class="create-student">Email</p>
+        <p class="create-student-top">Email</p>
         <input class='create-student' type="text" name="inptEmail" required>
       </div> 
       <div id="create-student-buttons">
