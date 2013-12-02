@@ -12,7 +12,7 @@ get_header() ?>
 <?php
     global $gtcs12_db;
 
-    $isAdmin = gtcs_user_has_role('admin');
+    $isAdmin = gtcs_user_has_role('administrator');
 
     if(!$isAdmin) {
       echo "You do not have permission to view this page. <br />";
