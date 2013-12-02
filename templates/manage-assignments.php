@@ -12,12 +12,17 @@ get_header(); ?>
 $current_user = wp_get_current_user();
 $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID);
 
-if($_GET['courseid'] != null)
-  $courseid = $_GET['courseid'];
-else
-  $courseid = $courses[0]->Id;
+$courseid = $_GET ? $_GET['courseid'] : null;
 
-if($_GET['op'] == 'delete') // delete assignment
+if($courseid == null && $courses != null)
+  $courseid = $courses[0]->Id; // default to first course
+
+$getOperation = $_GET ? $_GET['op'] : null;
+
+$action = null;
+$assignment = null;
+
+if($getOperation == 'delete') // delete assignment
 {
   if($_GET['assignid'])
   {
@@ -41,7 +46,7 @@ if($_GET['op'] == 'delete') // delete assignment
     }
   }
 }
-else if($_GET['op'] == 'edit') // edit assignment(page loads with values from existing assignment)
+else if($getOperation == 'edit') // edit assignment(page loads with values from existing assignment)
 {
   if($_GET['assignid'])
   {
@@ -50,18 +55,20 @@ else if($_GET['op'] == 'edit') // edit assignment(page loads with values from ex
   }
 }
 
-if($_POST['op'] == 'update') // update assignment
+$postOperation = $_POST ? $_POST['op'] : null;
+
+if($postOperation == 'update') // update assignment
 {
   echo
     $gtcs12_db->UpdateAssignment($_POST['assignid'], $current_user->ID, $courseid, $_POST['inptTitle'], $_POST['txtDescription']);
   $action = "assignment edited";
 }
-else if($_POST['op'] == 'create') // create assignment
+else if($postOperation == 'create') // create assignment
 {
   $assignmentId = $gtcs12_db->CreateAssignment($current_user->ID, $courseid, $_POST['inptTitle'], $_POST['txtDescription']);
   $authorId = $current_user->ID;
-
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -83,13 +90,16 @@ else if($_POST['op'] == 'create') // create assignment
 <form action="<?php echo site_url('/manage-assignments/') ?>" method="post" enctype="multipart/form-data">
   <div id='create-assignment-box-left'>
     <div id='pagetitle'>
-      <?php echo ($_GET['op'] == 'edit' ? "Edit Assignment" : "Create Assignment"); ?>
+      <?php echo ($getOperation == 'edit' ? "Edit Assignment" : "Create Assignment"); ?>
     </div>
     <div id='create-assignment-field'>Title
-      <input class='create-assignment' type="text" name="inptTitle" value="<?php echo $assignment->post_title ?>" required>
+      <input class='create-assignment' type="text" name="inptTitle"
+        value="<?php echo $assignment ? $assignment->post_title : ''; ?>" required>
     </div>
     <div id='create-assignment-field'>Description
-      <textarea cols="25" rows="10" autocomplete="off" name="txtDescription" required><?php echo $assignment->post_content ?></textarea>
+      <textarea cols="25" rows="10" autocomplete="off" name="txtDescription" required>
+        <?php echo $assignment ? $assignment->post_content : ''; ?>
+      </textarea>
     </div>
     <div id='create-assignment-field'>Sample File
       <input class='create-assignment' type="file" name="filJar">
@@ -98,10 +108,10 @@ else if($_POST['op'] == 'create') // create assignment
       <input class='create-assignment' type="file" name="filImage" accept="image/png">
     </div>
 
-  <?php if($_GET['op'] == 'create' || $_GET['op'] == '') : ?>
+  <?php if($getOperation == 'create' || $getOperation == '') : ?>
     <input type="hidden" name="op" value="create">
     <input type="submit" value="Create"/>
-  <?php elseif($_GET['op'] == 'edit') : ?>
+  <?php elseif($getOperation == 'edit') : ?>
     <input type="hidden" name="op" value="update">
     <input type="submit" value="Finish Editing"/>
   <?php endif ?>
