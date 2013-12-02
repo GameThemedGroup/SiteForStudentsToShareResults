@@ -1,13 +1,13 @@
 <?php
 
-class GTCS12_DB 
+class GTCS12_DB
 {
   function DeleteTables()
   {
     global $wpdb;
     $wpdb->show_errors(true);
 
-    // delete child table first 
+    // delete child table first
     $tablename = $wpdb->prefix . "enrollments";
     $sql = "DROP TABLE IF EXISTS $tablename;";
     $wpdb->query($sql);
@@ -54,7 +54,7 @@ class GTCS12_DB
     $wpdb->query($sql);
   }
 
-  function RecreateTables() 
+  function RecreateTables()
   {
     self::DeleteTables();
     self::CreateTables();
@@ -106,7 +106,7 @@ class GTCS12_DB
     $result = $wpdb->get_results($rows);
 
     return $result;
-  } 
+  }
 
   function GetAllCourses()
   {
@@ -129,11 +129,11 @@ class GTCS12_DB
 
     $tablename = $wpdb->prefix . "courses";
 
-    $wpdb->insert($tablename, 
+    $wpdb->insert($tablename,
       array (
-        'name'        => $courseName, 
-        'quarter'     => $quarter, 
-        'year'        => $year, 
+        'name'        => $courseName,
+        'quarter'     => $quarter,
+        'year'        => $year,
         'facultyid'   => $facultyId,
         'description' => $description,
       ));
@@ -170,10 +170,10 @@ class GTCS12_DB
     $userMeta    = $wpdb->prefix . "usermeta";
     $capabilities= $wpdb->prefix . "capabilities";
 
-    $sql = "SELECT u.ID as Id, u.display_name as Name, 
-      (select studentid from {$enrollments} where courseid = '{$courseId}' AND studentid = u.id) as StudentId 
-      FROM {$users} u INNER JOIN {$userMeta} up 
-      ON u.id = up.user_id 
+    $sql = "SELECT u.ID as Id, u.display_name as Name,
+      (select studentid from {$enrollments} where courseid = '{$courseId}' AND studentid = u.id) as StudentId
+      FROM {$users} u INNER JOIN {$userMeta} up
+      ON u.id = up.user_id
       WHERE up.meta_key = '{$capabilities}' AND up.meta_value LIKE '%subscriber%';";
 
     $rows = $wpdb->get_results($sql);
@@ -198,14 +198,14 @@ class GTCS12_DB
   }
 
   // Creates ane enrolls students into the course using the CSV file in $_FILES
-  // 
+  //
   // The CSV file begins with a header row and contains the student's data in the
-  // following format:  
-  //    Login, Password, Email Address, First Name, Last Name, Display Name 
-  //    bbob, p@ss!1, bbob@example.com, Billy, Bob, TheAwesomeBillyBob 
-  // 
+  // following format:
+  //    Login, Password, Email Address, First Name, Last Name, Display Name
+  //    bbob, p@ss!1, bbob@example.com, Billy, Bob, TheAwesomeBillyBob
+  //
   // @param courseid  the course id of the course to enroll the student into
-  // @param fileindex the index in $_FILES of the csv containing the student data 
+  // @param fileindex the index in $_FILES of the csv containing the student data
   function EnrollStudentsViaFile($courseid, $fileindex)
   {
     if(!$courseid) {
@@ -214,7 +214,7 @@ class GTCS12_DB
     }
 
     $file = $_FILES[$fileindex]['tmp_name'];
-    
+
     if(!$file) {
       trigger_error(__FUNCTION__ . " - file was not provided.", E_USER_WARNING);
       return;
@@ -238,7 +238,7 @@ class GTCS12_DB
         'display_name' => $displayname,
         'role' => $role,
       );
-      
+
       // Creates the user
       $studentid = wp_insert_user($userdata);
 
@@ -247,15 +247,15 @@ class GTCS12_DB
           echo "Sorry, the username {$login} already exists! <br />";
         }
         continue;
-      } 
+      }
 
       $user = new WP_User($studentid);
       $user->add_role($role);
-     
-      // Enrolls the user 
+
+      // Enrolls the user
       $doEnroll = true;
-      $this->UpdateStudentEnrollment($courseid, $studentid, $doEnroll); 
-    } 
+      $this->UpdateStudentEnrollment($courseid, $studentid, $doEnroll);
+    }
   }
 
   function GetAllAssignments($courseId)
@@ -270,11 +270,11 @@ class GTCS12_DB
 
     // an assignment means who has no parent post
     // a submission means who has a parent post
-    $sql = "SELECT p.id as AssignmentId, p.post_title as Title, p.post_date as Date, a.id as AuthorId, a.display_name as AuthorName 
+    $sql = "SELECT p.id as AssignmentId, p.post_title as Title, p.post_date as Date, a.id as AuthorId, a.display_name as AuthorName
       FROM {$posts} p INNER JOIN {$users} a ON p.post_author = a.id
-      WHERE p.post_parent = 0 
+      WHERE p.post_parent = 0
       AND p.post_status = 'publish'
-      AND p.id IN (SELECT object_id FROM {$term_relationships} 
+      AND p.id IN (SELECT object_id FROM {$term_relationships}
     WHERE term_taxonomy_id = (SELECT term_id FROM {$terms} WHERE name = 'course:{$courseId}'));";
 
     $rows = $wpdb->get_results($sql);
@@ -283,13 +283,13 @@ class GTCS12_DB
   }
 
   // Uploads a file from $_FILES and returns its absolute file path
-  // 
+  //
   // @param file_index the index of $_FILES where the file is located
   // TODO check and handle errors
   function UploadFile($file_index)
   {
-    //TODO find out if there are any problems using ABSPATH 
-    if (!function_exists('wp_handle_upload')) 
+    //TODO find out if there are any problems using ABSPATH
+    if (!function_exists('wp_handle_upload'))
       require_once( ABSPATH . 'wp-admin/includes/file.php' );
 
     $file = $_FILES[$file_index];
@@ -302,28 +302,28 @@ class GTCS12_DB
     // TODO limit file types here?
 
     return $uploaded_file['file'];
-  } 
+  }
 
   // Uploads a file from $_FILES and attaches it to a post
   //
   // @param post_id       the id of the post the media is being added to
-  // @param file_index    the index in $_FILES where the file is located 
-  // @param title         the title to be used by the wordpress media library 
+  // @param file_index    the index in $_FILES where the file is located
+  // @param title         the title to be used by the wordpress media library
   // @param type_value    the value for the post's 'type' meta_key
   // @param is_featured_image   if true, the file will be used as the post's featured image
   function AttachFileToPost($post_id, $file_index, $title, $type_value, $is_featured_image)
   {
-    $file_name = $_FILES[$file_index]['name']; 
+    $file_name = $_FILES[$file_index]['name'];
 
     $uploaded_file_type = wp_check_filetype(basename($file_name));
 
-    $file_type = $uploaded_file_type['type']; 
+    $file_type = $uploaded_file_type['type'];
 
     if($file_type['ext'] == false) // TODO add error log here
       return; // attachment type not supported
 
     $attachment_args = array(
-      'post_mime_type' => $file_type, 
+      'post_mime_type' => $file_type,
       'post_title' => $title,
       'post_content' => '',
       'post_status' => 'inherit'
@@ -331,18 +331,18 @@ class GTCS12_DB
 
     $file_location = $this->UploadFile($file_index);
 
-    $attach_id = wp_insert_attachment($attachment_args, $file_location, $post_id); 
+    $attach_id = wp_insert_attachment($attachment_args, $file_location, $post_id);
     $meta_key = "type";
     $meta_value = $type_value;
     update_post_meta($attach_id, $meta_key, $meta_value);
 
-    if($is_featured_image) { 
+    if($is_featured_image) {
       // TODO handle errors
       require_once(ABSPATH . 'wp-admin/includes/image.php');
       $attach_data = wp_generate_attachment_metadata($attach_id, $file_location);
       wp_update_attachment_metadata($attach_id, $attach_data);
 
-      update_post_meta($post_id, '_thumbnail_id', $attach_id); 
+      update_post_meta($post_id, '_thumbnail_id', $attach_id);
     }
 
     return $attach_id;
@@ -364,7 +364,7 @@ class GTCS12_DB
     );
 
     // save post and get its id
-    $postId = wp_insert_post($assignmentPost);    
+    $postId = wp_insert_post($assignmentPost);
     add_post_meta($postId, "link", $link);
     add_post_meta($postId, "isEnabled", $isEnabled);
 
@@ -486,7 +486,7 @@ class GTCS12_DB
   {
     // save the assignment submission as post
     $assignmentPost = array(
-      'post_title'    => $title, 
+      'post_title'    => $title,
       'post_content'  => $description,
       'post_status'   => 'publish',
       'post_author'   => $authorId,
@@ -496,7 +496,7 @@ class GTCS12_DB
     );
 
     // save post and get its id
-    $postId = wp_insert_post($assignmentPost);    
+    $postId = wp_insert_post($assignmentPost);
 
     return $postId;
   }
@@ -521,7 +521,7 @@ class GTCS12_DB
     $users  = $wpdb->prefix . "users";
 
     $sql = ("SELECT p.id as SubmissionId, p.post_title as AssignmentName, p.post_date as Date
-      FROM {$posts} p WHERE p.post_author = $studentId AND p.post_status = 'publish' AND p.post_type = 'post';"); 
+      FROM {$posts} p WHERE p.post_author = $studentId AND p.post_status = 'publish' AND p.post_type = 'post';");
 
     $rows = $wpdb->get_results($sql);
 
@@ -535,8 +535,8 @@ class GTCS12_DB
     $posts = $wpdb->prefix . "posts";
 
     $sql = ("SELECT p.id as SubmissionId FROM $posts WHERE p.post_name = $submissionName AND p.post_parent > 0;");
-    
-    $rows = $wpdb->get_results($sql);  
+
+    $rows = $wpdb->get_results($sql);
 
     return $rows;
   }
@@ -557,8 +557,7 @@ class GTCS12_DB
     $id = wp_insert_user($userdata);
     $user = new WP_User($id);
     $user->add_role($role);
-    return $id; 
+    return $id;
   }
-
 }
 ?>
