@@ -9,6 +9,13 @@
 get_header(); ?>
 
 <?php
+$isProfessor = gtcs_user_has_role('author');
+
+if(!$isProfessor) {
+  echo "You do not have permission to view this page. </br />";
+  return;
+}
+
 $current_user = wp_get_current_user();
 $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID);
 
@@ -25,29 +32,8 @@ else
 $action = null;
 $assignment = null;
 
-if($getOperation == 'delete') // delete assignment
-{
-  if($_GET['assignid'])
-  {
-    $assignmentId = $_GET['assignid'];
-    $assignment_info = get_post($assignmentId);
-    if($assignment_info)
-    {
-      if($assignment_info->post_author == $current_user->ID)
-      {
-        wp_delete_post($assignmentId);
-        $action = 'deleted';
-      }
-      else
-      {
-        $action = "owner error";
-      }
-    }
-    else
-    {
-      $action = "found error";
-    }
-  }
+if($getOperation == 'delete') { // delete assignment
+  $action = DeleteAssignment($current_user->ID);
 }
 else if($getOperation == 'edit') // edit assignment(page loads with values from existing assignment)
 {
@@ -61,19 +47,51 @@ else if($getOperation == 'edit') // edit assignment(page loads with values from 
 $postOperation = $_POST ? $_POST['op'] : null;
 
 if($postOperation == 'update')
-  UpdateAssignment();
+  $action = UpdateAssignment($current_user->ID, $courseid);
 else if($postOperation == 'create')
-  CreateAssignment($current_user->ID, $courseid);
+  $action = CreateAssignment($current_user->ID, $courseid);
 
-function UpdateAssignment()
+function DeleteAssignment($authorid)
 {
-  $gtcs12_db->UpdateAssignment($_POST['assignid'], $current_user->ID, $courseid, $_POST['inptTitle'], $_POST['txtDescription']);
-  $action = "assignment edited";
+  if(empty($_GET['assignid'])) // assignment id not give
+    return "assign error";
+
+  $assignmentid = $_GET['assignid'];
+  $assignment_info = get_post($assignmentid);
+
+  if(!$assignment_info) // assignment does not exist
+    return "found error";
+
+  if($assignment_info->post_author != $authorid) // user does not have permission to delete assignment
+    return "owner error";
+
+  wp_delete_post($assignmentid);
+  DeleteAttachments($assignmentid, 'jar');
+  DeleteAttachments($assignmentid, 'image');
+
+  return "deleted";
 }
 
+// todo check for missing $_POST data
+function UpdateAssignment($authorid, $courseid)
+{
+  $assignmentid = $_POST['assignid'];
+  $title = $_POST['inptTitle'];
+  $description = $_POST['txtDescription'];
+  $assignmentLink = '';
+  $isEnabled = true;
+
+  global $gtcs12_db;
+  $gtcs12_db->UpdateAssignment($assignmentid, $authorid, $courseid, $title, $description, $assignmentLink, $isEnabled);
+  AttachFiles($assignmentid, 'jar', 'jar');
+  AttachFiles($assignmentid, 'image', 'image');
+
+  return "edited";
+}
+
+// todo check for missing $_POST data
 function CreateAssignment($authorid, $courseid)
 {
-  // todo check for errors
   $title = $_POST['inptTitle'];
   $description = $_POST['txtDescription'];
   $assignmentLink = '';
@@ -81,17 +99,41 @@ function CreateAssignment($authorid, $courseid)
 
   global $gtcs12_db;
   $assignmentid = $gtcs12_db->CreateAssignment($authorid, $courseid, $title, $description, $assignmentLink, $isEnabled);
+  AttachFiles($assignmentid, 'jar', 'jar');
+  AttachFiles($assignmentid, 'image', 'image');
 
-  if(!empty($_FILES['image'])) {
-    $imageTitle = pathinfo($_FILES['image']['name'], PATHINFO_FILENAME);
-    $gtcs12_db->AttachFileToPost($assignmentid, 'image', $imageTitle, 'image', true);
+  return "created";
+}
+
+// Checks the $_FILES array for images and attaches them to the given assignment
+// Removes any current attachments
+//
+// @param assignmentid    the id of the post holding the assignment information
+// @param fileindex       the index of $_FILES where the file is located
+// @param assignmentType  the type of attachment (ex. 'jar' or 'image')
+function AttachFiles($assignmentid, $fileIndex, $attachmentType)
+{
+  global $gtcs12_db;
+
+  if(file_exists($_FILES[$fileIndex]['tmp_name']) && is_uploaded_file($_FILES[$fileIndex]['tmp_name'])) {
+    DeleteAttachments($assignmentid, $attachmentType);
+    $title = pathinfo($_FILES[$fileIndex]['name'], PATHINFO_FILENAME);
+    $isImage = ($attachmentType == "image");
+    $gtcs12_db->AttachFileToPost($assignmentid, $fileIndex, $title, $attachmentType, $isImage);
   }
+}
 
-  if(!empty($_FILES['jar'])) {
-    $jarTitle = pathinfo($_FILES['jar']['name'], PATHINFO_FILENAME);
-    $gtcs12_db->AttachFileToPost($assignmentid, 'jar', $jarTitle, 'jar', false);
-  }
-
+// Removes attachments of the given type from the post
+//
+// @param assignmentid    the id of the post holding the assignment information
+// @param fileindex       the index of $_FILES where the file is located
+// @param assignmentType  the type of attachment (ex. 'jar' or 'image')
+function DeleteAttachments($assignmentid, $attachmentType)
+{
+  global $gtcs12_db;
+  $oldAttachments = $gtcs12_db->GetAttachments($assignmentid, $attachmentType);
+  foreach($oldAttachments as $attachment)
+    wp_delete_attachment($attachment->ID, true);
 }
 
 ?>
@@ -122,7 +164,7 @@ function CreateAssignment($authorid, $courseid)
         value="<?php echo $assignment ? $assignment->post_title : ''; ?>" required>
     </div>
     <div id='create-assignment-field'>Description
-      <?php $descriptionValue = $assignment ? $assignment->post_title : ''; ?>
+      <?php $descriptionValue = $assignment ? $assignment->post_content : ''; ?>
       <textarea cols="25" rows="10" autocomplete="off" name="txtDescription" required><?php echo $descriptionValue; ?></textarea>
     </div>
     <div id='create-assignment-field'>Sample File
@@ -132,7 +174,7 @@ function CreateAssignment($authorid, $courseid)
       <input class='create-assignment' type="file" name="image" accept="image/*">
     </div>
 
-  <?php if($getOperation == 'create' || $getOperation == '') : ?>
+  <?php if($getOperation == 'create' || $getOperation == 'delete' || $getOperation == '') : ?>
     <input type="hidden" name="op" value="create">
     <input type="submit" value="Create"/>
   <?php elseif($getOperation == 'edit') : ?>
