@@ -13,9 +13,9 @@ $current_user = wp_get_current_user();
 $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID);
 
 if($_GET['courseid'] != null)
-  $courseId = $_GET['courseid'];
+  $courseid = $_GET['courseid'];
 else
-  $courseId = $courses[0]->Id;
+  $courseid = $courses[0]->Id;
 
 if($_GET['op'] == 'delete') // delete assignment
 {
@@ -53,12 +53,12 @@ else if($_GET['op'] == 'edit') // edit assignment(page loads with values from ex
 if($_POST['op'] == 'update') // update assignment
 {
   echo
-    $gtcs12_db->UpdateAssignment($_POST['assignid'], $current_user->ID, $courseId, $_POST['inptTitle'], $_POST['txtDescription']);
+    $gtcs12_db->UpdateAssignment($_POST['assignid'], $current_user->ID, $courseid, $_POST['inptTitle'], $_POST['txtDescription']);
   $action = "assignment edited";
 }
 else if($_POST['op'] == 'create') // create assignment
 {
-  $assignmentId = $gtcs12_db->CreateAssignment($current_user->ID, $courseId, $_POST['inptTitle'], $_POST['txtDescription']);
+  $assignmentId = $gtcs12_db->CreateAssignment($current_user->ID, $courseid, $_POST['inptTitle'], $_POST['txtDescription']);
   $authorId = $current_user->ID;
 
 }
@@ -107,7 +107,7 @@ else if($_POST['op'] == 'create') // create assignment
   <?php endif ?>
 
     <input type="hidden" name="assignid" value="<?php echo $assignmentId ?>">
-    <input type="hidden" name="courseid" value="<?php echo $courseId ?>">
+    <input type="hidden" name="courseid" value="<?php echo $courseid ?>">
     <a href="<?php echo site_url('/my-class/') ?>"><button type="button">Cancel</button></a>
   </div> <!-- Create-Assignment-Box-Left -->
 </form>
@@ -117,7 +117,7 @@ else if($_POST['op'] == 'create') // create assignment
   <ul class="sidebar-menu">
   <?php if(!$courses) : ?>
     <?php foreach($courses as $course) : ?>
-      <?php if($courseId == $course->Id) : ?>
+      <?php if($courseid == $course->Id) : ?>
         <li class="sidebar-menu-selected">
           <?php echo $course->Name ?>
           <?php echo '[' . $course->Quarter . ' ' . $course->Year . ']'?>
@@ -148,7 +148,7 @@ else if($_POST['op'] == 'create') // create assignment
       </tr>
     </thead>
     <tbody>
-      <?php $assignments = $gtcs12_db->GetAllAssignments($courseId) ?>
+      <?php $assignments = $gtcs12_db->GetAllAssignments($courseid) ?>
       <?php if($assignments) : ?>
         <?php foreach($assignments as $assignment) : ?>
           <?php $assignLink = site_url('/assignment/?id=' . $assignment->AssignmentId); ?>
@@ -163,7 +163,7 @@ else if($_POST['op'] == 'create') // create assignment
                     <option value="delete">Delete</option>
                   </select>
                   <input type="hidden" name="assignid" value="<?php echo $assignment->AssignmentId ?>">
-                  <input type="hidden" name="courseid" value="<?php echo $courseId ?>">
+                  <input type="hidden" name="courseid" value="<?php echo $courseid ?>">
                   <input type="submit" value="Confirm"/>
                 </form>
               </th>
