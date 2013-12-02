@@ -1,7 +1,7 @@
 <?php
 /**
- * Template Name: Debug 
- * Description: 
+ * Template Name: Debug
+ * Description:
  *
  * @package WordPress
  * @subpackage Twenty_Eleven
@@ -34,11 +34,11 @@ function add_user_from_data($user)
 {
   global $gtcs12_db;
   $user_id = $gtcs12_db->AddUser(
-    $user->login, 
-    $user->password, 
-    $user->email, 
-    $user->firstname, 
-    $user->lastname, 
+    $user->login,
+    $user->password,
+    $user->email,
+    $user->firstname,
+    $user->lastname,
     $user->role
   );
   return $user_id;
@@ -47,7 +47,7 @@ function add_user_from_data($user)
 function upload_users()
 {
   $file = $_FILES;
-  // *TODO* document and check errors from 
+  // *TODO* document and check errors from
   // http://www.php.net/manual/en/features.file-upload.common-pitfalls.php
   if($file["file"]["error"] > 0)
     return "error uploading: " . $file["file"]["error"];
@@ -63,7 +63,7 @@ function upload_users()
 function upload_courses()
 {
   $file = $_FILES;
-  // *TODO* document and check errors from 
+  // *TODO* document and check errors from
   // http://www.php.net/manual/en/features.file-upload.common-pitfalls.php
   if($file["file"]["error"] > 0)
     return "error uploading: " . $file["file"]["error"];
@@ -74,7 +74,7 @@ function upload_courses()
   if($data == NULL)
     return "error decoding json";
 
-  global $gtcs12_db;  
+  global $gtcs12_db;
 
   foreach ($data->courses as $course) {
     //*TODO* check for non-existent professor
@@ -82,17 +82,17 @@ function upload_courses()
     $professor_id = $professor->id;
 
     $course_id = $gtcs12_db->AddCourse(
-      $course->title, 
-      $course->quarter, 
-      $course->year, 
+      $course->title,
+      $course->quarter,
+      $course->year,
       $professor_id,
-      $course->description 
+      $course->description
     );
 
     foreach ($course->assignments as $assignment) {
       $assignment_id = $gtcs12_db->CreateAssignment(
-        $professor_id, 
-        $course_id, 
+        $professor_id,
+        $course_id,
         $assignment->title,
         $assignment->description
       );
