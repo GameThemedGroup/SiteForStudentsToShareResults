@@ -90,7 +90,7 @@ else if($postOperation == 'create') // create assignment
   <div id="action-box">Assignment deleted</div>
 <?php endif ?>
 
-<form action="<?php echo site_url('/manage-assignments/') ?>" method="post" enctype="multipart/form-data">
+<form action="<?php echo get_permalink() . "?courseid={$courseid}"; ?>" method="post" enctype="multipart/form-data">
   <div id='create-assignment-box-left'>
     <div id='pagetitle'>
       <?php echo ($getOperation == 'edit' ? "Edit Assignment" : "Create Assignment"); ?>
