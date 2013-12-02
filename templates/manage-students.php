@@ -13,9 +13,12 @@ get_header(); ?>
   $current_user = wp_get_current_user();
   $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID);
 
-  $courseId = $courses ? $courses[0]->Id : '';
+  $courseId = $_GET ? $_GET['courseid'] : null;
 
-  $operation = $_POST ? $_POST['op'] : '';
+  if($courseId == null && $courses != null)
+    $courseId = $courses[0]->Id;
+
+  $operation = $_POST ? $_POST['op'] : null;
 
   if(!$operation) // do nothing
   {}
@@ -99,7 +102,7 @@ get_header(); ?>
 
   <div id="create-student-box-bottom">
     <div id='create-student-title'>Create students via file</div>
-    <form action="<?php echo get_permalink(); ?>" method="post" enctype="multipart/form-data">
+    <form action="<?php echo get_permalink() . "/?courseid={$courseId}" ?>" method="post" enctype="multipart/form-data">
       <div id="create-student-field">
         <p class="create-student-bottom">Spreadsheet</p>
         <input type="file" name="studentdata">
