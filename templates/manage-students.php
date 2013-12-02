@@ -1,18 +1,18 @@
 <?php
 /*
- * Template Name: Manage Students 
+ * Template Name: Manage Students
  * Description: Allows for the creation/deletion of students
  *
  * Author: Andrey Brushchenko
  * Date: 11/18/2013
  */
- 
+
 get_header(); ?>
- 
+
 <?php
   $current_user = wp_get_current_user();
-  $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID); 
-  
+  $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID);
+
   $courseId = $courses ? $courses[0]->Id : '';
 
   $operation = $_POST ? $_POST['op'] : '';
@@ -20,19 +20,19 @@ get_header(); ?>
   if(!$operation) // do nothing
   {}
   else if ($operation == 'create') // create new user
-  {  
+  {
     $newUserId = $gtcs12_db->AddUser($_POST['inptUserName'], 'password', $_POST['inptEmail'], $_POST['inptFirstName'], $_POST['inptLastName'], 'subscriber');
     $gtcs12_db->UpdateStudentEnrollment($courseId, $newUserId, true);
   }
   else if ($operation === 'delete') // unenroll and delete student
   {
     $oldUserId = $_POST['studentid'];
-  
-    if(!function_exists('wp_delete_user')) 
+
+    if(!function_exists('wp_delete_user'))
     {
-      include(ABSPATH . './wp-admin/includes/user.php'); 
+      include(ABSPATH . './wp-admin/includes/user.php');
     }
-  
+
     wp_delete_user($oldUserId);
     $gtcs12_db->UpdateStudentEnrollment($courseId, $oldUserId, false);
   }
@@ -42,9 +42,9 @@ get_header(); ?>
     $gtcs12_db->EnrollStudentsViaFile($courseid, 'studentdata');
   }
 ?>
- 
+
 <!DOCTYPE html>
-<html lang="en">    
+<html lang="en">
   <div id="sidebar-menu">
     <div id="sidebar-menu-title">My Courses  </div>
     <ul class="sidebar-menu">
@@ -55,7 +55,7 @@ get_header(); ?>
         <p class="sidebar-menu-top"><?php echo $course->Name ?></p>
         <p class="sidebar-menu-bottom"><?php echo $course->Quarter . ', ' . $course->Year ?></p>
       </li>
-<?php     else : ?> 
+<?php     else : ?>
       <li class="sidebar-menu">
         <a class="sidebar-menu" href="<?php echo site_url('/manage-students/?courseid=' . $course->Id) ?>">
           <p class="sidebar-menu-top"><?php echo $course->Name ?></p>
@@ -73,34 +73,34 @@ get_header(); ?>
   <div id="create-student-box-top">
     <div id='create-student-title'>Create student</div>
     <form action="<?php echo site_url('/manage-students/?courseid=' . $courseId) ?>" method="post">
-      <div id="create-student-field">               
+      <div id="create-student-field">
         <p class="create-student">Username</p>
         <input class='create-student' type="text" name="inptUserName" required>
       </div>
-      <div id="create-student-field">   
+      <div id="create-student-field">
         <p class="create-student">First Name</p>
         <input class='create-student' type="text" name="inptFirstName" required>
       </div>
-      <div id="create-student-field">   
+      <div id="create-student-field">
         <p class="create-student">Last Name</p>
         <input class='create-student' type="text" name="inptLastName" required>
-      </div>  
-      <div id="create-student-field">   
+      </div>
+      <div id="create-student-field">
         <p class="create-student">Email</p>
         <input class='create-student' type="text" name="inptEmail" required>
-      </div> 
+      </div>
       <div id="create-student-buttons">
-        <input type="hidden" name="op" value="create">    
-        <input type="submit" value="Create"/> 
+        <input type="hidden" name="op" value="create">
+        <input type="submit" value="Create"/>
         <a href="<?php echo site_url('/my-class/') ?>"><button type="button">Cancel</button></a>
       </div>
     </form>
   </div>
-   
+
   <div id="create-student-box-bottom">
     <div id='create-student-title'>Create students via file</div>
     <form action="<?php echo get_permalink(); ?>" method="post" enctype="multipart/form-data">
-      <div id="create-student-field">   
+      <div id="create-student-field">
         <p class="create-student-bottom">Spreadsheet</p>
         <input type="file" name="studentdata">
       </div>
@@ -112,7 +112,7 @@ get_header(); ?>
       </div>
     </form>
   </div>
-   
+
   <div id='table'>
     <div id='table-title'>Manage enrolled students</div>
     <table>
@@ -125,7 +125,7 @@ get_header(); ?>
       <tbody>
 <?php $students = $gtcs12_db->GetStudents($courseId); ?>
 <?php $studentCount = 0; ?>
-<?php foreach($students as $student) : ?> 
+<?php foreach($students as $student) : ?>
 <?php   if ($student->StudentId != NULL) : ?>
         <tr>
           <th><?php echo $student->Name; ?></th>
@@ -134,10 +134,10 @@ get_header(); ?>
               <select name="op">
                 <option disabled="disabled" selected>Choose an action</option>
                 <option value="delete">Delete</option>
-              </select>   
-              <input type="hidden" name="studentid" value="<?php echo $student->Id ?>">              
+              </select>
+              <input type="hidden" name="studentid" value="<?php echo $student->Id ?>">
               <input type="hidden" name="courseid" value="<?php echo $courseId; ?>">
-              <input type="submit" value="Confirm"/>  
+              <input type="submit" value="Confirm"/>
             </form>
           </th>
           <?php $studentCount++ ?>
@@ -152,5 +152,5 @@ get_header(); ?>
     </table>
   </div>
 </html>
- 
+
 <?php get_footer() ?>
