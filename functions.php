@@ -6,17 +6,23 @@ $gtcs12_db = new GTCS12_DB(); // todo change these to static methods
 
 require_once('admin/theme_init.php');
 
-add_filter('login_redirect', login_redirect);
+add_filter('login_redirect', 'login_redirect');
 function login_redirect() {
   return site_url('/main');
 }
 
 // Allows jar files to be uploaded to the media library
-add_filter('upload_mimes', gtcs_add_custom_mime_types);
+add_filter('upload_mimes', 'gtcs_add_custom_mime_types');
 function gtcs_add_custom_mime_types($existing_mimes)
 {
   $existing_mimes['jar'] = 'application/x-java-applet';
   return $existing_mimes;
+}
+
+function htmldump($variable, $height="15em") {
+  echo "<pre style=\"border: 1px solid #000; height: {$height}; overflow: auto; margin: 0.5em;\">";
+  var_dump($variable);
+  echo "</pre>\n";
 }
 
 /**
