@@ -60,16 +60,38 @@ else if($getOperation == 'edit') // edit assignment(page loads with values from 
 
 $postOperation = $_POST ? $_POST['op'] : null;
 
-if($postOperation == 'update') // update assignment
+if($postOperation == 'update')
+  UpdateAssignment();
+else if($postOperation == 'create')
+  CreateAssignment($current_user->ID, $courseid);
+
+function UpdateAssignment()
 {
-  echo
-    $gtcs12_db->UpdateAssignment($_POST['assignid'], $current_user->ID, $courseid, $_POST['inptTitle'], $_POST['txtDescription']);
+  $gtcs12_db->UpdateAssignment($_POST['assignid'], $current_user->ID, $courseid, $_POST['inptTitle'], $_POST['txtDescription']);
   $action = "assignment edited";
 }
-else if($postOperation == 'create') // create assignment
+
+function CreateAssignment($authorid, $courseid)
 {
-  $assignmentId = $gtcs12_db->CreateAssignment($current_user->ID, $courseid, $_POST['inptTitle'], $_POST['txtDescription']);
-  $authorId = $current_user->ID;
+  // todo check for errors
+  $title = $_POST['inptTitle'];
+  $description = $_POST['txtDescription'];
+  $assignmentLink = '';
+  $isEnabled = true;
+
+  global $gtcs12_db;
+  $assignmentid = $gtcs12_db->CreateAssignment($authorid, $courseid, $title, $description, $assignmentLink, $isEnabled);
+
+  if(!empty($_FILES['image'])) {
+    $imageTitle = pathinfo($_FILES['image']['name'], PATHINFO_FILENAME);
+    $gtcs12_db->AttachFileToPost($assignmentid, 'image', $imageTitle, 'image', true);
+  }
+
+  if(!empty($_FILES['jar'])) {
+    $jarTitle = pathinfo($_FILES['jar']['name'], PATHINFO_FILENAME);
+    $gtcs12_db->AttachFileToPost($assignmentid, 'jar', $jarTitle, 'jar', false);
+  }
+
 }
 
 ?>
@@ -100,15 +122,14 @@ else if($postOperation == 'create') // create assignment
         value="<?php echo $assignment ? $assignment->post_title : ''; ?>" required>
     </div>
     <div id='create-assignment-field'>Description
-      <textarea cols="25" rows="10" autocomplete="off" name="txtDescription" required>
-        <?php echo $assignment ? $assignment->post_content : ''; ?>
-      </textarea>
+      <?php $descriptionValue = $assignment ? $assignment->post_title : ''; ?>
+      <textarea cols="25" rows="10" autocomplete="off" name="txtDescription" required><?php echo $descriptionValue; ?></textarea>
     </div>
     <div id='create-assignment-field'>Sample File
-      <input class='create-assignment' type="file" name="filJar">
+      <input class='create-assignment' type="file" name="jar">
     </div>
     <div id='create-assignment-field'>Preview Image
-      <input class='create-assignment' type="file" name="filImage" accept="image/png">
+      <input class='create-assignment' type="file" name="image" accept="image/*">
     </div>
 
   <?php if($getOperation == 'create' || $getOperation == '') : ?>
