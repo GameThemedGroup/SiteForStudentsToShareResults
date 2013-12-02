@@ -17,7 +17,10 @@ $courseid = $_GET ? $_GET['courseid'] : null;
 if($courseid == null && $courses != null)
   $courseid = $courses[0]->Id; // default to first course
 
-$getOperation = $_GET ? $_GET['op'] : null;
+if(!empty($_GET['op']))
+  $getOperation = $_GET['op'];
+else
+  $getOperation = null;
 
 $action = null;
 $assignment = null;
@@ -125,7 +128,7 @@ else if($postOperation == 'create') // create assignment
 <div id="sidebar-menu">
   <div id="sidebar-menu-title">Courses</div>
   <ul class="sidebar-menu">
-  <?php if(!$courses) : ?>
+  <?php if($courses) : ?>
     <?php foreach($courses as $course) : ?>
       <?php if($courseid == $course->Id) : ?>
         <li class="sidebar-menu-selected">
