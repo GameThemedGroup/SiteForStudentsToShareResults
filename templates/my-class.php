@@ -64,7 +64,7 @@ echo "[<a href=\"" . $professor_link . "\">" . $professor->user_login . '</a>]';
         </div>
         <div id="classdescription">
             <b>Description </b>
-        <?php echo ($course->Description ? $course->Description  : "This course has no description") ?>
+        <?php echo ($course->Description ? nl2br($course->Description)  : "This course has no description") ?>
         </div>
     </div>
 
@@ -120,6 +120,7 @@ echo "[<a href=\"" . $professor_link . "\">" . $professor->user_login . '</a>]';
           <tr>
             <th>Assignment</th>
             <th>Date Posted</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -128,7 +129,7 @@ if($assignments)
 {
   foreach($assignments as $assignment) 
   {
-    $assignlink = site_url('/assignment/?id=' . $assignment->AssignmentId);
+    $assignlink = site_url('/assignment/?assignid=' . $assignment->AssignmentId);
     echo "<tr>";      
     echo "<th class=\"assignment-table\"><a href=" . $assignlink . ">" . $assignment->Title . "</a></th>";
     echo "<th class=\"assignment-table\">" . date('F d, Y', strtotime($assignment->Date)) . "</th>";
@@ -144,7 +145,7 @@ elseif($isOwner == false)
 ?>
 <?php if($isOwner) : ?>
         <tr>
-          <th class="action" colspan="2">
+          <th class="action" colspan="3">
             <a class="action" href="<?php echo site_url('/manage-assignments/?courseid=' . $courseId) ?>">Create an assignment</a>
           </th>
         </tr>
