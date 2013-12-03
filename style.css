@@ -347,7 +347,7 @@ hr {
 
 /* Text elements */
 p {
-  margin-bottom: 1.625em;
+  margin-bottom: 3px;
 }
 ul, ol {
   margin: 0 0 1.625em 2.5em;
@@ -2796,7 +2796,7 @@ img {
   float:left;
   border-style:solid;
   border-width:1px;
-  border-color:white;
+  border-color:rgb(130,130,130);
 }
 /*----------------- Project Sidebar -----------------*/
 /* a sidebar that has a mini view of projects */
@@ -2960,7 +2960,6 @@ img {
 }
 /*--------------- Profile Info ----------------*/
 /* User information shown in the profile menu */
-
 #profile-title {
   float:left;
   margin:9px 0px 0px 9px;
@@ -2977,7 +2976,7 @@ img {
   width:720px;
   padding:10px 5px 10px 5px;
   margin:0px 0px 15px 9px;
-  background-color:rgb(218,218,218);
+  background-color:rgb(235,235,235);
   border-style: solid;
   border-width:0px 0px 3px 0px;
   border-color:rgb(165,165,165);
@@ -2998,7 +2997,7 @@ img {
   padding:2px;
   border-style:solid;
   border-width:0px 0px 1px 0px;
-  border-color:rgb(240,240,240);
+  border-color:rgb(255,255,255);
 }
 /*--------------- Profile Menu ----------------*/
 /* Menu for selecting submissions or comments made by owner of profile */
@@ -3232,34 +3231,6 @@ input.filterselect {
   border-width:0px 0px 0px 0px;
   border-color:rgb(225,225,225);
 }
-/*---------------- Assignment Submissions -----------------*/
-#assignment-info {
-  margin:0px 0px 0px 15px;
-}
-#assignment-submissions {
-  width:95%;
-  margin:15px 0px 0px 15px;
-}
-#submission-header {
-  background-color:red;
-}
-#submission {
-  height:32px;
-  width:820px;
-  border-style:solid;
-  border-width:1px 0px 0px 0px;
-  border-color:rgb(225,225,225);
-}
-#submission-name {
-  float:left;
-  padding:5px 5px 5px 5px;
-  width:650px;
-}
-#submission-date {
-  float:left;
-  padding:5px 5px 5px 5px;
-  width:150px;
-}
 /*---------------- Manage Course Form -----------------*/
 /* the form used to create/edit courses */
 select.create-course {
@@ -3269,21 +3240,43 @@ input.create-course {
   width:300px;
 }
 p.create-course {
-  float:left;
   width:60px;
-  padding:0px;
-  margin:0px;
+  font-size:14px;
+  font-weight:bold;
+  float:left;
+  padding:0px 10px 0px 0px;
 }
 #create-course-box {
-  margin:0px 0px 0px 15px;
+  margin:8px 0px 8px 8px;
   width:720px;
+  float:left;
+}
+#create-course-title {
+  font-family:Tahoma, Geneva, sans-serif;
+  font-size:20px;
+  border-radius:5px 5px 0px 0px;
+  font-family:Tahoma, Geneva, sans-serif;
+  padding-left:8px;
+  background-color:rgb(50,50,50);
+  color:white;
 }
 #create-course-field {
+  padding:3px 0px 3px 8px;
   background-color:rgb(235,235,235);
-  padding:5px 5px 5px 10px;
   border-style:solid;
-  border-top-width:1px;
-  border-top-color:rgb(200,200,200);
+  border-width:1px 1px 0px 1px;
+  border-color:rgb(210,210,210);
+  border-color:rgb(218,218,218);
+  border-top-color:rgb(185,185,185);
+}
+#create-course-buttons {
+  padding:0px 0px 2px 2px;
+  border-radius:0px 0px 5px 5px;
+  background-color:rgb(160,160,160);
+  border-style:solid;
+  border-width:1px 0px 2px 0px;
+  border-top-color:rgb(130,130,130);
+  border-bottom-color:rgb(110,110,110);
 }
 /*---------------- Manage Assignment Form -----------------*/
 /* the form used to create/edit assignments */
@@ -3300,27 +3293,47 @@ img.create-assignment {
   height:300px;
   margin:3px;
 }
-#create-assignment-box-left {
-  margin:0px 0px 0px 15px;
+p.create-assignment {
+  font-size:14px;
+  font-weight:bold;
+  float:left;
+  padding:0px 10px 0px 0px;
+}
+#create-assignment-box {
+  margin:8px 0px 8px 8px;
   width:720px;
   float:left;
 }
-#create-assignment-box-right {
-  margin:40px 0px 0px 1px;
-  width:350px;
-  height:410px;
-  float:left;
+#create-assignment-title {
+  font-family:Tahoma, Geneva, sans-serif;
+  font-size:20px;
+  border-radius:5px 5px 0px 0px;
+  font-family:Tahoma, Geneva, sans-serif;
+  padding-left:8px;
+  background-color:rgb(50,50,50);
+  color:white;
 }
 #create-assignment-field {
   padding:3px 0px 3px 8px;
   background-color:rgb(235,235,235);
   border-style:solid;
-  border-top-width:1px;
-  border-top-color:rgb(200,200,200);
+  border-width:1px 1px 0px 1px;
+  border-color:rgb(210,210,210);
+  border-color:rgb(218,218,218);
+  border-top-color:rgb(185,185,185);
+}
+#create-assignment-buttons {
+  padding:0px 0px 2px 2px;
+  border-radius:0px 0px 5px 5px;
+  background-color:rgb(160,160,160);
+  border-style:solid;
+  border-width:1px 0px 2px 0px;
+  border-top-color:rgb(130,130,130);
+  border-bottom-color:rgb(110,110,110);
 }
 /*---------------- Manage Student Form -----------------*/
 /* the form used to create students */
-p.create-student {
+p.create-student-top {
   float:left;
   width:90px;
   padding:0px;
@@ -3338,9 +3351,6 @@ p.create-student-bottom {
 }
 input.create-student {
   width:300px;
-  border-style:solid;
-  border-width:1px;
-  border-color:rgb(180,180,180);
 }
 #create-student-title {
   font-family:Tahoma, Geneva, sans-serif;
@@ -3363,7 +3373,7 @@ input.create-student {
 }
 #create-student-field {
   padding:3px 0px 3px 8px;
-  background-color:rgb(225,225,225);
+  background-color:rgb(235,235,235);
   border-style:solid;
   border-width:1px 1px 0px 1px;
   border-color:rgb(210,210,210);
@@ -3388,17 +3398,29 @@ select.manage-profile {
 }
 input.manage-profile {
   width:300px;
+  vertical-align:middle;
 }
 p.manage-profile  {
   float:left;
   width:90px;
   padding:3px 0px 3px 8px;
   margin:0px;
+  font-weight:bold;
+  font-size:14px;
 }
 #manage-profile-box {
-  margin:0px 0px 15px 15px;
-  width:420px;
+  margin:8px 0px 8px 8px;
+  width:486px;
   float:left;
+}
+#manage-profile-title {
+  font-family:Tahoma, Geneva, sans-serif;
+  font-size:20px;
+  border-radius:5px 5px 0px 0px;
+  font-family:Tahoma, Geneva, sans-serif;
+  padding-left:8px;
+  background-color:rgb(50,50,50);
+  color:white;
 }
 #manage-profile-field {
   width:100%;
@@ -3407,6 +3429,15 @@ p.manage-profile  {
   border-style:solid;
   border-top-width:1px;
   border-top-color:rgb(200,200,200);
+}
+#manage-profile-buttons {
+  padding:0px 0px 2px 2px;
+  border-radius:0px 0px 5px 5px;
+  background-color:rgb(160,160,160);
+  border-style:solid;
+  border-width:1px 0px 2px 0px;
+  border-top-color:rgb(130,130,130);
+  border-bottom-color:rgb(110,110,110);
 }
 /*------------ 404 Page ------------*/
 #notfound{
@@ -3417,7 +3448,7 @@ p.manage-profile  {
 /* a box that shows a message of what action was performed */
 #action-box{
   padding:10px;
-  margin:5px;
+  margin:50px 8px 8px 8px;
   clear:both;
   text-align:center;
   border-style:solid;
@@ -3429,7 +3460,7 @@ p.manage-profile  {
 /* a box that appears when an error occurs */
 #error-box{
   padding:10px;
-  margin:5px;
+  margin:50px 8px 8px 8px;
   clear:both;
   text-align:center;
   border-style:solid;
@@ -3474,10 +3505,11 @@ th.action {
   text-align:center;
   padding:2px 8px 2px 8px;
   border-style:solid;
-  border-width:1px 0px 0px 1px;
+  border-width:1px 0px 1px 1px;
   border-color:white;
+  border-bottom-color:rgb(190,190,190);
   border-radius:0px 0px 5px 5px;
-  background:rgb(233,233,233);
+  background:rgb(218,218,218);
 }
 /*--------------- Sidebar Menu ----------------*/
 /* a general sidebar menu used on many pages */
@@ -3497,7 +3529,7 @@ th.action {
 ul.sidebar-menu {
   list-style-type:none;
   margin:0px;
-  padding:3px;
+  padding:3px 3px 0px 3px;
   border-style:solid;
   border-width:1px;
   border-color:rgb(200,200,200);
@@ -3537,58 +3569,86 @@ li.sidebar-menu-center{
   background-color:rgb(233,233,233);
 }
 /*--------------- Assignment Page ----------------*/
-#assignment-box {
-  margin:8px 0px 8px 8px;
-  width:720px;
+/* a menu that shows assignment information */
+a.link {
   float:left;
-}
-#assignment-title {
-  background-color:rgb(90,90,90);
-  padding:0px 0px 0px 8px;
-  font-size:18px;
-  font-weight:bold;
-  width:100%;
-  color:white;
-}
-#assignment-left {
-  float:left;
-
-  
-}
-#assignment-meta img {
-  
-}
-#assignment-meta {
+  display: block;
+  padding:0px 5px 0px 5px;
+  margin:5px 0px 10px 0px;
   border-style:solid;
-  border-width:0px 1px 1px 1px;
-  border-left-color:rgb(200,200,200);
-  border-right-color:rgb(200,200,200);
-  border-bottom-color:rgb(170,170,170);
-  background-color:rgb(233,233,233);
-  padding:5px;
-  font-size:13px;
+  border-width:0px 1px 0px 1px;
+  border-color:rgb(225,225,225);
 }
-#assignment-right {
-  margin:0px 0px 0px 2px;
+#assignment-whole {
   float:left;
+  width:720px;
+  margin:10px 0px 15px 9px;
+}
+#assignnment-title {
+  float:left;
+  padding:3px 8px 3px 10px;
+  width:703px;
+  font-family:Tahoma, Geneva, sans-serif;
+  font-size:20px;
+  background-color:rgb(50,50,50);
+  color:white;
+  border-radius:5px 5px 0px 0px;
+}
+#assignment-top {
+  float:left;
+  height:160px;
+  background-color:rgb(238,238,238);
+  padding:5px 5px 5px 8px;
   border-style:solid;
   border-width:1px;
-  border-radius:4px;
-  border-color:rgb(220,220,220);
+  border-color:rgb(211,211,211);
+  border-bottom-color:rgb(180,180,180);
+}
+p.assignment-meta {
+  float:left;
   width:500px;
-  min-height:300px;
+  font-size:17px;
+  padding:0px 0px 0px 3px;
+  margin:5px 0px 0px 5px;
+}
+p.assignment-meta-title {
+  font-weight:bold;
+  font-size:17px;
+}
+#assignment-description {
+  margin-top:5px;
+  padding:10px 13px 10px 13px;
+  background-color:green;
+  clear:both;
+  background-color:rgb(215,215,215);
+  border-style:solid;
+  border-width:0px 1px 1px 1px;
+  border-color:rgb(190,190,190);
+  border-bottom-color:rgb(170,170,170);
+  border-radius:0px 0px 5px 5px;
+  max-height:600px;
+  overflow:auto;
+}
+#assignment-buttons {
+  float:left;
+  margin:30px 0px 0px 5px;
+  width:528px;
+  height:32px;
+  padding:5px 0px 0px 0px;
+  border-style:solid;
+  border-top-width:1px;
+  border-color:rgb(224,224,224);
 }
 #assignment-button {
   float:left;
-  width:164px;
+  width:130px;
   margin:2px;
   text-align:center;
   padding:0px 3px 0px 3px;
   border-style:solid;
   border-width:1px;
-  border-color:rgb(200,200,200);
-  border-bottom-color:rgb(165,165,165);
-  background-color:rgb(233,233,233);
+  border-color:rgb(210,210,210);
+  border-bottom-color:rgb(185,185,185);
+  background-color:rgb(245,245,245);
   border-radius:4px;
 }
-

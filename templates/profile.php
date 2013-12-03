@@ -78,14 +78,16 @@ if(is_user_logged_in())
   </div> 
 
 <?php if($isOwner) : ?>
-    <div id="sidebar-menu">
-        <div id="sidebar-menu-title">Options</div>
-        <ul class="sidebar-menu">
-            <li class="sidebar-menu">
-                <a href="<?php echo site_url('/manage-profile/?user=' . $currentUser->ID) ?>">Edit Profile</a>
-            </li>
-        </ul>
-    </div>
+  <div id="sidebar-menu">
+    <div id="sidebar-menu-title">Options</div>
+    <ul class="sidebar-menu">
+      <li class="sidebar-menu">
+        <a href="<?php echo site_url('/manage-profile/?user=' . $currentUser->ID) ?>">
+          <p class="sidebar-menu-top">Edit Profile</p> 
+        </a>
+      </li>
+    </ul>
+  </div>
 <?php endif ?>
 
     <div id="profile">
