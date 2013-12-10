@@ -113,7 +113,7 @@ function create_default_menus()
 {
   $page_id = array();
   $page_id['main'] = get_page_by_title('Main')->ID;
-  $page_id['myclass'] = get_page_by_title('My Class')->ID;
+  $page_id['myclass'] = get_page_by_title('MyClass')->ID;
   $page_id['projects'] = get_page_by_title('Projects')->ID;
 
   $default_menus = array(
