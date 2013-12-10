@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+
+<students>
+  <subscriber>
+    <login>bbob</login>
+    <user_email>bbob@example.com</user_email>
+    <first_name>Billy</first_name>
+    <last_name>Bob</last_name>
+    <display_name>Barnaby Bob</display_name>
+  </subscriber>
+
+  <subscriber>
+    <login>lsanders</login>
+    <user_email>lsanders@example.com</user_email>
+    <first_name>Liz</first_name>
+    <last_name>Sanders</last_name>
+    <display_name>Lizzy Sanderosa</display_name>
+  </subscriber>
+
+  <subscriber>
+    <login>rladia</login>
+    <user_email>rladia@example.com</user_email>
+    <first_name>Rodelle</first_name>
+    <last_name>Ladia</last_name>
+    <display_name>Not Rochelle</display_name>
+  </subscriber>
+
+  <subscriber>
+    <login>abr</login>
+    <user_email>abr@example.com</user_email>
+    <first_name>Andrey</first_name>
+    <last_name>Brushcehhhhhhh</last_name>
+    <display_name>The Brush</display_name>
+  </subscriber>
+</students>
+
+<professors>
+  <author>
+    <login>ksung</login>
+    <user_email>ksung@example.com</user_email>
+    <first_name>Kelvin</first_name>
+    <last_name>Sung</last_name>
+  </author>
+  <author>
+    <login>czander</login>
+    <user_email>czander@example.com</user_email>
+    <first_name>Carol</first_name>
+    <last_name>Zander</last_name>
+  </author>
+  <author>
+    <login>mbernstein</login>
+    <user_email>mbernstein@example.com</user_email>
+    <first_name>Morris</first_name>
+    <last_name>Bernstein</last_name>
+  </author>
+</professors>
+
+<courses>
+  <course>
+    <professor>ksung</professor>
+    <title>CSS 290</title>
+    <year>2013</year>
+    <quarter>Summer</quarter>
+    <description>This class examines application development on mobile devices in the context of fundamental concepts in programming. The class builds on students knowledge from the introductory programming classes and begins with introducing software development environments and models, follows by iterating through programming concepts required to work with input devices and sensors found on most mobile devices. This will be a hands-on class where students will build applications during and after each lecture to practice the concepts learned.</description>
+
+    <student>bbob</student>
+    <student>lsanders</student>
+  </course>
+  <course>
+    <professor>ksung</professor>
+    <title>CSS 430 Operating Systems</title>
+    <year>2013</year>
+    <quarter>Winter</quarter>
+    <description>This course introduces the logical design of operating systems, especially focusing on the design in Java. Topics covered include processes, threads, CPU scheduling, synchronization, deadlocks, memory management, virtual memory, file systems, IO systems, network programming, protection, and security used in the popular desktop and real-time operating systems. Through the course, we will use Java to illustrate many operating-system concepts. Using Java, you will implement each concept of process management, memory management, and file system.</description>
+    
+    <student>rladia</student>
+    <student>abr</student>
+  </course>
+</courses>
+
+<submissions>
+  <submission>
+    <assignment>MP1 IDE and Simple Events</assignment>
+    <student>bbob</student>
+    <title>Hangman</title>
+    <description>The best hangman applet ever!</description>
+    <jar>hangman.jar</jar>
+    <image>hangman.jpg</image>
+  </submission>
+
+  <submission>
+    <assignment>MP1 IDE and Simple Events</assignment>
+    <student>lsanders</student>
+    <title>Rolodex</title>
+    <description>The best hangman applet ever!</description>
+    <jar>rolodex.jar</jar>
+    <image>rolodex.jpg</image>
+  </submission>
+</submissions>
+
+<assignments>
+  <assignment>
+    <professor>ksung</professor>
+    <course>CSS 290</course>
+    <title>MP1 IDE and Simple Events</title>
+    <description>Objective: IDE and project/solution customization, grouping and hierarchy, system event services</description>
+    <image>hangman-large.png</image>
+    <jar />
+  </assignment>
+
+  <assignment>
+    <professor>ksung</professor>
+    <course>CSS 290</course>
+    <title>MP2 Media, Tasks, and Sensors</title>
+    <description>Objective: Combine what we have learned so far, lets build a useless app that takes advantage of the phones input device, sensors, that works with media, and touch display.</description>
+    <image />
+    <jar />
+  </assignment>
+
+  <assignment>
+    <professor>ksung</professor>
+    <course>CSS 290</course>
+    <title>MP3 Simple Phone Applications</title>
+    <description>The goal of this MP is to get ourselves familiarize with phone specific UI Elements, storage, and data binding capabilities.</description>
+    <image />
+    <jar />
+  </assignment>
+
+  <assignment>
+    <professor>ksung</professor>
+    <course>CSS 290</course>
+    <title>MP4 Simple Web Services with TouchDevelop</title>
+    <description>The goal of this MP is to get ourselves a little experience working with web-service (although, through TouchDevelop).</description>
+    <image />
+    <jar />
+  </assignment>
+
+  <assignment>
+    <professor>ksung</professor>
+    <course>CSS 430 Operating Systems</course>
+    <title>OS Assignment 1</title>
+    <description>Objective: IDE and project/solution customization, grouping and hierarchy, system event services</description>
+    <image />
+    <jar />
+  </assignment>
+
+  <assignment>
+    <professor>ksung</professor>
+    <course>CSS 430 Operating Systems</course>
+    <title>OS Assignment 2</title>
+    <description>Objective: Combine what we have learned so far, lets build a useless app that takes advantage of the phones input device, sensors, that works with media, and touch display.</description>
+    <image />
+    <jar />
+  </assignment>
+</assignments>
+</root>
