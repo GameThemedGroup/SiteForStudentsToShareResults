@@ -51,6 +51,27 @@ get_header(); ?>
     update_post_meta($assignmentId, 'isEnabled', 0, 1);
   
   $status = get_post_meta($assignmentId, 'isEnabled', true);
+
+if ($_POST)
+{
+  $student_id = get_current_user_id();
+
+  $description = $_POST['description'];
+  $title = $_POST['title'];
+  $course_id = 0; // TODO why is the course id needed for submissions?
+
+  $submission_id = $gtcs12_db->CreateSubmission($title, $student_id, $course_id, $assignmentId, $description);
+
+  $jar = $gtcs12_db->UploadFile('jar');
+  $gtcs12_db->AttachFileToPost($submission_id, $jar, $title, 'jar', false);
+
+  if(isset($_FILES['image'])) {
+    $image = $gtcs12_db->UploadFile('image');
+    $gtcs12_db->AttachFileToPost($submission_id, $image, $title, 'image', true);
+  }
+
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -96,6 +117,29 @@ get_header(); ?>
   
   <div id='table'>	
     <div id='table-title'>
+
+<?php if($isStudent): ?>
+  <form action="" method="post" enctype="multipart/form-data">
+      Submit Assignment
+    <div>
+      <label for="title">Title</label>
+      <input type="text" name="title" id="title" required><br />
+
+      <label for="desc">Description</label>
+      <input type="text" name="description" id="desc" required><br />
+
+      <label for="jar">Jar File</label>
+      <input type="file" name="jar" id="jar" required><br />
+
+      <label for="image">Image</label>
+      <input type="file" name="image" id="image"><br />
+
+      <input type="submit" name="submit-assignment" value="Submit Assignment"/>
+    </div>
+  </form>
+<?php endif; ?>
+
+
 <?php 
   if($isOwner)
     echo 'Submissions';

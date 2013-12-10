@@ -282,7 +282,8 @@ class GTCS12_DB
     return $rows;
   }
 
-  // Uploads a file from $_FILES and returns its absolute file path
+  // Uploads a file from $_FILES and returns an array of attributes of the
+  // returned file
   //
   // @param file_index the index of $_FILES where the file is located
   // TODO check and handle errors
@@ -292,56 +293,71 @@ class GTCS12_DB
     if (!function_exists('wp_handle_upload'))
       require_once( ABSPATH . 'wp-admin/includes/file.php' );
 
-    $file = $_FILES[$file_index];
+    $file_name = $_FILES[$file_index]['name'];
+    $uploaded_file_type = wp_check_filetype(basename($file_name));
+    $file_type = $uploaded_file_type['type'];
 
+    if($file_type['ext'] == false) // TODO add error log here
+      return; // attachment type not supported
+
+    $file = $_FILES[$file_index];
     $upload_overrides = array('test_form' => false);
 
     // TODO handle errors
     $uploaded_file = wp_handle_upload($file, $upload_overrides);
 
     // TODO limit file types here?
-
-    return $uploaded_file['file'];
+    return $uploaded_file;
   }
 
-  // Uploads a file from $_FILES and attaches it to a post
+  // Attaches the given file to the post. The file must first exist in the
+  // wordpress uploads directory and can most easily be done via
+  // UploadFile or gtcs_handle_import_file
   //
-  // @param post_id       the id of the post the media is being added to
-  // @param file_index    the index in $_FILES where the file is located
-  // @param title         the title to be used by the wordpress media library
-  // @param type_value    the value for the post's 'type' meta_key
-  // @param is_featured_image   if true, the file will be used as the post's featured image
-  function AttachFileToPost($post_id, $file_index, $title, $type_value, $is_featured_image)
+  // @return the id of the attachment/post
+  //
+  // @param post_id     the id of the post the media is being added to
+  // @param file_attr   the file attributes returned by a successful call to
+  //                    UploadFile or gtcs_handle_import_file
+  // @param title       the title to be used by the wordpress media library
+  // @param type_value  the value for the post's 'type' meta_key
+  // @param is_featured_image  if true, the file will be used as the post's featured image
+  // @param post_author the id of the the post author. If NULL, defaults to current user
+  function AttachFileToPost($post_id, $file_attr, $title, $type_value, $is_featured_image, $post_author = NULL)
   {
-    $file_name = $_FILES[$file_index]['name'];
+    if ($post_author === NULL)
+      $post_author = get_current_user_id();
+
+    $file_name = $file_attr['file'];
 
     $uploaded_file_type = wp_check_filetype(basename($file_name));
-
     $file_type = $uploaded_file_type['type'];
 
-    if($file_type['ext'] == false) // TODO add error log here
-      return; // attachment type not supported
+    if($file_type['ext'] === false) {
+      trigger_error(__FUNCTION__ . ": Attachment type not supported.", E_USER_WARNING);
+      return;
+    }
 
     $attachment_args = array(
+      'post_author' => $post_author,
       'post_mime_type' => $file_type,
       'post_title' => $title,
       'post_content' => '',
       'post_status' => 'inherit'
     );
 
-    $file_location = $this->UploadFile($file_index);
-
-    $attach_id = wp_insert_attachment($attachment_args, $file_location, $post_id);
+    $attach_id = wp_insert_attachment($attachment_args, $file_name, $post_id);
     $meta_key = "type";
     $meta_value = $type_value;
     update_post_meta($attach_id, $meta_key, $meta_value);
 
-    if($is_featured_image) {
-      // TODO handle errors
+    if (!function_exists('wp_generate_attachment_metadata'))
       require_once(ABSPATH . 'wp-admin/includes/image.php');
-      $attach_data = wp_generate_attachment_metadata($attach_id, $file_location);
-      wp_update_attachment_metadata($attach_id, $attach_data);
 
+    $attach_data = wp_generate_attachment_metadata($attach_id, $file_name);
+    wp_update_attachment_metadata($attach_id, $attach_data);
+
+    if($is_featured_image) {
       update_post_meta($post_id, '_thumbnail_id', $attach_id);
     }
 
@@ -562,7 +578,6 @@ class GTCS12_DB
   function AddUser($login, $password, $email, $firstname, $lastname, $role)
   {
     global $wpdb;
-
     $userdata = array(
       'user_login' => $login,
       'user_pass' => $password,
@@ -575,6 +590,7 @@ class GTCS12_DB
     $id = wp_insert_user($userdata);
     $user = new WP_User($id);
     $user->add_role($role);
+
     return $id;
   }
 }
