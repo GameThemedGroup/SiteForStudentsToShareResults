@@ -158,8 +158,6 @@ get_header(); ?>
     </div>
   </div>
 
-
-
   <div id="sort-box">
     <form action="<?php echo site_url('/assignment/') ?>" method="get">
       <input type="hidden" name="assignid" value="<?php echo $assignmentId ?>">
