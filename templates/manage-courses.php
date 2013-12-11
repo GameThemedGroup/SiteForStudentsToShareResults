@@ -109,9 +109,9 @@ get_header(); ?>
       <div id='create-course-field'>
         <p class="create-course">Year</p>
         <select class='create-course' name='slctYear'>
-          <?php for($x = 0; $x < 10; $x++)
+          <?php for($x = -1; $x <= 1; $x++) // one year back, one year forward
             {
-              $selectBoxYear = date("Y") - $x;
+              $selectBoxYear = date("Y") + $x;
 
               if($selectBoxYear == $course->Year)
                 $selected = 'selected';
@@ -119,7 +119,7 @@ get_header(); ?>
                 $selected = '';
 
               echo $selected;
-              echo "<option value=\"" . (date("Y") - $x) . "\"" . $selected . ">" . $selectBoxYear . "</option>";
+              echo "<option value=\"" . (date("Y") + $x) . "\"" . $selected . ">" . $selectBoxYear . "</option>";
             }
           ?>
         </select>
