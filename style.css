@@ -3119,6 +3119,8 @@ a:hover.projectsearch {
   left:-10px;
   top:-31px;
   z-index:2;
+  width:80px;
+  overflow:hidden;
   background-color:rgb(60,60,60);
 }
 #projectsearchimage {
@@ -3501,6 +3503,10 @@ th {
   border-width:1px 0px 0px 1px;
   border-color:white;
 }
+tr.break 
+{
+  background-color:rgb(235,235,235);
+}
 th.action {
   text-align:center;
   padding:2px 8px 2px 8px;
@@ -3618,7 +3624,6 @@ p.assignment-meta-title {
 #assignment-description {
   margin-top:5px;
   padding:10px 13px 10px 13px;
-  background-color:green;
   clear:both;
   background-color:rgb(215,215,215);
   border-style:solid;
@@ -3631,12 +3636,12 @@ p.assignment-meta-title {
 }
 #assignment-buttons {
   float:left;
-  margin:30px 0px 0px 5px;
+  margin:39px 0px 0px 5px;
   width:528px;
   height:32px;
   padding:5px 0px 0px 0px;
   border-style:solid;
-  border-top-width:1px;
+  border-top-width:0px;
   border-color:rgb(224,224,224);
 }
 #assignment-button {
@@ -3646,9 +3651,16 @@ p.assignment-meta-title {
   text-align:center;
   padding:0px 3px 0px 3px;
   border-style:solid;
-  border-width:1px;
-  border-color:rgb(210,210,210);
+  border-width:1px 1px 1px 1px;
+  border-color:rgb(200,200,200);
   border-bottom-color:rgb(185,185,185);
-  background-color:rgb(245,245,245);
-  border-radius:4px;
+  background-color:rgb(250,250,250);
+  border-radius:4px 4px 0px 0px;
+  
+  background-color:rgb(215,215,215);
+}
+#sort-box {
+  padding:8px 0px 0px 8px;
+  float:left;
+  width:300px;
 }
