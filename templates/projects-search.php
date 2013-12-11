@@ -9,9 +9,9 @@
 get_header(); ?>
 
 <?php 
-$defaultposts = '5';         // default number of projects per page
+$defaultresults = '5';         // default number of projects per page
 $defaultorder = 'DES';   // default sort order
-$defaultfilter = 'date'; // default sorting method  
+$defaultcategory = 'date'; // default sorting method  
 
 // post offset used to determine what posts show up on what page
 if($_GET['x'] > -1)
@@ -29,7 +29,7 @@ else
 if($_GET['category'])
   $category = "?category=" . $_GET['category'];
 else
-  $category = "?category=" . $defaultfilter;
+  $category = "?category=" . $defaultcategory;
 if($_GET['order'])
   $order = "&order=" . $_GET['order'];
 else
@@ -37,7 +37,7 @@ else
 if($_GET['results'])
   $results = "&results=" . $_GET['results'];
 else
-  $results = "&results=" . $defaultposts ;
+  $results = "&results=" . $defaultresults ;
 
 // retrieve project posts
 if($_GET['results'] && $_GET['order'] && $_GET['category']) {
@@ -47,15 +47,14 @@ if($_GET['results'] && $_GET['order'] && $_GET['category']) {
     'order' => $_GET['order'], 
     'orderby' => $_GET['category'],
     'post_status' => 'publish',
-    'suppress_filters' => true,
-    'tag' => 'course:1');
+    'suppress_filters' => true);
 }
 else {
   $args = array(
-    'posts_per_page' => 5, 
-    'offset' => $offset * $defaultposts,
+    'posts_per_page' => $defaultresults, 
+    'offset' => $offset * $defaultresults,
     'order' => $defaultorder, 
-    'orderby' => $defaultfilter,
+    'orderby' => $defaultcategory,
     'post_status' => 'publish',
     'suppress_filters' => true);
 }
@@ -66,7 +65,7 @@ $count_posts = count($postslist);
 if($_GET['results'] > 0)
   $num_pages = $count_posts / $_GET['results'];
 else
-  $num_pages = $count_posts / $defaultposts;
+  $num_pages = $count_posts / $defaultresults;
 $num_pages = ceil($num_pages);
 ?>
 

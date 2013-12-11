@@ -129,10 +129,17 @@ if($assignments)
 {
   foreach($assignments as $assignment) 
   {
+    $status = get_post_meta($assignment->AssignmentId, 'isEnabled', true);
     $assignlink = site_url('/assignment/?assignid=' . $assignment->AssignmentId);
     echo "<tr>";      
-    echo "<th class=\"assignment-table\"><a href=" . $assignlink . ">" . $assignment->Title . "</a></th>";
-    echo "<th class=\"assignment-table\">" . date('F d, Y', strtotime($assignment->Date)) . "</th>";
+    echo "<th><a href=" . $assignlink . ">" . $assignment->Title . "</a></th>";
+    echo "<th>" . date('F d, Y', strtotime($assignment->Date)) . "</th>";
+    
+    if($status)
+      echo "<th>Open</th>";
+    else 
+      echo "<th>Closed</th>";
+      
     echo "</tr>";
   }
 }
@@ -144,15 +151,20 @@ elseif($isOwner == false)
 }
 ?>
 <?php if($isOwner) : ?>
+        <tr class="break">
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
         <tr>
           <th class="action" colspan="3">
-            <a class="action" href="<?php echo site_url('/manage-assignments/?courseid=' . $courseId) ?>">Create an assignment</a>
+            <b><a class="action" href="<?php echo site_url('/manage-assignments/?courseid=' . $courseId) ?>">Create an assignment</a></b>
           </th>
         </tr>
 <?php endif ?>
-            </tbody>
-        </table>
-    </div>
+      </tbody>
+    </table>
+  </div>
 </html>
 
 <?php get_footer(); ?>
