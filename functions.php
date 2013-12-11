@@ -19,6 +19,20 @@ function gtcs_add_custom_mime_types($existing_mimes)
   return $existing_mimes;
 }
 
+// hook failed login
+add_action('wp_login_failed', 'gtcs_front_end_login_fail'); 
+function gtcs_front_end_login_fail($username){
+  // Get the reffering page, where did the post submission come from?
+  $referrer = $_SERVER['HTTP_REFERER'];
+
+  // if there's a valid referrer, and it's not the default log-in screen
+  if(!empty($referrer) && !strstr($referrer,'wp-login') && !strstr($referrer,'wp-admin')){
+    // let's append some information (login=failed) to the URL for the theme to use
+    wp_redirect($referrer . '?login=failed'); 
+    exit;
+  }
+}
+
 function htmldump($variable, $height="15em") {
   echo "<pre style=\"border: 1px solid #000; height: {$height}; overflow: auto; margin: 0.5em;\">";
   var_dump($variable);
