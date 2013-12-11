@@ -179,7 +179,7 @@ get_header(); ?>
         <tr>
           <th class="center" colspan="4">You have no courses</th>
         </tr>
-<?php endif ?>
+<?php endif; ?>
       </tbody>
     </table>
   </div>
