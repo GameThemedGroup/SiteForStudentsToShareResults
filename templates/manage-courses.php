@@ -10,25 +10,25 @@ get_header(); ?>
 
 <?php
   $current_user = wp_get_current_user();
-  
+
   if(isset($_GET['courseid'])) // get the course id
   {
     $courseId = $_GET['courseid'];
   }
-  
+
   if(isset($_GET['op'])) // get the operation
   {
     $operation = $_GET['op'];
   }
-  elseif(isset($_POST['op'])) // 
+  elseif(isset($_POST['op'])) //
   {
     $operation = $_POST['op'];
   }
-  else 
+  else
   {
     $operation = '';
   }
-  
+
   if($operation == 'delete') // has a course been marked for deletion
   {
     if(isset($courseId) && $courseId != '') // has courseid been provided
@@ -38,7 +38,7 @@ get_header(); ?>
       if(isset($course)) // does course exists
       {
         if($course->FacultyId == $current_user->ID) // does user own course
-        { 
+        {
           $gtcs12_db->DeleteCourse($courseId);
           $action = "<b>" . $course->Name . "</b> has been deleted";
         }
@@ -46,7 +46,7 @@ get_header(); ?>
         {
           $action = "You do not own this course";
         }
-        
+
         unset($course);
       }
       else
@@ -60,14 +60,14 @@ get_header(); ?>
     $course = $gtcs12_db->GetCourseByCourseId($courseId);
   }
 
-  if($_POST) 
+  if($_POST)
   {
     if($operation == 'update')
-    { 
-      $gtcs12_db->UpdateCourse($_POST['courseid'], $_POST['inptTitle'], $_POST['slctQuarter'], $_POST['slctYear'], $current_user->ID, $_POST['inptDescription']); 
+    {
+      $gtcs12_db->UpdateCourse($_POST['courseid'], $_POST['inptTitle'], $_POST['slctQuarter'], $_POST['slctYear'], $current_user->ID, $_POST['inptDescription']);
       $action = "<b>" . $_POST['inptTitle'] . "</b> has been updated";
     }
-    elseif($operation == 'create') 
+    elseif($operation == 'create')
     {
       $gtcs12_db->AddCourse($_POST['inptTitle'], $_POST['slctQuarter'], $_POST['slctYear'], $current_user->ID, $_POST['inptDescription']);
       $action = "<b>" . $_POST['inptTitle'] . "</b> has been created";
@@ -88,8 +88,8 @@ get_header(); ?>
   <form action="<?php echo site_url('/manage-courses/') ?>" method="post">
     <div id='create-course-box'>
       <div id='create-course-title'>
-        <?php echo (isset($operation) && $operation == 'edit' ? "Edit course" : "Create course"); ?>      
-      </div>      
+        <?php echo (isset($operation) && $operation == 'edit' ? "Edit course" : "Create course"); ?>
+      </div>
       <div id='create-course-field'>
         <p class="create-course">Title</p>
         <input class='create-course' type="text" name="inptTitle" value="<?php if(isset($course)) echo $course->Name ?>" required>
@@ -100,7 +100,7 @@ get_header(); ?>
           <option value="Autumn" <?php echo (isset($course) && $course->Quarter == 'Autumn' ? "selected" : ""); ?>>Autumn</option>
           <option value="Winter" <?php echo (isset($course) && $course->Quarter == 'Winter' ? "selected" : ""); ?>>Winter</option>
           <option value="Spring" <?php echo (isset($course) && $course->Quarter == 'Spring' ? "selected" : ""); ?>>Spring</option>
-          <option value="Summer" <?php echo (isset($course) && $course->Quarter == 'Summer' ? "selected" : ""); ?>>Summer</option>               
+          <option value="Summer" <?php echo (isset($course) && $course->Quarter == 'Summer' ? "selected" : ""); ?>>Summer</option>
         </select>
       </div>
       <div id='create-course-field'>
@@ -118,7 +118,7 @@ get_header(); ?>
               echo $selected;
               echo "<option value=\"" . (date("Y") - $x) . "\"" . $selected . ">" . $selectBoxYear . "</option>";
             }
-          ?>         
+          ?>
         </select>
       </div>
       <div id='create-course-field'>
@@ -128,11 +128,11 @@ get_header(); ?>
       <div id="create-course-buttons">
 <?php if($operation == 'create' || $operation == 'delete' || $operation == 'update' || $operation == '') : ?>
         <input type="hidden" name="op" value="create">
-        <input type="submit" value="Create"/>   
+        <input type="submit" value="Create"/>
 <?php elseif($operation == 'edit') : ?>
         <input type="hidden" name="op" value="update">
         <input type="hidden" name="courseid" value="<?php echo $courseId ?>">
-        <input type="submit" value="Finish Editing"/>   
+        <input type="submit" value="Finish Editing"/>
 <?php endif ?>
         <a class="lin" href="<?php echo site_url('/my-class/') ?>"><button type="button">Cancel</button></a>
       </div>
@@ -153,7 +153,7 @@ get_header(); ?>
       <tbody>
 <?php $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID); ?>
 <?php if($courses) : ?>
-<?php   foreach($courses as $course) : ?> 
+<?php   foreach($courses as $course) : ?>
 <?php     $courseLink = site_url('/my-class/?id=' . $course->Id); ?>
         <tr>
           <th><a href="<?php echo $courseLink ?>"><?php echo $course->Name; ?></th>
@@ -165,9 +165,9 @@ get_header(); ?>
                 <option disabled="disabled" selected>Choose an action</option>
                 <option value="edit">Edit</option>
                 <option value="delete">Delete</option>
-              </select>      
+              </select>
               <input type="hidden" name="courseid" value="<?php echo $course->Id ?>">
-              <input type="submit" value="Confirm"/>  
+              <input type="submit" value="Confirm"/>
             </form>
           </th>
         </tr>
