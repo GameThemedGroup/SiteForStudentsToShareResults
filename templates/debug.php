@@ -87,7 +87,42 @@ function loadTestData($testDir, $testFile)
     $testDir
   );
 
+  createSubmissionCommentsFromXml($xml['comments'], $submissionIds, $studentIds);
   echo "Loading test data: complete. <br />";
+}
+
+function createSubmissionCommentsFromXml($xml, $submissionIds, $userIds)
+{
+  foreach ($xml['comment'] as $comment) {
+    $submissionid = $submissionIds[$comment['submission']];
+    $userid = $userIds[$comment['user']];
+    $commentText = $comment['text'];
+
+    $commentid = createSubmissionComment($submissionid, $userid, $commentText);
+
+    if (!is_wp_error($commentid)) {
+      echo "comment created: <br />";
+    } else {
+      htmldump($commentid, '10em');
+      echo "Error creating comment: <br />";
+    }
+  }
+}
+
+function createSubmissionComment($submissionid, $userid, $comment)
+{
+  $user = get_user_by('id', $userid);
+
+  $args = array(
+    'comment_post_ID' => $submissionid,
+    'comment_author' => $user->display_name,
+    'comment_author_email' => $user->user_email,
+    'comment_content' => $comment, 
+    'user_id' => $userid,
+    'comment_approved' => 1 
+  );
+
+  return wp_insert_comment($args);
 }
 
 function createSubmissionsFromXml($xml, $assignmentIds, $studentIds, $dir)

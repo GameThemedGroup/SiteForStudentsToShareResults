@@ -23,14 +23,14 @@
     <user_email>rladia@example.com</user_email>
     <first_name>Rodelle</first_name>
     <last_name>Ladia</last_name>
-    <display_name>Not Rochelle</display_name>
+    <display_name>Roadkill</display_name>
   </subscriber>
 
   <subscriber>
-    <login>abr</login>
+    <login>abrush</login>
     <user_email>abr@example.com</user_email>
     <first_name>Andrey</first_name>
-    <last_name>Brushcehhhhhhh</last_name>
+    <last_name>Bruschenko</last_name>
     <display_name>The Brush</display_name>
   </subscriber>
 </students>
@@ -79,25 +79,6 @@
   </course>
 </courses>
 
-<submissions>
-  <submission>
-    <assignment>MP1 IDE and Simple Events</assignment>
-    <student>bbob</student>
-    <title>Hangman</title>
-    <description>The best hangman applet ever!</description>
-    <jar>hangman.jar</jar>
-    <image>hangman.jpg</image>
-  </submission>
-
-  <submission>
-    <assignment>MP1 IDE and Simple Events</assignment>
-    <student>lsanders</student>
-    <title>Rolodex</title>
-    <description>The best hangman applet ever!</description>
-    <jar>rolodex.jar</jar>
-    <image>rolodex.jpg</image>
-  </submission>
-</submissions>
 
 <assignments>
   <assignment>
@@ -154,4 +135,38 @@
     <jar />
   </assignment>
 </assignments>
+
+<submissions>
+  <submission>
+    <assignment>MP1 IDE and Simple Events</assignment>
+    <student>bbob</student>
+    <title>Hangman</title>
+    <description>The best hangman applet ever!</description>
+    <jar>hangman.jar</jar>
+    <image>hangman.jpg</image>
+  </submission>
+
+  <submission>
+    <assignment>MP1 IDE and Simple Events</assignment>
+    <student>lsanders</student>
+    <title>Rolodex</title>
+    <description>The best hangman applet ever!</description>
+    <jar>rolodex.jar</jar>
+    <image>rolodex.jpg</image>
+  </submission>
+</submissions>
+
+<comments>
+  <comment>
+    <user>rladia</user>
+    <submission>Hangman</submission>
+    <text>This hangman game is so cool!</text>
+  </comment>
+
+  <comment>
+    <user>bbob</user>
+    <submission>Rolodex</submission>
+    <text>This is a comment!</text>
+  </comment>
+</comments>
 </root>
