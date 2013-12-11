@@ -9,7 +9,7 @@
 get_header(); ?>
 
 <?php
-  $current_user = wp_get_current_user();
+  $currentUser = wp_get_current_user();
 
   if(isset($_GET['courseid'])) // get the course id
   {
@@ -76,7 +76,10 @@ get_header(); ?>
     {
       $action = "invalid role";
     }
+  } else {
+    return "course not found";
   }
+}
 ?>
 
 <!DOCTYPE html>
@@ -151,7 +154,7 @@ get_header(); ?>
         </tr>
       </thead>
       <tbody>
-<?php $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID); ?>
+<?php $courses = $gtcs12_db->GetCourseByFacultyId($currentUser->ID); ?>
 <?php if($courses) : ?>
 <?php   foreach($courses as $course) : ?>
 <?php     $courseLink = site_url('/my-class/?id=' . $course->Id); ?>
