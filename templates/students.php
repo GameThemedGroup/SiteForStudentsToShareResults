@@ -60,7 +60,7 @@ get_header(); ?>
       </li>
 <?php     else : ?>
       <li class="sidebar-menu">
-        <a class="sidebar-menu" href="<?php echo site_url('/manage-students/?courseid=' . $course->Id) ?>">
+        <a class="sidebar-menu" href="<?php echo site_url('/students/?courseid=' . $course->Id) ?>">
           <p class="sidebar-menu-top"><?php echo $course->Name ?></p>
           <p class="sidebar-menu-bottom"><?php echo $course->Quarter . ', ' . $course->Year ?></p>
         </a>
@@ -75,7 +75,7 @@ get_header(); ?>
 
   <div id="create-student-box-top">
     <div id='create-student-title'>Create student</div>
-    <form action="<?php echo site_url('/manage-students/?courseid=' . $courseId) ?>" method="post">
+    <form action="<?php echo site_url('/students/?courseid=' . $courseId) ?>" method="post">
       <div id="create-student-field">
         <p class="create-student-top">Username</p>
         <input class='create-student' type="text" name="inptUserName" required>
@@ -133,7 +133,7 @@ get_header(); ?>
         <tr>
           <th><?php echo $student->Name; ?></th>
           <th>
-            <form action="<?php echo site_url('/manage-students/') ?>" method="post">
+            <form action="<?php echo site_url('/students/') ?>" method="post">
               <select name="op">
                 <option disabled="disabled" selected>Choose an action</option>
                 <option value="delete">Delete</option>

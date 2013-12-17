@@ -25,13 +25,13 @@ elseif(isset($_POST['assignid']))
 if(isset($_GET['courseid']))
 {
   $courseId = $_GET['courseid'];
-  $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID); 
+  $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID);
 }
 elseif($isProfessor)
 {
-  $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID); 
+  $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID);
 
-  if($courses) 
+  if($courses)
   {
     $courseId = $courses[0]->Id;
   }
@@ -73,7 +73,7 @@ else if($postOperation == 'create')
   {
     $title = $_POST['inptTitle'];
     $description = $_POST['txtDescription'];
-    
+
     $gtcs12_db->CreateSubmission($title, $current_user->ID, $courseId, $assignmentId, $description);
     $action =  "<b>" . $title . "</b> has been submitted";
   }
@@ -217,10 +217,10 @@ function DeleteAttachments($assignmentId, $attachmentType)
 <?php   foreach($courses as $course) : ?>
 <?php   if($courseId == $course->Id) : ?>
           <li class="sidebar-menu-selected">
-<?php   else : ?> 
+<?php   else : ?>
           <li class="sidebar-menu">
 <?php   endif ?>
-        <a class="sidebar-menu" href="<?php echo site_url('/manage-assignments/?courseid=' . $course->Id) ?>">
+        <a class="sidebar-menu" href="<?php echo site_url('/assignments/?courseid=' . $course->Id) ?>">
           <p class="sidebar-menu-top"><?php echo $course->Name ?></p>
           <p class="sidebar-menu-bottom"><?php echo $course->Quarter . ', ' . $course->Year ?></p>
         </a>
@@ -251,7 +251,7 @@ function DeleteAttachments($assignmentId, $attachmentType)
               <th><a href="<?php echo $assignLink ?>"><?php echo $assignment->Title ?></a></th>
               <th><?php echo date('F d, Y', strtotime($assignment->Date)); ?></th>
               <th>
-                <form action="<?php echo site_url('/manage-assignments/') ?>" method="get">
+                <form action="<?php echo site_url('/assignments/') ?>" method="get">
                   <select name="op">
                     <option disabled="disabled" selected>Choose an action</option>
                     <option value="edit">Edit</option>

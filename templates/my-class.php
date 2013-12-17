@@ -57,7 +57,7 @@ get_header(); ?>
   <div id="class-whole">
     <div id="class-title"><?php echo $course->Name ?>
 <?php if($isOwner) : ?>
-      <a id="link" href='<?php echo site_url('/manage-courses/') . "?op=edit&courseid=" . $courseId;?>'>Edit Course</a>
+      <a id="link" href='<?php echo site_url('/courses/') . "?op=edit&courseid=" . $courseId;?>'>Edit Course</a>
 <?php endif ?>
     </div>
     <div id="class-info1">
@@ -95,7 +95,7 @@ echo "[<a href=\"" . $professor_link . "\">" . $professor->user_login . '</a>]';
         </a>
       </li>
 <?php endforeach ?>
-      <li class="sidebar-menu-center"><a class="action" href="<?php echo site_url('/manage-courses/') ?>">Create course</a></li>
+      <li class="sidebar-menu-center"><a class="action" href="<?php echo site_url('/courses/') ?>">Create course</a></li>
     </ul>
   </div>
 <?php endif ?>
@@ -114,7 +114,7 @@ echo "[<a href=\"" . $professor_link . "\">" . $professor->user_login . '</a>]';
 <?php   endforeach ?>
 <?php endif ?>
 <?php if($isOwner) : ?>
-        <li class="sidebar-menu-center"><a class="action" href="<?php echo site_url('/manage-students/?courseid=' . $courseId) ?>">Add students</a></li>
+        <li class="sidebar-menu-center"><a class="action" href="<?php echo site_url('/students/?courseid=' . $courseId) ?>">Add students</a></li>
 <?php else : ?>
         <li class="sidebar-menu-center">There are no enrolled students</li>
 <?php endif ?>

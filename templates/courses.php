@@ -116,7 +116,7 @@ function deleteCourse($courseId)
   <div id="action-box">Course created</div>
 <?php endif ?>
 
-  <form action="<?php echo site_url('/manage-courses/') ?>" method="post">
+  <form action="<?php echo site_url('/courses/') ?>" method="post">
     <div id='create-course-box'>
       <div id='create-course-title'>
         <?php echo ($operation == 'edit' ? "Edit course" : "Create course"); ?>
@@ -195,7 +195,7 @@ function deleteCourse($courseId)
           <th><?php echo $course->Quarter; ?></th>
           <th><?php echo $course->Year; ?></th>
           <th>
-            <form action="<?php echo site_url('/manage-courses/') ?>" method="get">
+            <form action="<?php echo site_url('/courses/') ?>" method="get">
               <select name="op">
                 <option disabled="disabled" selected>Choose an action</option>
                 <option value="edit">Edit</option>
