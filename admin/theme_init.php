@@ -13,24 +13,24 @@ function initialize_tables()
 }
 
 add_action('after_switch_theme', 'initialize_roles');
-function initialize_roles() 
+function initialize_roles()
 {
   // remove the default roles
   // remove_role('author');
   // remove_role('editor');
   // remove_role('contributor');
   // remove_role('subscriber');
-  
+
   // remove old roles so they can be updated
   remove_role('teacher');
   remove_role('student');
 
   $result = add_role(
-    //'teacher', 
-    'author', 
+    //'teacher',
+    'author',
     //'Teacher',
-    'Author', 
-    array( 
+    'Author',
+    array(
       'delete_posts' => true,
       'delete_published_posts' => true,
       'edit_posts' => true,
@@ -49,7 +49,7 @@ function initialize_roles()
     //'student',
     'Subscriber',
     //'Student',
-    array( 
+    array(
       'delete_posts' => true,
       'delete_published_posts' => true,
       'edit_posts' => true,
@@ -58,22 +58,22 @@ function initialize_roles()
       'upload_files' => true,
     )
   );
-  
+
   if ($result === null) {
     echo "Error. Student role not created. <br />";
   }
 }
 
-// creates an array that can be used to create a wordpresss page 
+// creates an array that can be used to create a wordpresss page
 function default_page($name, $title, $template)
 {
-  return array( 
-    'post_name'     => $name,  
+  return array(
+    'post_name'     => $name,
     'post_title'    => $title,
     'post_status'   => 'publish',
     'post_type'     => 'page',
     'meta'          => array(
-      '_wp_page_template'  => 'templates/'.$template, 
+      '_wp_page_template'  => 'templates/'.$template,
     ),
   );
 }
@@ -83,16 +83,16 @@ function create_default_pages()
 {
   $default_pages = array();
   $default_pages['main']           = default_page('main', 'Main', 'main.php');
-  $default_pages['debug']          = default_page('debug', 'Debug', 'debug.php'); 
-  $default_pages['my-class']       = default_page('my-class', 'MyClass', 'my-class.php'); 
+  $default_pages['debug']          = default_page('debug', 'Debug', 'debug.php');
+  $default_pages['my-class']       = default_page('my-class', 'MyClass', 'my-class.php');
   $default_pages['projects']       = default_page('projects', 'Projects', 'projects-search.php');
-  $default_pages['profile']        = default_page('profile', 'Profile', 'profile.php'); 
-  $default_pages['manage-profile'] = default_page('manage-profile', 'Manage Profile', 'manage-profile.php'); 
-  $default_pages['manage-courses'] = default_page('manage-courses', 'Manage Courses', 'manage-courses.php'); 
-  $default_pages['assignment']     = default_page('assignment', 'Assignment', 'single-assignment.php'); 
-  $default_pages['manage-students']= default_page('manage-students', 'Manage Students', 'manage-students.php'); 
-  $default_pages['manage-assignments'] = default_page('manage-assignments', 'Manage Assignments', 'manage-assignments.php'); 
-  
+  $default_pages['profile']        = default_page('profile', 'Profile', 'profile.php');
+  $default_pages['manage-profile'] = default_page('manage-profile', 'Manage Profile', 'manage-profile.php');
+  $default_pages['courses'] = default_page('courses', 'Manage Courses', 'courses.php');
+  $default_pages['assignment']     = default_page('assignment', 'Assignment', 'single-assignment.php');
+  $default_pages['students']= default_page('students', 'Manage Students', 'students.php');
+  $default_pages['assignments'] = default_page('assignments', 'Manage Assignments', 'assignments.php');
+
   foreach( $default_pages as $key => $page ) {
     if($old_page = get_page_by_title($page['post_title'])) // do not need to recreate page
       wp_delete_post($old_page->ID, true);

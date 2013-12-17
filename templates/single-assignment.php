@@ -221,7 +221,7 @@ get_header(); ?>
         </tr>
         <tr>
           <th class="action" colspan="3">
-            <b><a class="action" href="<?php echo site_url('/manage-assignments/?courseid=' . $courseId) ?>">Submit Assignment</a></b>
+            <b><a class="action" href="<?php echo site_url('/assignments/?courseid=' . $courseId) ?>">Submit Assignment</a></b>
           </th>
         </tr>
 <?php endif; ?>
