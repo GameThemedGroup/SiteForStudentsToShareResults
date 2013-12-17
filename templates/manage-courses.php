@@ -11,70 +11,88 @@ get_header(); ?>
 <?php
   $currentUser = wp_get_current_user();
 
-  if(isset($_GET['courseid'])) // get the course id
-  {
-    $courseId = $_GET['courseid'];
+  if (isset($_GET)) {
+    $courseId = isset($_GET['courseid']) ? $_GET['courseid'] : NULL;
+    $operation = isset($_GET['op']) ? $_GET['op'] : NULL;
+  } elseif (isset($_POST)) {
+    $operation = isset($_POST['op']) ? $_POST['op'] : NULL;
+  } else {
+    $courseId = NULL;
+    $operation = NULL;
   }
 
-  if(isset($_GET['op'])) // get the operation
-  {
-    $operation = $_GET['op'];
-  }
-  elseif(isset($_POST['op'])) //
-  {
-    $operation = $_POST['op'];
-  }
-  else
-  {
-    $operation = '';
-  }
+  $action = "";
+  $course = (object) array('Name' => '', 'Description' => '', 'Quarter' => '');
 
-  if($operation == 'delete') // has a course been marked for deletion
-  {
-    if(isset($courseId) && $courseId != '') // has courseid been provided
-    {
-      $course = $gtcs12_db->GetCourseByCourseId($courseId);
+  $courseList = $gtcs12_db->GetCourseByFacultyId($currentUser->ID);
 
-      if(isset($course)) // does course exists
-      {
-        if($course->FacultyId == $current_user->ID) // does user own course
-        {
-          $gtcs12_db->DeleteCourse($courseId);
-          $action = "<b>" . $course->Name . "</b> has been deleted";
-        }
-        else
-        {
-          $action = "You do not own this course";
-        }
-
-        unset($course);
-      }
-      else
-      {
-        $action = "Course not found";
-      }
-    }
-  }
-  elseif(isset($operation) && $operation == 'edit') // has a course been marked to edit
-  {
+  if ($operation == 'delete' && $courseId != NULL) {
+    $action = deleteCourse($courseId);
+  } elseif($operation == 'edit' && $courseId != NULL) {
     $course = $gtcs12_db->GetCourseByCourseId($courseId);
   }
 
-  if($_POST)
-  {
-    if($operation == 'update')
-    {
-      $gtcs12_db->UpdateCourse($_POST['courseid'], $_POST['inptTitle'], $_POST['slctQuarter'], $_POST['slctYear'], $current_user->ID, $_POST['inptDescription']);
-      $action = "<b>" . $_POST['inptTitle'] . "</b> has been updated";
-    }
-    elseif($operation == 'create')
-    {
-      $gtcs12_db->AddCourse($_POST['inptTitle'], $_POST['slctQuarter'], $_POST['slctYear'], $current_user->ID, $_POST['inptDescription']);
-      $action = "<b>" . $_POST['inptTitle'] . "</b> has been created";
-    }
-    else
-    {
-      $action = "invalid role";
+  if ($operation == 'update') {
+    $action = UpdateCourse($currentUser->ID);
+  } else if(gtcs_user_has_role('author')) { // is this user a professor
+    $action = AddCourse();
+  } else {
+    $action = "invalid role";
+  }
+
+  $quarter = isset($course) ? $course->Quarter : "selected";
+
+
+function AddCourse()
+{
+  $title       = isset($_POST['title']) ? $_POST['title'] : NULL;
+  $quarter     = isset($_POST['slctQuarter']) ? $_POST['slctQuarter'] : NULL;
+  $year        = isset($_POST['slctYear']) ? $_POST['slctYear'] : NULL;
+  $description = isset($_POST['inptDescription']) ? $_POST['inptDescription'] : NULL;
+
+  if ($title == NULL ||
+      $quarter == NULL ||
+      $year == NULL ||
+      $description == NULL) {
+    return "Invalid input when creating course";
+  }
+
+  $gtcs12_db->AddCourse($courseId, $title, $quarter, $year, $userId, $description);
+  return "course created";
+
+}
+
+function UpdateCourse($userId)
+{
+  $courseId    = isset($_POST['courseid']) ? $_POST['courseid'] : NULL;
+  $title       = isset($_POST['title']) ? $_POST['title'] : NULL;
+  $quarter     = isset($_POST['slctQuarter']) ? $_POST['slctQuarter'] : NULL;
+  $year        = isset($_POST['slctYear']) ? $_POST['slctYear'] : NULL;
+  $description = isset($_POST['inptDescription']) ? $_POST['inptDescription'] : NULL;
+
+  if ($courseId == NULL ||
+      $title == NULL ||
+      $quarter == NULL ||
+      $year == NULL ||
+      $description == NULL) {
+    return "Invalid input when editing course";
+  }
+
+  $gtcs12_db->UpdateCourse($courseId, $title, $quarter, $year, $userId, $description);
+  return "course edited";
+}
+
+function deleteCourse($courseId)
+{
+  global $gtcs12_db;
+  $course = $gtcs12_db->GetCourseByCourseId($courseId);
+
+  if ($course) { // course exists
+    if ($course->FacultyId == $currentUser->ID) { // user owns course
+      $gtcs12_db->DeleteCourse($courseId);
+      return "course deleted";
+    } else {
+      return "not owner";
     }
   } else {
     return "course not found";
@@ -84,26 +102,42 @@ get_header(); ?>
 
 <!DOCTYPE html>
 <html lang="en">
-<?php if(isset($action)) : ?>
-  <div id="action-box"><?php echo $action ?></div>
+<?php if($action == "not owner") : ?>
+  <div id="error-box">Error:You don't have ownership of that course</div>
+<?php elseif($action == "course not found") : ?>
+  <div id="error-box">Error:Course not found</div>
+<?php elseif($action == "invalid role") : ?>
+  <div id="error-box">Error:You don't have permission to create a course</div>
+<?php elseif($action == "course deleted") : ?>
+  <div id="action-box">Course deleted</div>
+<?php elseif($action == "course edited") : ?>
+  <div id="action-box">Course edited</div>
+<?php elseif($action == "course created") : ?>
+  <div id="action-box">Course created</div>
 <?php endif ?>
 
   <form action="<?php echo site_url('/manage-courses/') ?>" method="post">
     <div id='create-course-box'>
       <div id='create-course-title'>
-        <?php echo (isset($operation) && $operation == 'edit' ? "Edit course" : "Create course"); ?>
+        <?php echo ($operation == 'edit' ? "Edit course" : "Create course"); ?>
       </div>
       <div id='create-course-field'>
         <p class="create-course">Title</p>
-        <input class='create-course' type="text" name="inptTitle" value="<?php if(isset($course)) echo $course->Name ?>" required>
+        <input class='create-course'
+          type="text" name="inptTitle" value="<?php echo $course->Name ?>" required>
+        <br>
       </div>
       <div id='create-course-field'>
         <p class="create-course">Quarter</p>
         <select class='create-course' name='slctQuarter'>
-          <option value="Autumn" <?php echo (isset($course) && $course->Quarter == 'Autumn' ? "selected" : ""); ?>>Autumn</option>
-          <option value="Winter" <?php echo (isset($course) && $course->Quarter == 'Winter' ? "selected" : ""); ?>>Winter</option>
-          <option value="Spring" <?php echo (isset($course) && $course->Quarter == 'Spring' ? "selected" : ""); ?>>Spring</option>
-          <option value="Summer" <?php echo (isset($course) && $course->Quarter == 'Summer' ? "selected" : ""); ?>>Summer</option>
+          <option value="Autumn"
+            <?php echo ($quarter == 'Autumn' ? "selected" : ""); ?>>Autumn</option>
+          <option value="Winter"
+            <?php echo ($quarter == 'Winter' ? "selected" : ""); ?>>Winter</option>
+          <option value="Spring"
+            <?php echo ($quarter == 'Spring' ? "selected" : ""); ?>>Spring</option>
+          <option value="Summer"
+            <?php echo ($quarter == 'Summer' ? "selected" : ""); ?>>Summer</option>
         </select>
       </div>
       <div id='create-course-field'>
@@ -126,11 +160,10 @@ get_header(); ?>
       </div>
       <div id='create-course-field'>
         <p class="create-course">Description</p>
-        <textarea cols="25" rows="10" autocomplete="off" name="inptDescription" required><?php if(isset($course)) echo $course->Description ?></textarea>
+        <textarea cols="25" rows="10" autocomplete="off" name="inptDescription" required><?php echo $course->Description ?></textarea>
       </div>
       <div id="create-course-buttons">
-<?php if($operation == 'create' || $operation == 'delete' || $operation == 'update' || $operation == '') : ?>
-        <input type="hidden" name="op" value="create">
+<?php if($operation == 'create' || $operation == NULL) : ?>
         <input type="submit" value="Create"/>
 <?php elseif($operation == 'edit') : ?>
         <input type="hidden" name="op" value="update">
@@ -154,10 +187,9 @@ get_header(); ?>
         </tr>
       </thead>
       <tbody>
-<?php $courses = $gtcs12_db->GetCourseByFacultyId($currentUser->ID); ?>
-<?php if($courses) : ?>
-<?php   foreach($courses as $course) : ?>
-<?php     $courseLink = site_url('/my-class/?id=' . $course->Id); ?>
+<?php if ($courseList): ?>
+  <?php foreach ($courseList as $course): ?>
+    <?php $courseLink = site_url('/my-class/?id=' . $course->Id); ?>
         <tr>
           <th><a href="<?php echo $courseLink ?>"><?php echo $course->Name; ?></th>
           <th><?php echo $course->Quarter; ?></th>
@@ -174,8 +206,8 @@ get_header(); ?>
             </form>
           </th>
         </tr>
-<?php   endforeach; ?>
-<?php else : ?>
+  <?php endforeach; ?>
+<?php else: ?>
         <tr>
           <th class="center" colspan="4">You have no courses</th>
         </tr>
