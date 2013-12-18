@@ -28,8 +28,8 @@ get_header(); ?>
     <?php endif; ?>
 
     <div id="assignnment-title">
-      <?php echo $assignment->post_title
-                  ? $assignment->post_title
+      <?php echo $displayedAssignment->post_title
+                  ? $displayedAssignment->post_title
                   : 'Empty'; ?>
     </div>
 
@@ -38,11 +38,11 @@ get_header(); ?>
         width="155" height="155" />
 
       <p class="assignment-meta"><b>Course </b>
-        <?php echo $course->Name ?>
+        <?php echo $displayedCourse->Name ?>
       </p>
 
       <p class="assignment-meta"><b>Created </b>
-        <?php echo date('F d, Y', strtotime($assignment->post_date)) ?>
+        <?php echo date('F d, Y', strtotime($displayedAssignment->post_date)) ?>
       </p>
 
       <p class="assignment-meta">
@@ -89,7 +89,7 @@ get_header(); ?>
 
     <div id="assignment-description">
       <?php if ($view == 'description'): ?>
-        <?php echo nl2br($assignment->post_content); ?>
+        <?php echo nl2br($displayedAssignment->post_content); ?>
       <?php elseif ($view == 'applet'): ?>Put applet here
       <?php endif; ?>
     </div>
@@ -121,7 +121,7 @@ get_header(); ?>
       <tbody>
       <?php $submitters = array() ?>
 
-      <?php foreach($submissions as $submission) : ?>
+      <?php foreach($submissionList as $submission) : ?>
         <?php $submitters[$submission->AuthorName] = true ?>
         <tr>
           <th>
@@ -138,7 +138,7 @@ get_header(); ?>
         </tr>
       <?php endforeach; ?>
 
-      <?php if(count($students) > count($submitters)) : ?>
+      <?php if(count($studentList) > count($submitters)) : ?>
         <tr class="break">
           <th></th>
           <th></th>
@@ -146,9 +146,9 @@ get_header(); ?>
         </tr>
       <?php endif; ?>
 
-      <?php foreach($students as $student): ?>
-        <?php if($student->StudentId != null): ?>
-          <?php if($submitters[$student->Name] == false) : ?>
+      <?php foreach($studentList as $student): ?>
+        <?php if ($student->StudentId != null): ?>
+          <?php if (!isset($submitters[$student->Name])): ?>
             <tr>
               <th class="center" colspan="3">
                 <a href="<?php echo site_url('/profile/?user=' . $student->Id) ?>">
