@@ -7,6 +7,15 @@ require_once('admin/gtcs12_db.php');
 global $gtcs12_db;
 $gtcs12_db = new GTCS12_DB(); // todo change these to static methods
 
+global $url;
+$url = array(
+  'assignment' => site_url('/assignment/'),
+  'assignments' => site_url('/assignments/'),
+  'profile' => site_url('/profile/'),
+  'my-class' => site_url('/my-class/'),
+  'main' => site_url('/main/'),
+);
+
 require_once('admin/theme_init.php');
 
 add_filter('login_redirect', 'login_redirect');
