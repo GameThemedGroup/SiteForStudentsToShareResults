@@ -1,5 +1,8 @@
 <?php
 
+// functions available to all wordpress pages
+require_once('common/global_functions.php');
+
 require_once('admin/gtcs12_db.php');
 global $gtcs12_db;
 $gtcs12_db = new GTCS12_DB(); // todo change these to static methods
@@ -20,7 +23,7 @@ function gtcs_add_custom_mime_types($existing_mimes)
 }
 
 // hook failed login
-add_action('wp_login_failed', 'gtcs_front_end_login_fail'); 
+add_action('wp_login_failed', 'gtcs_front_end_login_fail');
 function gtcs_front_end_login_fail($username){
   // Get the reffering page, where did the post submission come from?
   $referrer = $_SERVER['HTTP_REFERER'];
@@ -28,38 +31,14 @@ function gtcs_front_end_login_fail($username){
   // if there's a valid referrer, and it's not the default log-in screen
   if(!empty($referrer) && !strstr($referrer,'wp-login') && !strstr($referrer,'wp-admin')){
     // let's append some information (login=failed) to the URL for the theme to use
-    wp_redirect($referrer . '?login=failed'); 
+    wp_redirect($referrer . '?login=failed');
     exit;
   }
 }
 
-function htmldump($variable, $height="15em") {
-  echo "<pre style=\"border: 1px solid #000; height: {$height}; overflow: auto; margin: 0.5em;\">";
-  var_dump($variable);
-  echo "</pre>\n";
-}
 
-/**
- * Checks if a particular user has a role. 
- * Returns true if a match was found.
- * credit: www.appthemes.com
- * 
- * @param string $role Role name.
- * @param int $user_id (Optional) The ID of a user. Defaults to the current user.
- * @return bool
- */
-function gtcs_user_has_role($role, $user_id = null) {
 
-  if (is_numeric($user_id))
-    $user = get_userdata($user_id);
-  else
-    $user = wp_get_current_user();
 
-  if (empty($user))
-    return false;
-
-  return in_array($role, (array)$user->roles);
-}
 
 /**
  * Set the content width based on the theme's design and stylesheet.
