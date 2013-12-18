@@ -73,7 +73,7 @@ class GTCS_Courses
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  /// Adds a course to th
+  /// Adds a course to the available list of courses owned by the professor
   ///
   /// @param args - an object containing the following fields
   ///    title       - the title of the course
@@ -120,7 +120,7 @@ class GTCS_Courses
   private static function validateParameters(&$args)
   {
     $title = ifsetor($args->title, null);
-    $quarter = ifsetor($args->title, null);
+    $quarter = ifsetor($args->quarter, null);
 
     if ($title === null || $quarter === null) {
       if ($title === null)
@@ -132,12 +132,12 @@ class GTCS_Courses
     }
 
     $validQuarters = array("Winter", "Spring", "Summer", "Fall");
-    if (!array_key_exists($quarter, $validQuarters) {
+    if (!in_array($quarter, $validQuarters)) {
       trigger_error(__FUNCTION__ . " - Invalid quarter provided.", E_USER_WARNING);
       return false;
     }
 
-    $year = ifsetor($args->title, date("Y");
+    $year = ifsetor($args->title, date("Y"));
     $decription = ifsetor($args->title, "");
 
     $professorId = ifsetor($args->title, null);
