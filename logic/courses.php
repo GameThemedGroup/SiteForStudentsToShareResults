@@ -83,8 +83,16 @@ function addCourse($professorId)
     return "Invalid input when creating course";
   }
 
-  global $gtcs12_db;
-  $gtcs12_db->AddCourse($title, $quarter, $year, $professorId, $description);
+  $courseArgs = (object) array(
+    'title' => $title,
+    'quarter' => $quarter,
+    'year' => $year,
+    'professorId' => $professorId,
+    'description' => $description
+  );
+
+  include_once(get_template_directory() . '/common/courses.php');
+  GTCS_Courses::addCourse($courseArgs);
   return "course created";
 }
 
