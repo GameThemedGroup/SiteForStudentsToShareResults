@@ -32,7 +32,7 @@ class GTCS_Courses
       $results = array_merge($result, GTCS_Courses::getCourseByProfessorId($professorId));
   }
 
-  private static function getCourseByCourseId($courseId)
+  public static function getCourseByCourseId($courseId)
   {
     global $wpdb;
     $wpdb->show_errors(true);
@@ -45,7 +45,7 @@ class GTCS_Courses
     return $rows;
   }
 
-  private static function GetCourseByStudentId($studentId)
+  public static function getCourseByStudentId($studentId)
   {
     global $wpdb;
     $wpdb->show_errors(true);
@@ -59,7 +59,7 @@ class GTCS_Courses
     return $result;
   }
 
-  private static function GetCourseByFacultyId($facultyId)
+  public static function getCourseByFacultyId($facultyId)
   {
     global $wpdb;
     $wpdb->show_errors(true);
@@ -147,7 +147,7 @@ class GTCS_Courses
     return true;
   }
 
-  function deleteCourse($courseId)
+  public static function deleteCourse($courseId)
   {
     global $wpdb;
     $wpdb->show_errors(true);
@@ -157,7 +157,8 @@ class GTCS_Courses
     $wpdb->query("DELETE FROM $tablename WHERE id = $courseId");
   }
 
-  function updateCourse($courseId, $courseName, $quarter, $year, $facultyId, $description)
+  public static function updateCourse(
+    $courseId, $courseName, $quarter, $year, $facultyId, $description)
   {
     global $wpdb;
     $wpdb->show_errors(true);
