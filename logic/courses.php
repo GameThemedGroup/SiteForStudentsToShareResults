@@ -1,70 +1,106 @@
 <?php
-  $currentUser = wp_get_current_user();
+  $professorId = wp_get_current_user()->ID;
 
-  if (isset($_GET)) {
-    $courseId = isset($_GET['courseid']) ? $_GET['courseid'] : NULL;
-    $operation = isset($_GET['op']) ? $_GET['op'] : NULL;
-  } elseif (isset($_POST)) {
-    $operation = isset($_POST['op']) ? $_POST['op'] : NULL;
-  } else {
-    $courseId = NULL;
-    $operation = NULL;
-  }
+  $operation = ifsetor($_POST['action'], null);
 
-  $action = "";
+  $userFeedback = "";
+  $isEditing = false;
   $course = (object) array('Name' => '', 'Description' => '', 'Quarter' => '');
 
-  $courseList = $gtcs12_db->GetCourseByFacultyId($currentUser->ID);
+  if ($operation == 'edit') {
+    $userFeedback = editCourseSetup($course, $isEditing);
 
-  if ($operation == 'delete' && $courseId != NULL) {
-    $action = deleteCourse($courseId);
-  } elseif($operation == 'edit' && $courseId != NULL) {
-    $course = $gtcs12_db->GetCourseByCourseId($courseId);
+  } else if ($operation != null) {
+    $operations = array(
+      'delete' => 'deleteCourse',
+      'update' => 'updateCourse',
+      'create' => 'addCourse',
+    );
+    if (array_key_exists($operation, $operations)) {
+      $userFeedback = call_user_func($operations[$operation], $professorId);
+    } else {
+      trigger_error("An invalid action was provided.", E_USER_WARNING);
+    }
   }
 
-  if ($operation == 'update') {
-    $action = UpdateCourse($currentUser->ID);
-  } else if(gtcs_user_has_role('author')) { // is this user a professor
-    $action = AddCourse();
-  } else {
-    $action = "invalid role";
+  $quarterList = array(
+    'Fall' => true,
+    'Winter' => false,
+    'Spring' => false,
+    'Summer' => false
+  );
+
+  $year = date('Y');
+  $yearList[$year - 1] = false; // one year back
+  $yearList[$year] = true;
+  $yearList[$year + 1] = false; // one year forward
+
+  if ($isEditing) { // reset default selections
+    $quarterList['Fall'] = true;
+    $quarterList[$course->Quarter] = true;
+
+    $yearList[$year] = false;
+    $yearList[$course->Year] = true;
   }
 
-  $quarter = isset($course) ? $course->Quarter : "selected";
+  $courseList = $gtcs12_db->GetCourseByFacultyId($professorId);
 
+  $url = array(
+    'courses' => site_url('/courses/'),
+    'my-class' => site_url('/courses/')
+  );
 
-function AddCourse()
+function editCourseSetup(&$course, &$isEditing)
 {
-  $title       = isset($_POST['title']) ? $_POST['title'] : NULL;
-  $quarter     = isset($_POST['slctQuarter']) ? $_POST['slctQuarter'] : NULL;
-  $year        = isset($_POST['slctYear']) ? $_POST['slctYear'] : NULL;
-  $description = isset($_POST['inptDescription']) ? $_POST['inptDescription'] : NULL;
+  $courseId = ifsetor($_POST['courseid'], null);
+  $isEditing = $courseId != null;
 
-  if ($title == NULL ||
-      $quarter == NULL ||
-      $year == NULL ||
-      $description == NULL) {
+  if ($courseId == null) {
+    trigger_error(__FUNCTION__ . "
+      - An invalid Course ID was provided.",
+      E_USER_WARNING);
+
+    return "There was an error attempting to edit the course.";
+  }
+
+  global $gtcs12_db;
+  $course = $gtcs12_db->GetCourseByCourseId($courseId);
+  return "Your are now editing the course";
+}
+
+function addCourse($professorId)
+{
+  $title       = ifsetor($_POST['title'], null);
+  $quarter     = ifsetor($_POST['quarter'], null);
+  $year        = ifsetor($_POST['year'], null);
+  $description = ifsetor($_POST['description'], null);
+
+  if (   $title == null
+      || $quarter == null
+      || $year == null
+      || $description == null) {
+    echo "$title, $quarter, $year, $description";
     return "Invalid input when creating course";
   }
 
-  $gtcs12_db->AddCourse($courseId, $title, $quarter, $year, $userId, $description);
+  global $gtcs12_db;
+  $gtcs12_db->AddCourse($title, $quarter, $year, $professorId, $description);
   return "course created";
-
 }
 
-function UpdateCourse($userId)
+function updateCourse($userId)
 {
-  $courseId    = isset($_POST['courseid']) ? $_POST['courseid'] : NULL;
-  $title       = isset($_POST['title']) ? $_POST['title'] : NULL;
-  $quarter     = isset($_POST['slctQuarter']) ? $_POST['slctQuarter'] : NULL;
-  $year        = isset($_POST['slctYear']) ? $_POST['slctYear'] : NULL;
-  $description = isset($_POST['inptDescription']) ? $_POST['inptDescription'] : NULL;
+  $title       = ifsetor($_POST['title'], null);
+  $quarter     = ifsetor($_POST['qarter'], null);
+  $year        = ifsetor($_POST['year'], null);
+  $description = ifsetor($_POST['description'], null);
+  $courseId    = ifsetor($_POST['courseid'], null);
 
-  if ($courseId == NULL ||
-      $title == NULL ||
-      $quarter == NULL ||
-      $year == NULL ||
-      $description == NULL) {
+  if (   $courseId == null
+      || $title == null
+      || $quarter == null
+      || $year == null
+      || $description == null) {
     return "Invalid input when editing course";
   }
 
@@ -72,13 +108,15 @@ function UpdateCourse($userId)
   return "course edited";
 }
 
-function deleteCourse($courseId)
+function deleteCourse($professorId)
 {
+  $courseId = ifsetor($_POST['courseid'], null);
+
   global $gtcs12_db;
   $course = $gtcs12_db->GetCourseByCourseId($courseId);
 
   if ($course) { // course exists
-    if ($course->FacultyId == $currentUser->ID) { // user owns course
+    if ($course->FacultyId == $professorId) { // user owns course
       $gtcs12_db->DeleteCourse($courseId);
       return "course deleted";
     } else {
