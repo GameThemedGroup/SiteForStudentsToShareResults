@@ -53,6 +53,8 @@
     usort($submissionList, "compareDate");
   }
 
+  global $url;
+
   // helper functions needed for sorting
   function compareSubmissionAuthor($a, $b)
   {
