@@ -8,67 +8,7 @@
  */
 get_header(); ?>
 
-<?php 
-$defaultResultsPerPage = 10; // default number of projects per page
-$defaultOrder = 'DES';      // default sort order
-$defaultCategory = 'date';  // default sorting method  
-
-// keep track of results page being viewed 
-if(isset($_GET['x']))      
-  $currentPage = $_GET['x'];
-else
-  $currentPage = 1;
-
-// gets the whole url for proper redirection to results page 
-if(isset($_GET['category']))
-  $category = $_GET['category'];
-else
-  $category = $defaultCategory;
-  
-if(isset($_GET['order']))
-  $order = $_GET['order'];
-else
-  $order = $defaultOrder ;
-  
-if(isset($_GET['results']))
-  $resultsPerPage = $_GET['results'];
-else
-  $resultsPerPage = $defaultResultsPerPage ;  
-  
-if(isset($_GET['search']))
-  $search = $_GET['search'];
-else
-  $search = "";
-
-// retrieve project posts
-$args = array(
-  'posts_per_page'   => $resultsPerPage, 
-  'offset'           => ($currentPage - 1) * $resultsPerPage,
-  'order'            => $order, 
-  'orderby'          => $category,
-  'post_status'      => 'publish',
-  'suppress_filters' => true,
-  'name'             => $search,
-  'post_type'        => 'post'
-  );
-  
-$postslist = get_posts($args); 
-
-// count of all posts
-if($search == '')
-{
-  $numPosts = wp_count_posts('post')->publish;
-}
-else 
-{
-  $numPosts = count($postslist);
-}
-
-// gets count of search result pages
-$numPages = ceil($numPosts / $resultsPerPage);
-
-//$gtcs12_db->CreateSubmission('submission post', 23, 4, 184, 'submission description');
-?>
+<?php include_once(get_template_directory() . '/logic/projects-search.php'); ?>
 
 <html>
   <div id="projectsearchfilter">
@@ -114,7 +54,7 @@ $numPages = ceil($numPosts / $resultsPerPage);
       Page
       <?php
       $count = 1;
-      while($numPages + 1 > $count) 
+      while($numPages + 1 > $count)
       {
         if($count == $currentPage)
         {
@@ -141,14 +81,14 @@ $numPages = ceil($numPosts / $resultsPerPage);
         </a>
         <a class="project-search" href="<?php echo site_url('/profile/?user='); echo the_author_meta('ID') ?>">
           <div id="project-author">
-            <?php the_author_meta('user_login') ?> 
+            <?php the_author_meta('user_login') ?>
           </div>
-        </a> 
+        </a>
       </div>
       <a id="project-image" href="<?php the_permalink(); ?>">
         <?php if(has_post_thumbnail()) : ?>
           <?php the_post_thumbnail(array(140,140)); ?>
-        <?php else : ?> 
+        <?php else : ?>
           <img src="<?php bloginfo('template_directory'); ?>/images/blank-project.png" width="144" height="144">
         <?php endif ?>
       </a>
@@ -158,11 +98,11 @@ $numPages = ceil($numPosts / $resultsPerPage);
         </div>
         <div class="project-metatag">
           <?php echo wp_count_comments(get_the_ID())->approved . " Comments"; ?>
-        </div>    
+        </div>
         <div id="rating" class="project-metatag">
           <?php if(function_exists('the_ratings')) { the_ratings(); } ?>
         </div>
-        <div id="project-description">   
+        <div id="project-description">
           <?php the_content('Read more...', true) ?>
         </div>
       </div>
@@ -176,7 +116,7 @@ $numPages = ceil($numPosts / $resultsPerPage);
       Page
       <?php
       $count = 1;
-      while($numPages + 1 > $count) 
+      while($numPages + 1 > $count)
       {
         if($count == $currentPage)
         {
