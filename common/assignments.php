@@ -119,5 +119,29 @@ class GTCS_Assignments
 
     return $postId;
   }
+
+  public static function getAllAssignments($courseId)
+  {
+    global $wpdb;
+    $wpdb->show_errors(true);
+
+    $users        = $wpdb->prefix . "users";
+    $posts        = $wpdb->prefix . "posts";
+    $term_relationships = $wpdb->prefix . "term_relationships";
+    $terms = $wpdb->prefix . "terms";
+
+    // an assignment means who has no parent post
+    // a submission means who has a parent post
+    $sql = "SELECT p.id as AssignmentId, p.post_title as Title, p.post_date as Date, a.id as AuthorId, a.display_name as AuthorName
+      FROM {$posts} p INNER JOIN {$users} a ON p.post_author = a.id
+      WHERE p.post_parent = 0
+      AND p.post_status = 'publish'
+      AND p.id IN (SELECT object_id FROM {$term_relationships}
+    WHERE term_taxonomy_id = (SELECT term_id FROM {$terms} WHERE name = 'course:{$courseId}'));";
+
+    $rows = $wpdb->get_results($sql);
+
+    return $rows;
+  }
 }
 ?>
