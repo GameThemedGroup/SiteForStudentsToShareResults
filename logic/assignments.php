@@ -46,7 +46,7 @@ function initializePageState(&$pageState)
       'update' => 'updateAssignment'
     );
 
-    if (array_key_exists($actions, $actionList)) {
+    if (array_key_exists($action, $actionList)) {
       $userFeedback = call_user_func($actionList[$action]);
     } else {
       trigger_error("An invalid action was provided.", E_USER_WARNING);
