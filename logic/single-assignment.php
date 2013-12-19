@@ -71,6 +71,7 @@ function initializePageState(&$pageState)
   $pageState->displayedCourse = $displayedCourse;
   $pageState->view = $view;
   $pageState->nonSubmitters = $nonSubmitters;
+  $pageState->assignmentId = $assignmentId;
 }
 
 function getListOfNonSubmitters($submissionList, $studentIds)
@@ -98,7 +99,7 @@ function compareSubmissionAuthor($a, $b)
 
 function compareStudentName($a, $b)
 {
-  return strcmp(strtolower($a->Name), strtolower($b->Name));
+  return strcmp(strtolower($a->display_name), strtolower($b->display_name));
 }
 
 function compareDate($a, $b)

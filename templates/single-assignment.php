@@ -22,6 +22,7 @@ get_header(); ?>
   $displayedCourse = $pageState->displayedCourse;
   $view = $pageState->view;
   $nonSubmitters = $pageState->nonSubmitters;
+  $assignmentId = $pageState->assignmentId;
 ?>
 
 <!-- Assignment Display -->
