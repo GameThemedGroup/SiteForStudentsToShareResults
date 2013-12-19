@@ -149,6 +149,7 @@ get_header(); ?>
       </tr>
     <?php endforeach; ?>
 
+    <?php if ($isOwner): ?>
     <?php foreach($nonSubmitters as $student): ?>
       <tr>
         <th class="center" colspan="3">
@@ -159,6 +160,7 @@ get_header(); ?>
         </th>
       </tr>
     <?php endforeach; ?>
+    <?php endif; ?>
 
     <?php if($isEnrolled && $canSubmit) : ?>
       <tr class="break">
