@@ -36,20 +36,6 @@
   
   <subscriber>
     <display_name />
-    <first_name>David</first_name>
-    <last_name>Black</last_name>
-    <login>dblack</login>
-    <user_email>dblack@example.com</user_email>
-  </subscriber>
-  <subscriber>
-    <display_name />
-    <first_name>Scott</first_name>
-    <last_name>Wells</last_name>
-    <login>swells</login>
-    <user_email>swells@example.com</user_email>
-  </subscriber>
-  <subscriber>
-    <display_name />
     <first_name>John</first_name>
     <last_name>Smith</last_name>
     <login>jsmith</login>
