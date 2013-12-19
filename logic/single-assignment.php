@@ -48,6 +48,7 @@ function initializePageState(&$pageState)
     update_post_meta($assignmentId, 'isEnabled', 0, 1);
    */
 
+  $nonSubmitters = getListOfNonSubmitters($submissionList, $studentIds);
   $status = get_post_meta($assignmentId, 'isEnabled', true);
 
   $sort = ifsetor($_GET['sort'], 'date');
@@ -69,6 +70,24 @@ function initializePageState(&$pageState)
   $pageState->displayedAssignment = $displayedAssignment;
   $pageState->displayedCourse = $displayedCourse;
   $pageState->view = $view;
+  $pageState->nonSubmitters = $nonSubmitters;
+}
+
+function getListOfNonSubmitters($submissionList, $studentIds)
+{
+  foreach ($submissionList as $submission) {
+    $submitters[] = $submission->AuthorId;
+  }
+
+  $submitters = array_unique($submitters);
+  $nonSubmitterId = array_diff($studentIds, $submitters);
+
+  $nonSubmitters = array();
+  foreach ($nonSubmitterId as $studentId) {
+    $nonSubmitters[] = get_user_by('id', $studentId);
+  }
+
+  return $nonSubmitters;
 }
 
 // helper functions needed for sorting

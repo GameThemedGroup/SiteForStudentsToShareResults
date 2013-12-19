@@ -21,6 +21,7 @@ get_header(); ?>
   $displayedAssignment = $pageState->displayedAssignment;
   $displayedCourse = $pageState->displayedCourse;
   $view = $pageState->view;
+  $nonSubmitters = $pageState->nonSubmitters;
 ?>
 
 <!-- Assignment Display -->
@@ -148,27 +149,15 @@ get_header(); ?>
       </tr>
     <?php endforeach; ?>
 
-    <?php if(count($studentList) > count($submitters)) : ?>
-      <tr class="break">
-        <th></th>
-        <th></th>
-        <th></th>
+    <?php foreach($nonSubmitters as $student): ?>
+      <tr>
+        <th class="center" colspan="3">
+          <a href="<?php echo $url['profile'] . "?user={$student->ID}"; ?>">
+            <?php echo $student->display_name; ?>
+          </a>
+          has not submitted anything
+        </th>
       </tr>
-    <?php endif; ?>
-
-    <?php foreach($studentList as $student): ?>
-      <?php if ($student->StudentId != null): ?>
-        <?php if (!isset($submitters[$student->Name])): ?>
-          <tr>
-            <th class="center" colspan="3">
-              <a href="<?php echo $url['profile'] . "?user={$student->Id}"; ?>">
-                <?php echo $student->Name ?>
-              </a>
-              has not submitted anything
-            </th>
-          </tr>
-        <?php endif; ?>
-      <?php endif; ?>
     <?php endforeach; ?>
 
     <?php if($isEnrolled && $canSubmit) : ?>
