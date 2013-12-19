@@ -1,42 +1,43 @@
 <?php
-  $current_user = wp_get_current_user();
-  $is_student = gtcs_user_has_role('subscriber');
-  $is_professor = gtcs_user_has_role('author');
+  $userId = wp_get_current_user()->ID;
+  $isStudent = gtcs_user_has_role('subscriber');
+  $isProfessor = gtcs_user_has_role('author');
 
-  if(isset($_GET['courseid']))
-  {
-    $courseId = $_GET['courseid'];
-    $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID);
-  }
-  else
-  {
-    if($is_student) {
-      $courses = $gtcs12_db->GetCourseByStudentId($current_user->ID);
-    }
-    elseif($is_professor) {
-      $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID);
+  $courseId = ifsetor($_GET['id'], null);
+
+  $courseList = array();
+
+  include_once(get_template_directory() . '/common/courses.php');
+
+  if ($courseId != null) {
+    $courseList = GTCS_Courses::getCourseByFacultyId($userId);
+
+  } else {
+
+    if ($isStudent) {
+      $courseList = GTCS_Courses::getCourseByStudentId($userId);
+    } elseif ($isProfessor) {
+      $courseList = GTCS_Courses::getCourseByFacultyId($userId);
     }
 
-    if($courses)
-    {
-      $courseId = $courses[0]->Id;
+    if ($courseList) { // set default selection to first course
+      $courseId = $courseList[0]->Id;
     }
-  }
-
-  if(isset($courseId))
-  {
-    $course = $gtcs12_db->GetCourseByCourseId($courseId);
   }
 
-  if(isset($course))
+  if ($courseId != null)
+    $course = GTCS_Courses::getCourseByCourseId($courseId);
+
+  $isOwner = false;
+  if (isset($course))
   {
+    include_once(get_template_directory() . '/common/assignments.php');
     $professor = get_userdata($course->FacultyId);
-    $professor_link = site_url('/profile/?user=') . $course->FacultyId;
-    $assignments = $gtcs12_db->GetAllAssignments($courseId);
+    $professorLink = site_url('/profile/?user=') . $course->FacultyId;
+    $assignmentList = GTCS_Assignments::getAllAssignments($courseId);
 
-    if($is_professor)
-    {
-      $isOwner = ($course->FacultyId == $current_user->ID);
+    if($isProfessor) {
+      $isOwner = ($course->FacultyId == $userId);
     }
   }
 ?>

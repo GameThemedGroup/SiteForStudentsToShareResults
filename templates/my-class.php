@@ -19,7 +19,7 @@ get_header(); ?>
   <div id="class-whole">
     <div id="class-title"><?php echo $course->Name ?>
       <?php if($isOwner) : ?>
-        <a id="link" href='<?php echo site_url('/courses/') . "?op=edit&courseid=" . $courseId;?>'>
+        <a id="link" href='<?php echo site_url('/courses/') . "?editId=" . $courseId;?>'>
           Edit Course
         </a>
       <?php endif; ?>
@@ -54,13 +54,13 @@ get_header(); ?>
   <div id="sidebar-menu">
     <div id="sidebar-menu-title">My Courses</div>
     <ul class="sidebar-menu">
-<?php foreach($courses as $course) : ?>
+<?php foreach($courseList as $course) : ?>
 <?php   if($courseId == $course->Id) : ?>
       <li class="sidebar-menu-selected">
 <?php   else : ?>
       <li class="sidebar-menu">
 <?php   endif ?>
-        <a href="<?php echo site_url('/my-class/?courseid=' . $course->Id) ?>">
+        <a href="<?php echo site_url('/my-class/?id=' . $course->Id) ?>">
           <p class="sidebar-menu-top"><?php echo $course->Name ?></p>
           <p class="sidebar-menu-bottom"><?php echo $course->Quarter . ', ' . $course->Year ?></p>
         </a>
@@ -87,9 +87,7 @@ get_header(); ?>
 <?php   endforeach ?>
 <?php endif ?>
 <?php if($isOwner) : ?>
-        <li class="sidebar-menu-center"><a class="action" href="<?php echo site_url('/students/?courseid=' . $courseId) ?>">Add students</a></li>
-<?php else : ?>
-        <li class="sidebar-menu-center">There are no enrolled students</li>
+        <li class="sidebar-menu-center"><a class="action" href="<?php echo site_url('/students/?id=' . $courseId) ?>">Add students</a></li>
 <?php endif ?>
         </ul>
     </div>
@@ -98,7 +96,6 @@ get_header(); ?>
 <div id="table">
   <div id='table-title'>Assignments</div>
   <table>
-
     <thead>
       <tr>
         <th>Assignment</th>
@@ -108,11 +105,11 @@ get_header(); ?>
     </thead>
 
     <tbody>
-      <?php if($assignments): ?>
-      <?php foreach($assignments as $assignment): ?>
+      <?php if($assignmentList): ?>
+      <?php foreach($assignmentList as $assignment): ?>
         <?php
           $status = get_post_meta($assignment->AssignmentId, 'isEnabled', true);
-          $assignlink = site_url('/assignment/?assignid=' . $assignment->AssignmentId);
+          $assignlink = site_url('/assignment/?id=' . $assignment->AssignmentId);
         ?>
 
         <tr>
@@ -138,7 +135,7 @@ get_header(); ?>
         </tr>
         <tr>
           <th class="action" colspan="3">
-            <a class="action" href="<?php echo site_url('/assignments/?courseid=' . $courseId) ?>">
+            <a class="action" href="<?php echo site_url('/assignments/?id=' . $courseId) ?>">
               Create an assignment
             </a>
           </th>
