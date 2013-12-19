@@ -11,22 +11,33 @@
 get_header(); ?>
 
 <?php include_once(get_template_directory() . '/logic/single-assignment.php'); ?>
-<?php $ps = $pageState; ?>
+
+<?php
+  $studentList = $pageState->studentList;
+  $submissionList = $pageState->submissionList;
+  $isOwner = $pageState->isOwner;
+  $isEnrolled = $pageState->isEnrolled;
+  $canSubmit = $pageState->canSubmit;
+  $displayedAssignment = $pageState->displayedAssignment;
+  $displayedCourse = $pageState->displayedCourse;
+  $view = $pageState->view;
+?>
 
 <!-- Assignment Display -->
 <div id="assignment-whole">
 
-  <a class="link" href="<?php echo $url['my-class'] . "?id={$ps->courseId}"; ?>">
+
+  <a class="link" href="<?php echo $url['my-class'] . "?id={$courseId}"; ?>">
     Back to course</a>
 
-  <?php if ($ps->isOwner) : ?>
+  <?php if ($isOwner) : ?>
     <a class="link" href="<?php echo $url['assignments'] .
-      "?editId={$ps->assignmentId}&id={$ps->courseId}"; ?>">
+      "?editId={$assignmentId}&id={$courseId}"; ?>">
       Edit this Assignment</a>
   <?php endif; ?>
 
   <div id="assignnment-title">
-    <?php echo $ps->displayedAssignment->post_title; ?>
+    <?php echo $displayedAssignment->post_title; ?>
   </div>
 
   <div id="assignment-top">
@@ -34,22 +45,22 @@ get_header(); ?>
       width="155" height="155" />
 
     <p class="assignment-meta"><b>Course </b>
-      <?php echo $ps->displayedCourse->Name ?></p>
+      <?php echo $displayedCourse->Name ?></p>
 
     <p class="assignment-meta"><b>Created </b>
-      <?php echo date('F d, Y', strtotime($ps->displayedAssignment->post_date)); ?></p>
+      <?php echo date('F d, Y', strtotime($displayedAssignment->post_date)); ?></p>
 
     <p class="assignment-meta">
       <b>Status</b>
-      <?php if ($ps->canSubmit) : ?>Open to Submissions
-        <?php if ($ps->isOwner) : ?>
-          <a href="<?php echo $ps->url['assignment'] . "?id={$ps->assignmentId}&op=close"; ?>">
+      <?php if ($canSubmit) : ?>Open to Submissions
+        <?php if ($isOwner) : ?>
+          <a href="<?php echo $url['assignment'] . "?id={$assignmentId}&op=close"; ?>">
             [Close]
           </a>
         <?php endif; ?>
       <?php else: ?>Closed to Submissions
-        <?php if ($ps->isOwner): ?>
-          <a href="<?php echo $ps->url['assignment'] . "?id={$ps->assignmentId}&op=open"; ?>">
+        <?php if ($isOwner): ?>
+          <a href="<?php echo $url['assignment'] . "?id={$assignmentId}&op=open"; ?>">
             [Open]
           </a>
         <?php endif; ?>
@@ -58,21 +69,21 @@ get_header(); ?>
 
     <div id="assignment-buttons">
       <div id="assignment-button">
-        <?php if($ps->view == 'description') : ?>
+        <?php if($view == 'description') : ?>
           <b>Description</b>
         <?php else : ?>
-          <a href="<?php echo $ps->url['assignment'] .
-            "?id={$ps->assignmentId}&view=description"; ?>">
+          <a href="<?php echo $url['assignment'] .
+            "?id={$assignmentId}&view=description"; ?>">
             Description
           </a>
         <?php endif; ?>
       </div> <!-- assignment-button -->
 
       <div id="assignment-button">
-        <?php if ($ps->view == 'applet'): ?><b>Applet</b>
+        <?php if ($view == 'applet'): ?><b>Applet</b>
         <?php else : ?>
-          <a href="<?php echo $ps->url['assignment'] .
-            "?id={$ps->assignmentId}&view=applet"; ?>">
+          <a href="<?php echo $url['assignment'] .
+            "?id={$assignmentId}&view=applet"; ?>">
             Applet
           </a>
         <?php endif; ?>
@@ -83,9 +94,9 @@ get_header(); ?>
   </div> <!-- assignment-top -->
 
   <div id="assignment-description">
-    <?php if ($ps->view == 'description'): ?>
-      <?php echo nl2br($ps->displayedAssignment->post_content); ?>
-    <?php elseif ($ps->view == 'applet'): ?>Put applet here
+    <?php if ($view == 'description'): ?>
+      <?php echo nl2br($displayedAssignment->post_content); ?>
+    <?php elseif ($view == 'applet'): ?>Put applet here
     <?php endif; ?>
   </div>
 
@@ -94,8 +105,8 @@ get_header(); ?>
 
 <!-- Sort Selector -->
 <div id="sort-box">
-  <form action="<?php echo $ps->url['assignment']; ?>" method="get">
-    <input type="hidden" name="id" value="<?php echo $ps->assignmentId ?>">
+  <form action="<?php echo $url['assignment']; ?>" method="get">
+    <input type="hidden" name="id" value="<?php echo $assignmentId ?>">
     <select name="sort">
       <option disabled="disabled" selected>Sort by</option>
       <option value="date">Submission Date</option>
@@ -120,7 +131,7 @@ get_header(); ?>
     <tbody>
     <?php $submitters = array() ?>
 
-    <?php foreach($ps->submissionList as $submission) : ?>
+    <?php foreach($submissionList as $submission) : ?>
       <?php $submitters[$submission->AuthorName] = true; ?>
       <tr>
         <th>
@@ -137,7 +148,7 @@ get_header(); ?>
       </tr>
     <?php endforeach; ?>
 
-    <?php if(count($ps->studentList) > count($submitters)) : ?>
+    <?php if(count($studentList) > count($submitters)) : ?>
       <tr class="break">
         <th></th>
         <th></th>
@@ -145,7 +156,7 @@ get_header(); ?>
       </tr>
     <?php endif; ?>
 
-    <?php foreach($ps->studentList as $student): ?>
+    <?php foreach($studentList as $student): ?>
       <?php if ($student->StudentId != null): ?>
         <?php if (!isset($submitters[$student->Name])): ?>
           <tr>
@@ -160,7 +171,7 @@ get_header(); ?>
       <?php endif; ?>
     <?php endforeach; ?>
 
-    <?php if($ps->isEnrolled && $ps->canSubmit) : ?>
+    <?php if($isEnrolled && $canSubmit) : ?>
       <tr class="break">
         <th></th>
         <th></th>
@@ -168,7 +179,7 @@ get_header(); ?>
       </tr>
       <tr>
         <th class="action" colspan="3">
-          <b><a href="<?php echo $url['assignment'] . "?id={$ps->courseId}"; ?>">
+          <b><a href="<?php echo $url['assignment'] . "?id={$courseId}"; ?>">
             Submit Assignment
           </a></b>
         </th>
