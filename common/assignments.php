@@ -44,7 +44,7 @@ class GTCS_Assignments
       if (isset($assignment['image']) || isset($assignments['jar'])) {
         trigger_error(__FUNCTION__ . " - Jar and Image upload not yet
           implemented.", E_USER_WARNING);
-        require_once(get_template_directory() . '/services/attachments.php');
+        require_once(get_template_directory() . '/common/attachments.php');
         //$file = handleFileUpload();
         //attachFileToSubmission($file, $assignment['title'], $assignmentId, $professorId, true);
       }
