@@ -35,7 +35,9 @@ function initializePageState(&$pageState)
   }
 
   // retrieve students and submissions for table
-  $studentList = $gtcs12_db->GetStudents($courseId);
+  $studentIds = $gtcs12_db->GetStudents($courseId);
+  $studentList = get_users(array('include' => $studentIds));
+
   $submissionList = $gtcs12_db->GetAllSubmissions($assignmentId);
 
   // toggle opening/closing assignment

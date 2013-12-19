@@ -76,14 +76,14 @@ get_header(); ?>
   <div id="sidebar-menu">
     <div id="sidebar-menu-title">Students</div>
       <ul class="sidebar-menu">
-<?php $students = $gtcs12_db->GetStudents($courseId); ?>
+<?php $studentIds = $gtcs12_db->GetStudents($courseId);
+  $students = get_users(array('include' => $studentIds));
+?>
 <?php if ($students) : ?>
 <?php   foreach($students as $student) : ?>
-<?php     if($student->StudentId != null) : ?>
               <li class="sidebar-menu">
-                <p class="sidebar-menu-middle"><a href="<?php echo site_url('/profile/?user=' . $student->Id) ?>"><?php echo $student->Name ?></a></p>
+                <p class="sidebar-menu-middle"><a href="<?php echo site_url('/profile/?user=' . $student->ID) ?>"><?php echo $student->display_name?></a></p>
               </li>
-<?php     endif ?>
 <?php   endforeach ?>
 <?php endif ?>
 <?php if($isOwner) : ?>

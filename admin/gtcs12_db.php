@@ -167,17 +167,16 @@ class GTCS12_DB
     $wpdb->show_errors(true);
     $enrollments = $wpdb->prefix . "enrollments";
     $users       = $wpdb->prefix . "users";
-    $userMeta    = $wpdb->prefix . "usermeta";
-    $capabilities= $wpdb->prefix . "capabilities";
 
-    $sql = "SELECT u.ID as Id, u.display_name as Name,
-      (select studentid from {$enrollments} where courseid = '{$courseId}' AND studentid = u.id) as StudentId
-      FROM {$users} u INNER JOIN {$userMeta} up
-      ON u.id = up.user_id
-      WHERE up.meta_key = '{$capabilities}' AND up.meta_value LIKE '%subscriber%';";
+    $sql = "SELECT studentid from {$enrollments} WHERE courseid={$courseId};";
+    $results = $wpdb->get_results($sql);
 
-    $rows = $wpdb->get_results($sql);
-    return $rows;
+    $studentList = array();
+    foreach($results as $id) {
+      $studentList[] = (int) $id->studentid;
+    }
+
+    return $studentList;
   }
 
   function UpdateStudentEnrollment($courseId, $studentId, $enroll)
