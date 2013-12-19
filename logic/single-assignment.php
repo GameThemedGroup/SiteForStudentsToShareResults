@@ -69,19 +69,19 @@ function initializePageState(&$pageState)
   $pageState->view = $view;
 }
 
-  // helper functions needed for sorting
-  function compareSubmissionAuthor($a, $b)
-  {
-    return strcmp(strtolower($a->AuthorName), strtolower($b->AuthorName));
-  }
+// helper functions needed for sorting
+function compareSubmissionAuthor($a, $b)
+{
+  return strcmp(strtolower($a->AuthorName), strtolower($b->AuthorName));
+}
 
-  function compareStudentName($a, $b)
-  {
-    return strcmp(strtolower($a->Name), strtolower($b->Name));
-  }
+function compareStudentName($a, $b)
+{
+  return strcmp(strtolower($a->Name), strtolower($b->Name));
+}
 
-  function compareDate($a, $b)
-  {
-    return strcmp($a->SubmissionDate, $b->SubmissionDate);
-  }
+function compareDate($a, $b)
+{
+  return strcmp($a->SubmissionDate, $b->SubmissionDate);
+}
 ?>
