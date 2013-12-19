@@ -11,9 +11,10 @@ global $url;
 $url = array(
   'assignment' => site_url('/assignment/'),
   'assignments' => site_url('/assignments/'),
-  'profile' => site_url('/profile/'),
+  'courses' => site_url('/courses/'),
   'my-class' => site_url('/my-class/'),
   'main' => site_url('/main/'),
+  'profile' => site_url('/profile/'),
 );
 
 require_once('admin/theme_init.php');
