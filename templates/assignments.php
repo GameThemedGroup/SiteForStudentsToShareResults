@@ -121,7 +121,7 @@ get_header(); ?>
         </tr>
       <?php else: ?>
       <?php foreach ($ps->assignmentList as $assignment) : ?>
-        <?php $assignLink = site_url('/assignment/?assignid=' . $assignment->AssignmentId); ?>
+        <?php $assignLink = site_url('/assignment/?id=' . $assignment->AssignmentId); ?>
           <tr>
             <th><a href="<?php echo $assignLink; ?>">
                <?php echo $assignment->Title ?></a>
