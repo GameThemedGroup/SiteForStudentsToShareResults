@@ -14,41 +14,30 @@ get_header(); ?>
  * userFeedback - Message to display to user after a successful or failed
  *   action. Set to '' if there is no feedback to display.
  *
- * course - an object containing the following fields
- *   Name - the course name
- *   Description - the course description
- *   Quarter - text represntation of the academic quarter. Ex. Summer, Spring
+ * isEditing - true if the user is editing the assignment
  *
- * courseList - a list of courses beloging to the professor.
- *   $courseList == null if the professor has no courses
+ * displayedAssignment - an object containing the following fields
  *
- * quarterList - an array of academic quarters in the form
- *   (quarter => selectStatus).
- *   Ex. "Summer" => true
- *       "Fall"   => false
- *   The user will be able to select between Summer and Fall with Summber being
- *   the default selection.
+ * assignmentList - a list of courses beloging to the course
+ *   $sizeof(assignmentList) == 0 if the course has no assignments
  *
- * url[] - array containing urls to the following pages
- *   courses  => this page
- *   my-class => templates/my-class.php
+ * courseList
  *
- * isEditing - true if the user is editing a course
+ * courseId
  */
 ?>
 
 <?php include_once(get_template_directory() . '/logic/assignments.php'); ?>
+<?php $ps = $pageState; ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<?php if($action) : ?>
-  <div id="action-box"><?php echo $userFeedback; ?></div>
+<?php if($ps->userFeedback) : ?>
+  <div id="action-box"><?php echo $ps->userFeedback; ?></div>
 <?php endif ?>
 
 <form action="<?php echo get_permalink(); ?>" method="post" enctype="multipart/form-data">
   <div id='create-assignment-box'>
     <div id='create-assignment-title'>
-      <?php if ($isEditing): ?>Edit Assignment
+      <?php if ($ps->isEditing): ?>Edit Assignment
       <?php else: ?>Create Assignment
       <?php endif; ?>
     </div>
@@ -56,12 +45,12 @@ get_header(); ?>
     <div id='create-assignment-field'>
       <p class="create-assignment">Title</p>
       <input class='create-assignment' type="text" name="title"
-        value="<?php echo $displayedAssignment->post_title; ?>" required>
+        value="<?php echo $ps->displayedAssignment->post_title; ?>" required>
     </div>
 
     <div id='create-assignment-field'>
       <p class="create-assignment">Description</p>
-      <textarea cols="25" rows="5" name="description" required><?php echo $displayedAssignment->post_content; ?></textarea>
+      <textarea cols="25" rows="5" name="description" required><?php echo $ps->displayedAssignment->post_content; ?></textarea>
     </div>
 
     <div id='create-assignment-field'>
@@ -76,30 +65,29 @@ get_header(); ?>
 
     <div id="create-assignment-buttons">
 
-      <input type="hidden" name="assignId" value="<?php echo $assignmentId; ?>">
-      <input type="hidden" name="courseId" value="<?php echo $courseId; ?>">
+      <input type="hidden" name="assignId" value="<?php echo $ps->assignmentId; ?>">
+      <input type="hidden" name="courseId" value="<?php echo $ps->courseId; ?>">
 
-    <?php if ($isEditing): ?>
+    <?php if ($ps->isEditing): ?>
         <input type="hidden" name="action" value="update">
         <input type="submit" value="Finish Editing"/>
     <?php else: ?>
         <input type="hidden" name="action" value="create">
         <input type="submit" value="Create"/>
     <?php endif; ?>
-      <a href="<?php echo site_url('assignments/?id=' . $courseId) ?>">
+      <a href="<?php echo site_url('assignments/?id=' . $ps->courseId) ?>">
         <button type="button">Cancel</button>
       </a>
     </div> <!-- create-assignment-buttons -->
   </div> <!-- Create-Assignment-Box -->
 </form>
 
-<?php if($isProfessor) : ?>
   <div id="sidebar-menu">
     <div id="sidebar-menu-title">Courses</div>
     <ul class="sidebar-menu">
-<?php if($courseList) : ?>
-<?php   foreach($courseList as $course) : ?>
-<?php   if($courseId == $course->Id) : ?>
+<?php if($ps->courseList) : ?>
+<?php   foreach($ps->courseList as $course) : ?>
+<?php   if($ps->courseId == $course->Id) : ?>
           <li class="sidebar-menu-selected">
 <?php   else : ?>
           <li class="sidebar-menu">
@@ -112,7 +100,7 @@ get_header(); ?>
 <?php   endforeach ?>
 <?php else : ?>
       <li class="sidebar-menu-center">You have no courses</li>
-<?php endif ?>
+<?php endif; ?>
     </ul>
   </div> <!-- sidebar-menu -->
 
@@ -127,12 +115,12 @@ get_header(); ?>
       </tr>
     </thead>
     <tbody>
-      <?php if(!$assignmentList) : ?>
+      <?php if (!$ps->assignmentList) : ?>
         <tr>
          <th class="center" colspan="3">You have no assignments for this course</th>
         </tr>
       <?php else: ?>
-      <?php foreach($assignmentList as $assignment) : ?>
+      <?php foreach ($ps->assignmentList as $assignment) : ?>
         <?php $assignLink = site_url('/assignment/?assignid=' . $assignment->AssignmentId); ?>
           <tr>
             <th><a href="<?php echo $assignLink; ?>">
@@ -142,7 +130,7 @@ get_header(); ?>
             <th><?php echo date('F d, Y', strtotime($assignment->Date)); ?></th>
             <th>
               <form action="
-                <?php echo site_url('/assignments/?id=') . $courseId; ?>" method="post">
+                <?php echo site_url('/assignments/?id=') . $ps->courseId; ?>" method="post">
 
                 <select name="action">
                   <option disabled="disabled" selected>Choose an action</option>
@@ -154,7 +142,7 @@ get_header(); ?>
                   value="<?php echo $assignment->AssignmentId; ?>">
 
                 <input type="hidden" name="courseId"
-                  value="<?php echo $courseId; ?>">
+                  value="<?php echo $ps->courseId; ?>">
 
                 <input type="submit" value="Confirm"/>
 
@@ -166,7 +154,6 @@ get_header(); ?>
     </tbody>
   </table>
 </div>
-<?php endif; ?>
 </html>
 
 <?php get_footer(); ?>

@@ -1,44 +1,68 @@
 <?php
-$professorId = wp_get_current_user()->ID;
-$isProfessor = gtcs_user_has_role('author');
+$pageState = (object) array();
 
-if (!$isProfessor) {
-  echo "You do not have permission to view this page. <br />";
-  return;
-}
+initializePageState($pageState);
 
-$courseList = $gtcs12_db->GetCourseByFacultyId($professorId);
+/*
+$userFeedback = $pageState->userFeedback;
+$isEditing = $pageState->isEditing;
+$displayedAssignment = $pageState->displayedAssignment;
+$assignmentList = $pageState->assignmentList;
+$courseList = $pageState->courseList;
+ */
 
-$courseId = ifsetor($_GET['id'], null);
+function initializePageState(&$pageState)
+{
+  $professorId = wp_get_current_user()->ID;
+  $isProfessor = gtcs_user_has_role('author');
 
-if($courseId == null) {
-  $courseId = ifsetor($courseList[0]->Id, null);
-}
-
-$action = ifsetor($_POST['action'], null);
-
-$userFeedback = '';
-$isEditing = false;
-$displayedAssignment = (object) array('post_title' => '', 'post_content' => '');
-
-if ($action == 'edit') {
-  $userFeedback = editAssignmentSetup($displayedAssignment, $isEditing);
-
-} else if ($action != null) {
-  $actionList = array(
-    'delete' => 'deleteAssignment',
-    'create' => 'createAssignment',
-    'update' => 'updateAssignment'
-  );
-
-  if (array_key_exists($actions, $actionList)) {
-    $userFeedback = call_user_func($actionList[$action]);
-  } else {
-    trigger_error("An invalid action was provided.", E_USER_WARNING);
+  if (!$isProfessor) {
+    echo "You do not have permission to view this page. <br />";
+    return;
   }
-}
 
-$assignmentList = $gtcs12_db->GetAllAssignments($courseId);
+  include_once(get_template_directory() . '/common/courses.php');
+  $courseList = GTCS_Courses::getCourseByFacultyId($professorId);
+
+  $courseId = ifsetor($_GET['id'], null);
+
+  if($courseId == null) {
+    $courseId = ifsetor($courseList[0]->Id, null);
+  }
+
+  $action = ifsetor($_POST['action'], null);
+
+  $userFeedback = '';
+  $isEditing = false;
+  $displayedAssignment = (object) array('post_title' => '', 'post_content' => '');
+
+  if ($action == 'edit') {
+    $userFeedback = editAssignmentSetup($displayedAssignment, $isEditing);
+
+  } else if ($action != null) {
+    $actionList = array(
+      'delete' => 'deleteAssignment',
+      'create' => 'createAssignment',
+      'update' => 'updateAssignment'
+    );
+
+    if (array_key_exists($actions, $actionList)) {
+      $userFeedback = call_user_func($actionList[$action]);
+    } else {
+      trigger_error("An invalid action was provided.", E_USER_WARNING);
+    }
+  }
+
+  include_once(get_template_directory() . '/common/assignments.php');
+  $assignmentList = GTCS_Assignments::getAllAssignments($courseId);
+
+  $pageState->userFeedback = $userFeedback;
+  $pageState->displayedAssignment = $displayedAssignment;
+  $pageState->assignmentList = $assignmentList;
+  $pageState->courseList = $courseList;
+  $pageState->isEditing = $isEditing;
+  $pageState->courseId = $courseId;
+}
 
 function editAssignmentSetup(&$assignment, &$isEditing)
 {
@@ -54,7 +78,8 @@ function editAssignmentSetup(&$assignment, &$isEditing)
   }
 
   global $gtcs12_db;
-  $assignment = $gtcs12_db->GetAssignment($assignmentId);
+  $assignment = $gtcs12_db->getAssignment($assignmentId);
+
   return "Your are now editing the course";
 }
 
