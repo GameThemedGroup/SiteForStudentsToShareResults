@@ -1,4 +1,10 @@
 <?php
+  global $url;
+  $pageState = (object) array();
+  initializePageState($pageState);
+
+function initializePageState(&$pageState)
+{
   global $gtcs12_db;
 
   $userId = wp_get_current_user()->ID;
@@ -9,9 +15,6 @@
 
   if ($assignmentId != null)
     $displayedAssignment = get_post($assignmentId);
-
-  $sort = ifsetor($_GET['sort'], 'date');
-  $view = ifsetor($_GET['view'], 'description');
 
   $terms = wp_get_post_terms($assignmentId);
   $courseId = str_ireplace ('course:' ,'' , $terms[0]->name);
@@ -45,6 +48,7 @@
 
   $status = get_post_meta($assignmentId, 'isEnabled', true);
 
+  $sort = ifsetor($_GET['sort'], 'date');
   // sort submission table entries
   if($sort == 'author') {
     usort($submissionList, "compareSubmissionAuthor");
@@ -53,7 +57,17 @@
     usort($submissionList, "compareDate");
   }
 
-  global $url;
+  $view = ifsetor($_GET['view'], 'description');
+
+  $pageState->studentList = $studentList;
+  $pageState->submissionList = $submissionList;
+  $pageState->isOwner = $isOwner;
+  $pageState->isEnrolled = $isEnrolled;
+  $pageState->canSubmit = $status;
+  $pageState->displayedAssignment = $displayedAssignment;
+  $pageState->displayedCourse = $displayedCourse;
+  $pageState->view = $view;
+}
 
   // helper functions needed for sorting
   function compareSubmissionAuthor($a, $b)
