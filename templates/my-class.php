@@ -10,34 +10,46 @@ get_header(); ?>
 
 <?php include_once(get_template_directory() . '/logic/my-class.php'); ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<?php if(isset($course)) : ?>
+<?php if (!isset($course)) : ?>
+  <div id="action-box">Course can not be found</div>
+  </html>
+  <?php get_footer(); return; ?>
+<?php endif; ?>
+
   <div id="class-whole">
     <div id="class-title"><?php echo $course->Name ?>
-<?php if($isOwner) : ?>
-      <a id="link" href='<?php echo site_url('/courses/') . "?op=edit&courseid=" . $courseId;?>'>Edit Course</a>
-<?php endif ?>
+      <?php if($isOwner) : ?>
+        <a id="link" href='<?php echo site_url('/courses/') . "?op=edit&courseid=" . $courseId;?>'>
+          Edit Course
+        </a>
+      <?php endif; ?>
     </div>
-    <div id="class-info1">
-<?php
-echo "<b>Professor </b>";
-echo $professor->last_name . ', ' . $professor->first_name . ' ';
-echo "[<a href=\"" . $professor_link . "\">" . $professor->user_login . '</a>]';
-?>
+
+    <div id="class-info1"><b>Professor </b>
+      <?php echo $professor->last_name . ', ' . $professor->first_name . ' '; ?>
+      [<a href="<?php echo $professor_link; ?>">
+        <?php echo $professor->user_login; ?>
+      </a>]
     </div>
+
     <div id="class-info2">
-      <?php echo '<b>Email </b>' . $professor->user_email; ?>
+      <b>Email </b><?php echo $professor->user_email; ?>
     </div>
+
     <div id="class-info1">
-      <?php echo '<b>Quarter </b>' . $course->Quarter . ", " . $course->Year ?>
+      <b>Quarter </b><?php echo "{$course->Quarter}, {$course->Year}"; ?>
     </div>
+
     <div id="class-description">
       <b><p>Description</p></b>
-      <?php echo ($course->Description ? nl2br($course->Description)  : "This course has no description") ?>
+      <?php echo ($course->Description
+        ? nl2br($course->Description)
+        : "This course has no description") ?>
     </div>
-  </div>
 
+  </div> <!-- class-whole -->
+
+<!-- Course Selector -->
 <?php if($isOwner) : ?>
   <div id="sidebar-menu">
     <div id="sidebar-menu-title">My Courses</div>
@@ -53,12 +65,14 @@ echo "[<a href=\"" . $professor_link . "\">" . $professor->user_login . '</a>]';
           <p class="sidebar-menu-bottom"><?php echo $course->Quarter . ', ' . $course->Year ?></p>
         </a>
       </li>
-<?php endforeach ?>
+<?php endforeach; ?>
       <li class="sidebar-menu-center"><a class="action" href="<?php echo site_url('/courses/') ?>">Create course</a></li>
     </ul>
   </div>
-<?php endif ?>
+<?php endif; ?> <!-- sidebar-menu -->
+<!-- Course Selector -->
 
+<!-- Student List -->
   <div id="sidebar-menu">
     <div id="sidebar-menu-title">Students</div>
       <ul class="sidebar-menu">
@@ -79,44 +93,44 @@ echo "[<a href=\"" . $professor_link . "\">" . $professor->user_login . '</a>]';
 <?php endif ?>
         </ul>
     </div>
-  <div id="table">
-    <div id='table-title'>Assignments</div>
-      <table>
-        <thead>
-          <tr>
-            <th>Assignment</th>
-            <th>Date Posted</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-<?php
-if($assignments)
-{
-  foreach($assignments as $assignment)
-  {
-    $status = get_post_meta($assignment->AssignmentId, 'isEnabled', true);
-    $assignlink = site_url('/assignment/?assignid=' . $assignment->AssignmentId);
-    echo "<tr>";
-    echo "<th><a href=" . $assignlink . ">" . $assignment->Title . "</a></th>";
-    echo "<th>" . date('F d, Y', strtotime($assignment->Date)) . "</th>";
+<!-- Student List -->
 
-    if($status)
-      echo "<th>Open</th>";
-    else
-      echo "<th>Closed</th>";
+<div id="table">
+  <div id='table-title'>Assignments</div>
+  <table>
 
-    echo "</tr>";
-  }
-}
-elseif($isOwner == false)
-{
-  echo "<tr>";
-  echo "<th class=\"center\" colspan=\"2\">There are no assignments</th>";
-  echo "</tr>";
-}
-?>
-<?php   if($isOwner) : ?>
+    <thead>
+      <tr>
+        <th>Assignment</th>
+        <th>Date Posted</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <?php if($assignments): ?>
+      <?php foreach($assignments as $assignment): ?>
+        <?php
+          $status = get_post_meta($assignment->AssignmentId, 'isEnabled', true);
+          $assignlink = site_url('/assignment/?assignid=' . $assignment->AssignmentId);
+        ?>
+
+        <tr>
+          <th><a href="<?php echo $assignlink; ?>">
+            <?php echo $assignment->Title; ?></a>
+          </th>;
+
+          <th><?php echo date('F d, Y', strtotime($assignment->Date)); ?></th>
+          <th><?php echo $status ? "Open" : "Closed"; ?></th>
+        </tr>
+      <?php endforeach; ?>
+      <?php elseif ($isOwner == false): ?>
+        <tr>
+          <th class="center" colspan="2">There are no assignments</th>
+        </tr>
+      <?php endif; ?>
+
+      <?php if ($isOwner): ?>
         <tr class="break">
           <th></th>
           <th></th>
@@ -124,16 +138,17 @@ elseif($isOwner == false)
         </tr>
         <tr>
           <th class="action" colspan="3">
-            <a class="action" href="<?php echo site_url('/assignments/?courseid=' . $courseId) ?>">Create an assignment</a>
+            <a class="action" href="<?php echo site_url('/assignments/?courseid=' . $courseId) ?>">
+              Create an assignment
+            </a>
           </th>
         </tr>
-<?php   endif ?>
-      </tbody>
-    </table>
-  </div>
-<?php else : ?>
-  <div id="action-box">Course can not be found</div>
-<?php endif ?>
+      <?php endif; ?>
+
+    </tbody>
+  </table>
+</div>
+
 </html>
 
 <?php get_footer(); ?>
