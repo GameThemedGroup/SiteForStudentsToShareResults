@@ -5,20 +5,18 @@
 
 function initializePageState(&$pageState)
 {
-
   $action = ifsetor($_POST['action'], null);
-
   $actionList = array(
     'open'   => 'toggleAssignmentStatus',
     'close'  => 'toggleAssignmentStatus',
-    'edit'   => 'setupSubmissionEdit',
-    //'update' => 'updateAssignment'
+    //'edit'   => 'setupSubmissionEdit',
+    'create' => 'createSubmission'
   );
 
+  $pageState->userFeedback = '';
   if ($action == null) {
-
   } else if (array_key_exists($action, $actionList)) {
-    $userFeedback = call_user_func($actionList[$action], $pageState);
+    $pageState->userFeedback = call_user_func($actionList[$action], $pageState);
   } else {
     trigger_error("An invalid action was provided.", E_USER_WARNING);
   }
@@ -28,6 +26,40 @@ function initializePageState(&$pageState)
     echo "This page could not be displayed <br />";
     exit();
   }
+}
+
+function createSubmission(&$pageState)
+{
+  $studentId = get_current_user_id();
+
+  $description = ifsetor($_POST['description'], null);
+  $title = ifsetor($_POST['title'], null);
+  $assignmentId = ifsetor($_POST['assignmentId'], 123);
+  $courseId = ifsetor($_POST['courseId'], null);
+
+  // TODO gtcs_validate_not_null($description, $title, $assignmentId, $courseId)
+
+  include_once(get_template_directory() . '/common/submissions.php');
+  $submissionId = GTCS_Submissions::CreateSubmission(
+    $title,
+    $studentId,
+    $courseId, // TODO why is this needed?
+    $assignmentId,
+    $description
+  );
+
+  global $gtcs12_db;
+  if(isset($_FILES['jar'])) {
+    $jarLocation = $gtcs12_db->UploadFile('jar');
+    $gtcs12_db->AttachFileToPost($submissionId, $jarLocation, $title, 'jar', false);
+  }
+
+  if(isset($_FILES['image'])) {
+    $imageLocation = $gtcs12_db->UploadFile('image', $title);
+    $gtcs12_db->AttachFileToPost($submissionId, $imageLocation, $title, 'image', true);
+  }
+
+  return "Assignment successfully submitted.";
 }
 
 function setupPageForDisplay(&$pageState)
@@ -80,16 +112,20 @@ function setupPageForDisplay(&$pageState)
   $canSubmit = get_post_meta($assignmentId, 'isEnabled', true);
   $view = ifsetor($_GET['view'], 'description');
 
-  $pageState->studentList = $studentList;
-  $pageState->submissionList = $submissionList;
-  $pageState->isOwner = $isOwner;
-  $pageState->isEnrolled = $isEnrolled;
+  $pageState->assignmentId = $assignmentId;
   $pageState->canSubmit = $canSubmit;
+  $pageState->courseId = $courseId;
   $pageState->displayedAssignment = $displayedAssignment;
   $pageState->displayedCourse = $displayedCourse;
-  $pageState->view = $view;
+  $pageState->isEditing = false;
+  $pageState->isEnrolled = $isEnrolled;
+  $pageState->isOwner = $isOwner;
   $pageState->nonSubmitters = $nonSubmitters;
-  $pageState->assignmentId = $assignmentId;
+  $pageState->studentList = $studentList;
+  $pageState->submissionDescription = '';
+  $pageState->submissionList = $submissionList;
+  $pageState->submissionTitle = '';
+  $pageState->view = $view;
 
   return true;
 }

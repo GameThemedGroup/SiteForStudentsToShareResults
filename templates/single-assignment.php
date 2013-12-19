@@ -13,21 +13,27 @@ get_header(); ?>
 <?php include_once(get_template_directory() . '/logic/single-assignment.php'); ?>
 
 <?php
-  $studentList = $pageState->studentList;
-  $submissionList = $pageState->submissionList;
-  $isOwner = $pageState->isOwner;
-  $isEnrolled = $pageState->isEnrolled;
+  $assignmentId = $pageState->assignmentId;
   $canSubmit = $pageState->canSubmit;
+  $courseId = $pageState->courseId;
   $displayedAssignment = $pageState->displayedAssignment;
   $displayedCourse = $pageState->displayedCourse;
-  $view = $pageState->view;
+  $isEditing = $pageState->isEditing;
+  $isEnrolled = $pageState->isEnrolled;
+  $isOwner = $pageState->isOwner;
   $nonSubmitters = $pageState->nonSubmitters;
-  $assignmentId = $pageState->assignmentId;
+  $studentList = $pageState->studentList;
+  $submissionList = $pageState->submissionList;
+  $userFeedback = $pageState->userFeedback;
+  $view = $pageState->view;
 ?>
 
 <!-- Assignment Display -->
 <div id="assignment-whole">
 
+  <?php if($userFeedback) : ?>
+    <div id="action-box"><?php echo $userFeedback; ?></div>
+  <?php endif ?>
 
   <a class="link" href="<?php echo $url['my-class'] . "?id={$courseId}"; ?>">
     Back to course</a>
@@ -109,6 +115,64 @@ get_header(); ?>
 
 </div> <!-- assignment-whole -->
 <!-- Assignment Display -->
+
+<?php
+  $submissionTitle = $pageState->submissionTitle;
+  $submissionDescription = $pageState->submissionDescription;
+  $isEditing = $pageState->isEditing;
+?>
+<!-- Assignment Submission Form -->
+<?php if ($isEnrolled && $canSubmit): ?>
+<form action="<?php echo $url['assignment'] . "?id={$assignmentId}"; ?>"
+  method="post" enctype="multipart/form-data">
+
+  <div id='create-assignment-box'>
+    <div id='create-assignment-title'>
+      <?php echo $isEditing ? 'Edit ' : 'Create ' . $submissionTitle; ?>
+    </div>
+
+    <div id='create-assignment-field'>
+      <p class="create-assignment">Title</p>
+      <input class='create-assignment' type="text" name="title"
+        value="<?php //echo $displayedSubmission->post_title; ?>" required>
+    </div>
+
+    <div id='create-assignment-field'>
+      <p class="create-assignment">Description</p>
+      <textarea cols="25" rows="5" name="description"
+        required><?php echo $submissionDescription; ?></textarea>
+    </div>
+
+    <div id='create-assignment-field'>
+      <p class="create-assignment">Jar File</p>
+      <input class='create-assignment' type="file" name="jar">
+    </div>
+
+    <div id='create-assignment-field'>
+      <p class="create-assignment">Screenshot</p>
+      <input class='create-assignment' type="file" name="image" accept="image/*">
+    </div>
+
+    <div id="create-assignment-buttons">
+
+      <input type="hidden" name="assignmentId" value="<?php echo $assignmentId; ?>">
+      <input type="hidden" name="courseId" value="<?php echo $courseId; ?>">
+
+    <?php if ($isEditing): ?>
+        <input type="hidden" name="action" value="edit">
+        <input type="submit" value="Finish Editing"/>
+    <?php else: ?>
+        <input type="hidden" name="action" value="create">
+        <input type="submit" value="Create"/>
+    <?php endif; ?>
+      <a href="<?php echo site_url("assignment/?id={$courseId}"); ?>">
+        <button type="button">Cancel</button>
+      </a>
+    </div> <!-- create-assignment-buttons -->
+  </div> <!-- Create-Assignment-Box -->
+</form>
+<? endif; ?>
+<!-- Assignment Submission Form -->
 
 <!-- Sort Selector -->
 <div id="sort-box">
