@@ -104,6 +104,28 @@ get_header(); ?>
     </ul>
   </div> <!-- sidebar-menu -->
 
+<!-- Upload Assignments via XML form -->
+<div id="create-student-box-bottom">
+  <div id='create-student-title'>Upload Assignments from XML</div>
+  <form action="<?php echo get_permalink() . "?id={$ps->courseId}" ?>"
+    method="post" enctype="multipart/form-data">
+
+    <div id="create-student-field">
+      <p class="create-student-bottom">XML</p>
+      <input type="file" name="xml">
+    </div>
+    <div id="create-student-buttons">
+      <input type="hidden" name="id" value="<?php echo $ps->courseId; ?>">
+      <input type="hidden" name="action" value="upload">
+      <input type="submit" value="Upload">
+
+      <a href="<?php echo site_url('/assignments/') . "?id={$ps->courseId}"; ?>">
+        <button type="button">Cancel</button></a>
+    </div>
+  </form>
+</div>
+<!-- Upload Assignments via XML form -->
+
 <div id='table'>
   <div id='table-title'>Manage Assignments</div>
   <table>

@@ -43,7 +43,8 @@ function initializePageState(&$pageState)
     $actionList = array(
       'delete' => 'deleteAssignment',
       'create' => 'createAssignment',
-      'update' => 'updateAssignment'
+      'update' => 'updateAssignment',
+      'upload' => 'uploadFromXml'
     );
 
     if (array_key_exists($action, $actionList)) {
@@ -81,6 +82,22 @@ function editAssignmentSetup(&$assignment, &$isEditing)
   $assignment = $gtcs12_db->getAssignment($assignmentId);
 
   return "Your are now editing the course";
+}
+
+function uploadFromXml()
+{
+  $professorId = wp_get_current_user()->ID;
+  $courseId = ifsetor($_POST['id'], null);
+
+  // if(gtcs_validate_not_null($professorId, $courseId))
+
+  $file = $_FILES['xml'];
+  $xmlString = file_get_contents($file['tmp_name']);
+
+  require_once(get_template_directory() . '/common/assignments.php');
+
+  GTCS_Assignments::createAssignmentsFromXml($xmlString, $professorId, $courseId);
+  return "Assignments uploaded.";
 }
 
 function deleteAssignment()
