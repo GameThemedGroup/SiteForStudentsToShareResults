@@ -3,36 +3,61 @@
   $pageState = (object) array();
   initializePageState($pageState);
 
-
 function initializePageState(&$pageState)
 {
-  global $gtcs12_db;
 
+  $action = ifsetor($_POST['action'], null);
+
+  $actionList = array(
+    'open'   => 'toggleAssignmentStatus',
+    'close'  => 'toggleAssignmentStatus',
+    'edit'   => 'setupSubmissionEdit',
+    //'update' => 'updateAssignment'
+  );
+
+  if ($action == null) {
+
+  } else if (array_key_exists($action, $actionList)) {
+    $userFeedback = call_user_func($actionList[$action], $pageState);
+  } else {
+    trigger_error("An invalid action was provided.", E_USER_WARNING);
+  }
+
+  if (!setupPageForDisplay($pageState)) {
+    // TODO generalize this error message
+    echo "This page could not be displayed <br />";
+    exit();
+  }
+}
+
+function setupPageForDisplay(&$pageState)
+{
+  global $gtcs12_db;
   $userId = wp_get_current_user()->ID;
   $isProfessor = gtcs_user_has_role('author');
   $isStudent = gtcs_user_has_role('subscriber');
 
   $assignmentId = ifsetor($_GET["id"], null);
 
-  if ($assignmentId != null)
-    $displayedAssignment = get_post($assignmentId);
+  if ($assignmentId == null) {
+    trigger_error(__FUNCTION__ . "
+      - Assignment ID not provided.",
+      E_USER_WARNING);
+    return false;
+  }
+
+  $displayedAssignment = get_post($assignmentId);
 
   $terms = wp_get_post_terms($assignmentId);
   $courseId = str_ireplace ('course:' ,'' , $terms[0]->name);
 
   $displayedCourse = $gtcs12_db->GetCourseByCourseId($courseId);
 
-  $isOwner = false;
-  // check if logged in user is a teacher and owner of assignment
-  if($isProfessor) {
-    if($displayedAssignment->post_author == $userId) {
-      $isOwner = true;
-    }
-  }
+  $isOwner = $isProfessor && $displayedAssignment->post_author == $userId;
 
   $isEnrolled = false;
   if($isStudent) {
-    $isEnrolled = true; // needs to be changed, currently no function to check if student enrolled
+    $isEnrolled = true; // TODO fix this
   }
 
   // retrieve students and submissions for table
@@ -41,24 +66,7 @@ function initializePageState(&$pageState)
 
   $submissionList = $gtcs12_db->GetAllSubmissions($assignmentId);
 
-  // toggle opening/closing assignment
-  $action = ifsetor($_POST['action'], null);
-
-  if ($action != null) {
-    $id = ifsetor($_POST['id'], null);
-
-    if (!$isOwner || $id == null)
-      break;
-
-    if($action == 'open')
-      update_post_meta($id, 'isEnabled', true);
-
-    if($action == 'close')
-      update_post_meta($id, 'isEnabled', false);
-  }
-
   $nonSubmitters = getListOfNonSubmitters($submissionList, $studentIds);
-  $status = get_post_meta($assignmentId, 'isEnabled', true);
 
   $sort = ifsetor($_GET['sort'], 'date');
   // sort submission table entries
@@ -69,18 +77,52 @@ function initializePageState(&$pageState)
     usort($submissionList, "compareDate");
   }
 
+  $canSubmit = get_post_meta($assignmentId, 'isEnabled', true);
   $view = ifsetor($_GET['view'], 'description');
 
   $pageState->studentList = $studentList;
   $pageState->submissionList = $submissionList;
   $pageState->isOwner = $isOwner;
   $pageState->isEnrolled = $isEnrolled;
-  $pageState->canSubmit = $status;
+  $pageState->canSubmit = $canSubmit;
   $pageState->displayedAssignment = $displayedAssignment;
   $pageState->displayedCourse = $displayedCourse;
   $pageState->view = $view;
   $pageState->nonSubmitters = $nonSubmitters;
   $pageState->assignmentId = $assignmentId;
+
+  return true;
+}
+
+function toggleAssignmentStatus()
+{
+  $action = ifsetor($_POST['action'], null);
+  $assignmentId = ifsetor($_POST['id'], null);
+
+  $assignment = get_post($assignmentId);
+  $userId = wp_get_current_user()->ID;
+
+  if ($assignmentId == null) {
+    trigger_error(__FUNCTION__ . "
+      - An invalid Assignment ID was provided.",
+      E_USER_WARNING);
+  }
+
+  if (!gtcs_user_has_role('author')
+      || $userId != $assignment->post_author ) {
+    trigger_error("User does not have permission to perform this action");
+    return "You do not have permission to perform this action.";
+  }
+
+  if($action == 'open') {
+    update_post_meta($assignmentId, 'isEnabled', true);
+    return "Assignment is now open for submissions.";
+  }
+
+  if($action == 'close') {
+    update_post_meta($assignmentId, 'isEnabled', false);
+    return "Assignment is now closed to submissions.";
+  }
 }
 
 function getListOfNonSubmitters($submissionList, $studentIds)
