@@ -52,22 +52,27 @@ get_header(); ?>
     <p class="assignment-meta"><b>Created </b>
       <?php echo date('F d, Y', strtotime($displayedAssignment->post_date)); ?></p>
 
-    <p class="assignment-meta">
-      <b>Status</b>
-      <?php if ($canSubmit) : ?>Open to Submissions
+    <!-- Open/Close Assignment -->
+    <form style='margin:0; padding:0;'
+      action=<?php echo $url['assignment'] . "?id={$assignmentId}"; ?> m
+      method="post">
+
+      <p class="assignment-meta">
+        <b>Status</b>
+        <?php if ($canSubmit) : ?>Open to Submissions
+        <?php else: ?>Closed to Submissions
+        <?php endif; ?>
+
         <?php if ($isOwner) : ?>
-          <a href="<?php echo $url['assignment'] . "?id={$assignmentId}&op=close"; ?>">
-            [Close]
-          </a>
+            <input type="hidden" name="id" value="<?php echo $assignmentId; ?>">
+            <input type="hidden" name="action"
+              value="<?php echo $canSubmit ? 'close' : 'open'; ?>"/>
+            <input style='display:inline;' type="submit"
+              value="<?php echo $canSubmit ? 'Close' : 'Open'; ?>"/>
         <?php endif; ?>
-      <?php else: ?>Closed to Submissions
-        <?php if ($isOwner): ?>
-          <a href="<?php echo $url['assignment'] . "?id={$assignmentId}&op=open"; ?>">
-            [Open]
-          </a>
-        <?php endif; ?>
-      <?php endif; ?>
-    </p><!-- assignment-meta -->
+      </p>
+    </form>
+    <!-- Open/Close Assignment -->
 
     <div id="assignment-buttons">
       <div id="assignment-button">

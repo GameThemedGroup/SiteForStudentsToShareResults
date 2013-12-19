@@ -3,6 +3,7 @@
   $pageState = (object) array();
   initializePageState($pageState);
 
+
 function initializePageState(&$pageState)
 {
   global $gtcs12_db;
@@ -41,12 +42,20 @@ function initializePageState(&$pageState)
   $submissionList = $gtcs12_db->GetAllSubmissions($assignmentId);
 
   // toggle opening/closing assignment
-  /*
-  if($_GET['op'] == 'open')
-    update_post_meta($assignmentId, 'isEnabled', 1, 0);
-  else if($_GET['op'] == 'close')
-    update_post_meta($assignmentId, 'isEnabled', 0, 1);
-   */
+  $action = ifsetor($_POST['action'], null);
+
+  if ($action != null) {
+    $id = ifsetor($_POST['id'], null);
+
+    if (!$isOwner || $id == null)
+      break;
+
+    if($action == 'open')
+      update_post_meta($id, 'isEnabled', true);
+
+    if($action == 'close')
+      update_post_meta($id, 'isEnabled', false);
+  }
 
   $nonSubmitters = getListOfNonSubmitters($submissionList, $studentIds);
   $status = get_post_meta($assignmentId, 'isEnabled', true);
