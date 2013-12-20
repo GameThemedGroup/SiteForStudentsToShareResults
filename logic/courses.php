@@ -78,8 +78,8 @@ function editCourseSetup(&$course, &$isEditing)
     return "There was an error attempting to edit the course.";
   }
 
-  global $gtcs12_db;
-  $course = $gtcs12_db->GetCourseByCourseId($courseId);
+  include_once(get_template_directory() . '/common/courses.php');
+  $course = GTCS_Courses::GetCourseByCourseId($courseId);
   return "Your are now editing the course";
 }
 
@@ -127,7 +127,8 @@ function updateCourse($userId)
     return "Invalid input when editing course";
   }
 
-  $gtcs12_db->UpdateCourse($courseId, $title, $quarter, $year, $userId, $description);
+  include_once(get_template_directory() . '/common/courses.php');
+  GTCS_Courses::UpdateCourse($courseId, $title, $quarter, $year, $userId, $description);
   return "course edited";
 }
 
@@ -135,12 +136,12 @@ function deleteCourse($professorId)
 {
   $courseId = ifsetor($_POST['courseid'], null);
 
-  global $gtcs12_db;
-  $course = $gtcs12_db->GetCourseByCourseId($courseId);
+  include_once(get_template_directory() . '/common/courses.php');
+  $course = GTCS_Courses::GetCourseByCourseId($courseId);
 
   if ($course) { // course exists
     if ($course->FacultyId == $professorId) { // user owns course
-      $gtcs12_db->DeleteCourse($courseId);
+      GTCS_Courses::DeleteCourse($courseId);
       return "course deleted";
     } else {
       return "not owner";

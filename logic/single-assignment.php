@@ -48,15 +48,15 @@ function createSubmission(&$pageState)
     $description
   );
 
-  global $gtcs12_db;
+  include_once(get_template_directory() . '/common/attachments.php');
   if(isset($_FILES['jar'])) {
-    $jarLocation = $gtcs12_db->UploadFile('jar');
-    $gtcs12_db->AttachFileToPost($submissionId, $jarLocation, $title, 'jar', false);
+    $jarLocation = GTCS_Attachments::UploadFile('jar');
+    GTCS_Attachments::AttachFileToPost($submissionId, $jarLocation, $title, 'jar', false);
   }
 
   if(isset($_FILES['image'])) {
-    $imageLocation = $gtcs12_db->UploadFile('image', $title);
-    $gtcs12_db->AttachFileToPost($submissionId, $imageLocation, $title, 'image', true);
+    $imageLocation = GTCS_Attachments::UploadFile('image', $title);
+    GTCS_Attachments::AttachFileToPost($submissionId, $imageLocation, $title, 'image', true);
   }
 
   return "Assignment successfully submitted.";
@@ -64,7 +64,6 @@ function createSubmission(&$pageState)
 
 function setupPageForDisplay(&$pageState)
 {
-  global $gtcs12_db;
   $userId = wp_get_current_user()->ID;
   $isProfessor = gtcs_user_has_role('author');
   $isStudent = gtcs_user_has_role('subscriber');
@@ -83,7 +82,8 @@ function setupPageForDisplay(&$pageState)
   $terms = wp_get_post_terms($assignmentId);
   $courseId = str_ireplace ('course:' ,'' , $terms[0]->name);
 
-  $displayedCourse = $gtcs12_db->GetCourseByCourseId($courseId);
+  include_once(get_template_directory() . '/common/courses.php');
+  $displayedCourse = GTCS_Courses::GetCourseByCourseId($courseId);
 
   $isOwner = $isProfessor && $displayedAssignment->post_author == $userId;
 
@@ -93,10 +93,12 @@ function setupPageForDisplay(&$pageState)
   }
 
   // retrieve students and submissions for table
-  $studentIds = $gtcs12_db->GetStudents($courseId);
+  include_once(get_template_directory() . '/common/users.php');
+  $studentIds = GTCS_Users::GetStudents($courseId);
   $studentList = get_users(array('include' => $studentIds));
 
-  $submissionList = $gtcs12_db->GetAllSubmissions($assignmentId);
+  include_once(get_template_directory() . '/common/submissions.php');
+  $submissionList = GTCS_Submissions::GetAllSubmissions($assignmentId);
 
   $nonSubmitters = getListOfNonSubmitters($submissionList, $studentIds);
 

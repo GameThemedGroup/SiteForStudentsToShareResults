@@ -76,7 +76,9 @@ get_header(); ?>
   <div id="sidebar-menu">
     <div id="sidebar-menu-title">Students</div>
       <ul class="sidebar-menu">
-<?php $studentIds = $gtcs12_db->GetStudents($courseId);
+<?php
+  include_once(get_template_directory() . '/common/users.php');
+  $studentIds = GTCS_Users::GetStudents($courseId);
   $students = get_users(array('include' => $studentIds));
 ?>
 <?php if ($students) : ?>

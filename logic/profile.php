@@ -3,7 +3,9 @@ if(is_user_logged_in())
 {
   $userInfo = get_userdata($_GET['user']);
   $comments_per_page = 8;
-  $course = $gtcs12_db->GetCourseByStudentId($userInfo->ID);
+
+  include_once(get_template_directory() . '/common/courses.php');
+  $course = GTCS_Courses::getCourseByStudentId($userInfo->ID);
   $professor = get_user_by('id', $course[0]->FacultyId);
   $currentUser = wp_get_current_user();
 
@@ -54,7 +56,8 @@ if(is_user_logged_in())
   else
     $current_page = 1;
 
-  $submissions = $gtcs12_db->GetSubmissions($userInfo->ID);
+  include_once(get_template_directory() . '/common/submissions.php');
+  $submissions = GTCS_Submissions::GetSubmissions($userInfo->ID);
   $submissionCount = count($submissions);
 }
 ?>

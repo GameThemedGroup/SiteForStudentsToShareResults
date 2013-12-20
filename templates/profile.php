@@ -51,7 +51,9 @@ get_header(); ?>
 <?php elseif($showProfessorInfo) : ?>
     <div id='profilemeta'>
             <b>Courses</b><br>
-      <?php $courses = $gtcs12_db->GetCourseByFacultyId($currentUser->ID) ?>
+      <?php
+        include_once(get_template_directory() . '/common/courses.php');
+        $courses = GTCS_Courses::GetCourseByFacultyId($currentUser->ID) ?>
       <?php foreach($courses as $course) : ?>
       <?php echo $course->Name ?>
       <?php endforeach ?>

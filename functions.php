@@ -3,10 +3,6 @@
 // functions available to all wordpress pages
 require_once('common/global_functions.php');
 
-require_once('admin/gtcs12_db.php');
-global $gtcs12_db;
-$gtcs12_db = new GTCS12_DB(); // todo change these to static methods
-
 global $url;
 $url = array(
   'assignment' => site_url('/assignment/'),

@@ -1,6 +1,4 @@
 <?php
-global $gtcs12_db;
-
 $isAdmin = gtcs_user_has_role('administrator');
 
 if(!$isAdmin) {
@@ -12,11 +10,7 @@ $operation = $_GET['op'];
 $results = '';
 
 if ($operation) {
-  if ($operation == 'recreate') {
-    $results = $gtcs12_db->RecreateTables();
-  } else if ($operation == 'del') {
-    $results = $gtcs12_db->DeleteTables();
-  } else if ($operation == 'reset') {
+  if ($operation == 'reset') {
     resetTestData();
     loadTestData(get_template_directory() . '/tests/data/', 'test_data.xml');
   } else {
@@ -26,8 +20,8 @@ if ($operation) {
 
 function resetTestData()
 {
-  global $gtcs12_db;
-  $gtcs12_db->RecreateTables();
+  include_once(get_template_directory() . '/common/admin.php');
+  GTCS_Admin::RecreateTables();
 
   if (!function_exists('wp_delete_user')) {
     include(ABSPATH . './wp-admin/includes/user.php');
@@ -142,9 +136,8 @@ function createSubmissionsFromXml($xml, $assignmentIds, $studentIds, $dir)
 
 function createSubmission($submission, $assignmentid, $studentid, $dir)
 {
-  global $gtcs12_db;
-
-  $submissionid = $gtcs12_db->CreateSubmission(
+  include_once(get_template_directory() . '/common/submissions.php');
+  $submissionid = GTCS_Submissions::CreateSubmission(
     $submission['title'],
     $studentid,
     0, // why is course id needed?
@@ -170,9 +163,9 @@ function attachFileToSubmission($file, $title, $submissionid, $userid, $isImage)
   require_once(get_template_directory() . '/services/fileimport.php');
   $fileAttributes = gtcs_handle_import_file($file, $submissionid);
 
-  global $gtcs12_db;
+  include_once(get_template_directory() . '/common/attachments.php');
   $attachmentType = $isImage ? 'image' : 'jar';
-  $attachmentid = $gtcs12_db->AttachFileToPost(
+  $attachmentid = GTCS_Attachments::attachFileToPost(
     $submissionid,
     $fileAttributes,
     $title,
@@ -210,14 +203,10 @@ function createAssignmentsFromXml($xml, $courseIds, $professorIds, $dir)
 
 function createAssignment($assignment, $courseid, $professorid)
 {
-  global $gtcs12_db;
-
-  $assignmentid = $gtcs12_db->CreateAssignment(
-    $professorid,
-    $courseid,
-    $assignment['title'],
-    $assignment['description']
-  );
+  include_once(get_template_directory() . '/common/assignments.php');
+  $assignment['courseId'] = $courseid;
+  $assignment['professorId'] = $professorid;
+  $assignmentid = GTCS_Assignments::CreateAssignment((object) $assignment);
 
   return $assignmentid;
 }
@@ -246,11 +235,10 @@ function createCoursesFromXml($xml, $studentIds, $professorIds)
 
 function updateStudentEnrollments($courseid, $students, $studentIds)
 {
-  global $gtcs12_db;
-
+  include_once(get_template_directory() . '/common/users.php');
   foreach ($students as $student) {
     $studentid = $studentIds[$student];
-    $gtcs12_db->UpdateStudentEnrollment($courseid, $studentid, true);
+    GTCS_Users::UpdateStudentEnrollment($courseid, $studentid, true);
   }
 }
 
@@ -275,14 +263,9 @@ function createUsersFromXml($xml, $role)
 
 function createCourse($course, $professorid)
 {
-  global $gtcs12_db;
-  $courseid = $gtcs12_db->AddCourse(
-    $course['title'],
-    $course['quarter'],
-    $course['year'],
-    $professorid,
-    $course['description']
-  );
+  include_once(get_template_directory() . '/common/courses.php');
+  $course['professorId'] = $professorid;
+  $courseid = GTCS_Courses::addCourse((object) $course);
 
   return $courseid;
 }
@@ -292,8 +275,8 @@ function createUser($user, $role)
   $user['password'] = "password";
   $user['role'] = $role;
 
-  global $gtcs12_db;
-  $user_id = $gtcs12_db->AddUser(
+  include_once(get_template_directory() . '/common/users.php');
+  $user_id = GTCS_Users::AddUser(
     $user['login'],
     $user['password'],
     $user['user_email'],

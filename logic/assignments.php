@@ -78,8 +78,8 @@ function editAssignmentSetup(&$assignment, &$isEditing)
     return "There was an error attempting to edit the assignment.";
   }
 
-  global $gtcs12_db;
-  $assignment = $gtcs12_db->getAssignment($assignmentId);
+  include_once(get_template_directory() . '/common/assignments.php');
+  $assignment = GTCS_Assignments::getAssignment($assignmentId);
 
   return "Your are now editing the course";
 }
@@ -133,8 +133,8 @@ function updateAssignment($authorid, $courseId)
   $assignmentLink = '';
   $isEnabled = true;
 
-  global $gtcs12_db;
-  $gtcs12_db->UpdateAssignment(
+  include_once(get_template_directory() . '/common/assignments.php');
+  GTCS_Assignments::UpdateAssignment(
     $assignmentId,
     $professorId,
     $courseId,
@@ -161,8 +161,8 @@ function createAssignment()
   $assignmentLink = '';
   $isEnabled = true;
 
-  global $gtcs12_db;
-  $assignmentId = $gtcs12_db->CreateAssignment(
+  include_once(get_template_directory() . '/common/assignments.php');
+  $assignmentId = GTCS_Assignments::CreateAssignment(
     $professorId,
     $courseId,
     $title,
@@ -185,14 +185,13 @@ function createAssignment()
 // @param assignmentType  the type of attachment (ex. 'jar' or 'image')
 function AttachFiles($assignmentId, $fileIndex, $attachmentType)
 {
-  global $gtcs12_db;
-
+  include_once(get_template_directory() . '/common/attachments.php');
   if (   file_exists($_FILES[$fileIndex]['tmp_name'])
       && is_uploaded_file($_FILES[$fileIndex]['tmp_name'])) {
     DeleteAttachments($assignmentId, $attachmentType);
     $title = pathinfo($_FILES[$fileIndex]['name'], PATHINFO_FILENAME);
     $isImage = ($attachmentType == "image");
-    $gtcs12_db->AttachFileToPost($assignmentId, $fileIndex, $title, $attachmentType, $isImage);
+    GTCS_Attachments::AttachFileToPost($assignmentId, $fileIndex, $title, $attachmentType, $isImage);
   }
 }
 
@@ -203,8 +202,8 @@ function AttachFiles($assignmentId, $fileIndex, $attachmentType)
 // @param assignmentType  the type of attachment (ex. 'jar' or 'image')
 function DeleteAttachments($assignmentId, $attachmentType)
 {
-  global $gtcs12_db;
-  $oldAttachments = $gtcs12_db->GetAttachments($assignmentId, $attachmentType);
+  include_once(get_template_directory() . '/common/attachments.php');
+  $oldAttachments = GTCS_Attachments::GetAttachments($assignmentId, $attachmentType);
   foreach($oldAttachments as $attachment)
     wp_delete_attachment($attachment->ID, true);
 }

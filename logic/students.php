@@ -1,6 +1,10 @@
 <?php
   $current_user = wp_get_current_user();
-  $courses = $gtcs12_db->GetCourseByFacultyId($current_user->ID);
+
+  include_once(get_template_directory() . '/common/users.php');
+  include_once(get_template_directory() . '/common/courses.php');
+
+  $courses = GTCS_Courses::getCourseByFacultyId($current_user->ID);
 
   $courseId = $_GET ? $_GET['courseid'] : null;
 
@@ -13,8 +17,8 @@
   {}
   else if ($operation == 'create') // create new user
   {
-    $newUserId = $gtcs12_db->AddUser($_POST['inptUserName'], 'password', $_POST['inptEmail'], $_POST['inptFirstName'], $_POST['inptLastName'], 'subscriber');
-    $gtcs12_db->UpdateStudentEnrollment($courseId, $newUserId, true);
+    $newUserId = GTCS_Users::addUser($_POST['inptUserName'], 'password', $_POST['inptEmail'], $_POST['inptFirstName'], $_POST['inptLastName'], 'subscriber');
+    GTCS_Users::updateStudentEnrollment($courseId, $newUserId, true);
   }
   else if ($operation === 'delete') // unenroll and delete student
   {
@@ -26,11 +30,14 @@
     }
 
     wp_delete_user($oldUserId);
-    $gtcs12_db->UpdateStudentEnrollment($courseId, $oldUserId, false);
+    GTCS_Users::UpdateStudentEnrollment($courseId, $oldUserId, false);
   }
   else if($operation == 'file')
   {
     $courseid = $_POST['courseid'];
-    $gtcs12_db->EnrollStudentsViaFile($courseid, 'studentdata');
+    GTCS_Users::EnrollStudentsViaFile($courseId, 'studentdata');
   }
+
+  $studentIds = GTCS_Users::getStudents($courseId);
+  $students = get_users(array('include' => $studentIds));
 ?>

@@ -142,5 +142,21 @@ class GTCS_Assignments
 
     return $rows;
   }
+
+  public static function updateAssignment($assignmentId, $authorId, $courseId, $title, $description, $link = "", $isEnabled = true)
+  {
+    global $wpdb;
+    $wpdb->show_errors(true);
+
+    $assignmentPost = array();
+    $assignmentPost['ID'] = $assignmentId;
+    $assignmentPost['post_title'] = $title;
+    $assignmentPost['post_content'] = $description;
+
+    update_post_meta($assignmentId, "link", $link);
+    update_post_meta($assignmentId, "isEnabled", $isEnabled);
+
+    wp_update_post($assignmentPost);
+  }
 }
 ?>

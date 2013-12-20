@@ -91,31 +91,28 @@ get_header(); ?>
         </tr>
       </thead>
       <tbody>
-<?php $students = $gtcs12_db->GetStudents($courseId); ?>
-<?php $studentCount = 0; ?>
-<?php foreach($students as $student) : ?>
-<?php   if ($student->StudentId != NULL) : ?>
-        <tr>
-          <th><?php echo $student->Name; ?></th>
-          <th>
-            <form action="<?php echo site_url('/students/') ?>" method="post">
-              <select name="op">
-                <option disabled="disabled" selected>Choose an action</option>
-                <option value="delete">Delete</option>
-              </select>
-              <input type="hidden" name="studentid" value="<?php echo $student->Id; ?>">
-              <input type="hidden" name="courseid" value="<?php echo $courseId; ?>">
-              <input type="submit" value="Confirm"/>
-            </form>
-          </th>
-          <?php $studentCount++ ?>
-<?php   endif ?>
+
+<?php if(sizeof($students) == 0): ?>
+    <tr>
+      <th class="center" colspan="4">This course has no enrolled students</th>
+    </tr>
+<?php else: ?>
+<?php foreach($students as $student): ?>
+    <tr>
+      <th><?php echo $student->display_name; ?></th>
+      <th>
+        <form action="<?php echo site_url('/students/') ?>" method="post">
+          <select name="op">
+            <option disabled="disabled" selected>Choose an action</option>
+            <option value="delete">Delete</option>
+          </select>
+          <input type="hidden" name="studentid" value="<?php echo $student->ID; ?>">
+          <input type="hidden" name="courseid" value="<?php echo $courseId; ?>">
+          <input type="submit" value="Confirm"/>
+        </form>
+      </th>
 <?php endforeach ?>
-<?php if($studentCount == 0) : ?>
-        <tr>
-          <th class="center" colspan="4">This course has no enrolled students</th>
-        </tr>
-<?php endif ?>
+<?php endif; ?>
       </tbody>
     </table>
   </div>
