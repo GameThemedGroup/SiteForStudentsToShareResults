@@ -114,8 +114,13 @@ class GTCS_Assignments
     $courseLink = ifsetor($args->courseLink, "");
     $isEnabled = ifsetor($args->isEnabled, true);
 
+    add_post_meta($postId, "course", $courseId);
     add_post_meta($postId, "link", $courseLink);
     add_post_meta($postId, "isEnabled", $isEnabled);
+
+    global $gtcs_Categories;
+    $postCategory = array($gtcs_Categories['assignment']);
+    wp_set_post_terms($postId, $postCategory, 'category');
 
     return $postId;
   }

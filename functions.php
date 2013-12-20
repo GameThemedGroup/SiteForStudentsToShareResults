@@ -19,6 +19,21 @@ $url = array(
 
 require_once('admin/theme_init.php');
 
+global $gtcs_Categories;
+$gtcs_Categories = array();
+
+add_action('after_setup_theme', 'gtcs_initialize_categories');
+function gtcs_initialize_categories()
+{
+  if (!function_exists('wp_create_category'))
+    require_once(ABSPATH . 'wp-admin/includes/taxonomy.php');
+
+  global $gtcs_Categories;
+  $gtcs_Categories['course'] = wp_create_category('Course');
+  $gtcs_Categories['assignment'] = wp_create_category('Assignment');
+  $gtcs_Categories['submission'] = wp_create_category('Submission');
+}
+
 add_filter('login_redirect', 'login_redirect');
 function login_redirect() {
   return site_url('/main');

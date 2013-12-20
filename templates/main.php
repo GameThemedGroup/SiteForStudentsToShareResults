@@ -47,8 +47,15 @@ get_header();
 
 	<div id="project-sidebar">
 		<div id="project-sidebar-title"> Top Projects </div>
-		<?php query_posts('posts_per_page=5'); ?>
-		<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
+<?php
+  global $gtcs_Categories;
+  $args = array(
+    'posts_per_page' => 5,
+    'category' => $gtcs_Categories['submission']
+  );
+?>
+    <?php $recentPosts = get_posts($args); ?>
+    <?php foreach ($recentPosts as $post) : setup_postdata($post); ?>
 			<div id="project-sidebar-box">
 				<div id="project-sidebar-image">
 					<?php if(has_post_thumbnail()) {?>
@@ -72,8 +79,7 @@ get_header();
 					<?php if(function_exists('the_ratings')) { the_ratings(); } ?>
 				</div>
 			</div>
-		<?php endwhile; else: ?>
-		<?php endif; ?>
+		<?php endforeach; ?>
 	</div><!-- project-sidebar -->
 </html>
 

@@ -96,6 +96,10 @@ class GTCS_Submissions
     // save post and get its id
     $postId = wp_insert_post($assignmentPost);
 
+    global $gtcs_Categories;
+    $postCategory = array($gtcs_Categories['submission']);
+    wp_set_post_terms($postId, $postCategory, 'category');
+
     return $postId;
   }
 
