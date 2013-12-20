@@ -2,6 +2,7 @@
 $pageState = (object) array();
 
 initializePageState($pageState);
+extract((array) $pageState);
 
 function initializePageState(&$pageState)
 {
@@ -28,19 +29,21 @@ function initializePageState(&$pageState)
   $isEditing = false;
   $displayedAssignment = (object) array('post_title' => '', 'post_content' => '');
 
-  if ($action == 'edit') {
-    $userFeedback = editAssignmentSetup($displayedAssignment, $isEditing);
+  $pageState->courseId = $courseId;
+  $pageState->isEditing = $isEditing;
+  $pageState->displayedAssignment = $displayedAssignment;
 
-  } else if ($action != null) {
-    $actionList = array(
-      'delete' => 'deleteAssignment',
-      'create' => 'createAssignment',
-      'update' => 'updateAssignment',
-      'upload' => 'uploadFromXml'
-    );
+  $actionList = array(
+    'edit'   => 'editAssignmentSetup',
+    'delete' => 'deleteAssignment',
+    'create' => 'createAssignment',
+    'update' => 'updateAssignment',
+    'upload' => 'uploadFromXml'
+  );
 
+  if ($action != null) {
     if (array_key_exists($action, $actionList)) {
-      $userFeedback = call_user_func($actionList[$action]);
+      $userFeedback = call_user_func($actionList[$action], $pageState);
     } else {
       trigger_error("An invalid action was provided.", E_USER_WARNING);
     }

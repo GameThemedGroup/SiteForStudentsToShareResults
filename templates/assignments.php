@@ -11,32 +11,25 @@ get_header(); ?>
 <?php
 /* Expected State Variables:
  ******************************************************************************
- * userFeedback - Message to display to user after a successful or failed
- *   action. Set to '' if there is no feedback to display.
+ * assignmentId
  *
- * isEditing - true if the user is editing the assignment
- *
- * displayedAssignment - an object containing the following fields
- *
- * assignmentList - a list of courses beloging to the course
+ * assignmentList - a list of assignments belonging to the course
  *   $sizeof(assignmentList) == 0 if the course has no assignments
+ *
+ * courseId
  *
  * courseList
  *
- * courseId
- */
+ * displayedAssignment - an object containing the following fields
+ *
+ * isEditing - true if the user is editing the assignment
+ *
+ * userFeedback - Message to display to user after a successful or failed
+ *   action. Set to '' if there is no feedback to display.
+*/
 ?>
 
 <?php include_once(get_template_directory() . '/logic/assignments.php'); ?>
-
-<?php
-  $assignmentList = $pageState->assignmentList;
-  $courseId = $pageState->courseId;
-  $courseList = $pageState->courseList;
-  $displayedAssignment = $pageState->displayedAssignment;
-  $isEditing = $pageState->isEditing;
-  $userFeedback = $pageState->userFeedback;
-?>
 
 <?php if($userFeedback) : ?>
   <div id="action-box"><?php echo $userFeedback; ?></div>
