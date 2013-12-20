@@ -116,11 +116,11 @@ function deleteAssignment()
 }
 
 // todo check for missing $_POST data
-function updateAssignment($authorid, $courseId)
+function updateAssignment()
 {
   $professorId = wp_get_current_user()->ID;
   $courseId = ifsetor($_POST['courseId'], null);
-  $assignmentId = ifsetor($_POST['assignmentId'], null);
+  $assignmentId = ifsetor($_POST['assignId'], null);
   $title = ifsetor($_POST['title'], null);
   $description = ifsetor($_POST['description'], null);
 
