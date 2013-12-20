@@ -117,7 +117,7 @@ get_header(); ?>
         <tr>
           <th><a href="<?php echo $assignlink; ?>">
             <?php echo $assignment->Title; ?></a>
-          </th>;
+          </th>
 
           <th><?php echo date('F d, Y', strtotime($assignment->Date)); ?></th>
           <th><?php echo $status ? "Open" : "Closed"; ?></th>
