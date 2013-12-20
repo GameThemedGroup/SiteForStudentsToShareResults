@@ -124,6 +124,13 @@ function updateAssignment()
   $title = ifsetor($_POST['title'], null);
   $description = ifsetor($_POST['description'], null);
 
+  if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
+    compact('professorId', 'courseId', 'assignmentId', 'title',
+    'description'))) {
+
+    return "Invalid input when modifying assignment.";
+  }
+
   $assignmentLink = '';
   $isEnabled = true;
 
