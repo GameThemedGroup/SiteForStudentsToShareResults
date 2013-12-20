@@ -132,20 +132,6 @@
     <login>kcole</login>
     <user_email>kcole@example.com</user_email>
   </subscriber>
-  <subscriber>
-    <display_name />
-    <first_name />
-    <last_name />
-    <login>studentnoname</login>
-    <user_email>studentnoname@example.com</user_email>
-  </subscriber>
-  <subscriber>
-    <display_name />
-    <first_name />
-    <last_name />
-    <login>studentnonameB</login>
-    <user_email>studentnonameB@example.com</user_email>
-  </subscriber>
 </students>
 
 <professors>
@@ -172,18 +158,6 @@
     <user_email>longnames@example.com</user_email>
     <first_name>Professor</first_name>
     <last_name>Longnames is my name and longnames is my game of playing with long names and messing with your website</last_name>
-  </author>
-  <author>
-    <login>nodata</login>
-    <user_email></user_email>
-    <first_name>Professor</first_name>
-    <last_name>NoData</last_name>
-  </author>
-  <author>
-    <login>emptydata</login>
-    <user_email>emptydata@example.com</user_email>
-    <first_name>Professor</first_name>
-    <last_name>EmptyData</last_name>
   </author>
 </professors>
 
@@ -224,6 +198,8 @@
     <year>2014</year>
     <quarter>Spring</quarter>
     <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas in vehicula orci. Donec fringilla elit ante, a iaculis leo semper quis. Curabitur id lectus eu nulla porta elementum. Vestibulum sit amet vestibulum ante, lacinia egestas turpis. Nullam vulputate tortor quis dui rutrum tincidunt. Fusce suscipit ligula vel felis tempor consectetur. Aenean fringilla tortor in urna tristique, id eleifend risus ornare. Mauris interdum sem at faucibus feugiat. Vestibulum ut scelerisque libero. Duis id nisi quam. In quam eros, imperdiet nec fermentum ut, tristique vitae urna. Nam ultrices mi quis nisl fringilla, id laoreet sapien viverra. Fusce vitae iaculis arcu. Sed non tellus faucibus, iaculis dui vitae, luctus risus. Aliquam quis urna ut neque pulvinar iaculis a sed elit. Suspendisse quis leo lacinia, volutpat sem at, viverra leo. Phasellus nec molestie ipsum. Mauris cursus porta risus, quis imperdiet nulla. Donec aliquet libero lectus, vel placerat justo condimentum non. Aenean ut neque at augue consectetur tempor vitae in diam. Proin cursus urna vitae tellus rutrum, eu lobortis purus vehicula. Curabitur egestas vestibulum arcu a fermentum. Suspendisse bibendum dictum dolor eu imperdiet. Cras dignissim dapibus nibh vel blandit. In ut urna ornare, rhoncus felis quis, sollicitudin nisl. Phasellus sed mollis libero. Aliquam sodales mi dui, vel ornare ante accumsan sit amet. Suspendisse semper vel augue mattis dapibus. Etiam ultrices nec justo at congue. Morbi id interdum erat. Curabitur eget neque risus. Integer aliquet est vitae velit mollis pretium. Proin id lacus ac urna porttitor ornare. Curabitur sit amet leo at justo volutpat lobortis nec at leo. Mauris sit amet malesuada elit. Cras vulputate, neque non tempor blandit, nisi nisl consectetur eros, eget convallis mauris ipsum ac mauris. Nulla dapibus lacus eget enim euismod, quis vulputate diam posuere. Vestibulum cursus tristique est, vel hendrerit magna pellentesque a. Aenean suscipit posuere ante sed luctus. Vestibulum libero nunc, aliquam sed molestie id, placerat id tortor. Nullam urna elit, ultricies adipiscing neque id, imperdiet commodo dui. Integer condimentum est in libero blandit mattis. Sed vel ultrices nulla. Pellentesque gravida mollis risus in condimentum. Nam sed odio eget metus placerat convallis. Aliquam scelerisque mi eget dui euismod convallis. Phasellus vestibulum, felis id consectetur rutrum, urna dolor sollicitudin lacus, ac placerat justo eros vel quam. Morbi molestie tincidunt cursus. Fusce faucibus est ac mollis tincidunt. Nam eget consectetur dui, ac scelerisque tellus. In interdum vel ligula eget lacinia. Maecenas tristique nunc sed eros laoreet dignissim. Proin sagittis dolor egestas orci aliquam egestas. Morbi ornare malesuada mi, nec laoreet erat rutrum ut. Etiam malesuada risus euismod laoreet tempor. Cras aliquam justo sit amet quam condimentum, et convallis metus convallis. Donec fermentum orci in faucibus vehicula. Aliquam pharetra porttitor massa, non viverra nulla. Sed suscipit sagittis rutrum. Cras euismod rhoncus urna, a venenatis elit ornare id. Nulla facilisi. Suspendisse tincidunt laoreet justo consectetur molestie. Pellentesque a justo posuere, tempus nulla vitae, blandit neque. Nunc in nibh nulla. Nulla dignissim odio lacinia, facilisis mauris quis, eleifend est. Aliquam condimentum tempor odio a fringilla. Proin ipsum massa, congue a consequat et, euismod a ligula. Duis ut nulla leo. Sed feugiat rutrum tortor, vitae interdum elit sagittis eu. Sed vestibulum nunc et sollicitudin tempor. Morbi a adipiscing eros. Nunc vulputate tortor auctor nunc ultricies, sed dictum nisl mattis. Quisque consequat quam et felis interdum lacinia. Sed nisi sapien, egestas at ligula a, pulvinar vehicula est</description>
+    <student>kcole</student>
+    <student>rroberts</student>
   </course>
 </courses>
 
