@@ -3,14 +3,6 @@ $pageState = (object) array();
 
 initializePageState($pageState);
 
-/*
-$userFeedback = $pageState->userFeedback;
-$isEditing = $pageState->isEditing;
-$displayedAssignment = $pageState->displayedAssignment;
-$assignmentList = $pageState->assignmentList;
-$courseList = $pageState->courseList;
- */
-
 function initializePageState(&$pageState)
 {
   $professorId = wp_get_current_user()->ID;
@@ -57,12 +49,12 @@ function initializePageState(&$pageState)
   include_once(get_template_directory() . '/common/assignments.php');
   $assignmentList = GTCS_Assignments::getAllAssignments($courseId);
 
-  $pageState->userFeedback = $userFeedback;
-  $pageState->displayedAssignment = $displayedAssignment;
   $pageState->assignmentList = $assignmentList;
-  $pageState->courseList = $courseList;
-  $pageState->isEditing = $isEditing;
   $pageState->courseId = $courseId;
+  $pageState->courseList = $courseList;
+  $pageState->displayedAssignment = $displayedAssignment;
+  $pageState->isEditing = $isEditing;
+  $pageState->userFeedback = $userFeedback;
 }
 
 function editAssignmentSetup(&$assignment, &$isEditing)

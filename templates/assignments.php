@@ -28,16 +28,24 @@ get_header(); ?>
 ?>
 
 <?php include_once(get_template_directory() . '/logic/assignments.php'); ?>
-<?php $ps = $pageState; ?>
 
-<?php if($ps->userFeedback) : ?>
-  <div id="action-box"><?php echo $ps->userFeedback; ?></div>
+<?php
+  $assignmentList = $pageState->assignmentList;
+  $courseId = $pageState->courseId;
+  $courseList = $pageState->courseList;
+  $displayedAssignment = $pageState->displayedAssignment;
+  $isEditing = $pageState->isEditing;
+  $userFeedback = $pageState->userFeedback;
+?>
+
+<?php if($userFeedback) : ?>
+  <div id="action-box"><?php echo $userFeedback; ?></div>
 <?php endif ?>
 
 <form action="<?php echo get_permalink(); ?>" method="post" enctype="multipart/form-data">
   <div id='create-assignment-box'>
     <div id='create-assignment-title'>
-      <?php if ($ps->isEditing): ?>Edit Assignment
+      <?php if ($isEditing): ?>Edit Assignment
       <?php else: ?>Create Assignment
       <?php endif; ?>
     </div>
@@ -45,12 +53,12 @@ get_header(); ?>
     <div id='create-assignment-field'>
       <p class="create-assignment">Title</p>
       <input class='create-assignment' type="text" name="title"
-        value="<?php echo $ps->displayedAssignment->post_title; ?>" required>
+        value="<?php echo $displayedAssignment->post_title; ?>" required>
     </div>
 
     <div id='create-assignment-field'>
       <p class="create-assignment">Description</p>
-      <textarea cols="25" rows="5" name="description" required><?php echo $ps->displayedAssignment->post_content; ?></textarea>
+      <textarea cols="25" rows="5" name="description" required><?php echo $displayedAssignment->post_content; ?></textarea>
     </div>
 
     <div id='create-assignment-field'>
@@ -65,17 +73,17 @@ get_header(); ?>
 
     <div id="create-assignment-buttons">
 
-      <input type="hidden" name="assignId" value="<?php echo $ps->assignmentId; ?>">
-      <input type="hidden" name="courseId" value="<?php echo $ps->courseId; ?>">
+      <input type="hidden" name="assignId" value="<?php echo $assignmentId; ?>">
+      <input type="hidden" name="courseId" value="<?php echo $courseId; ?>">
 
-    <?php if ($ps->isEditing): ?>
+    <?php if ($isEditing): ?>
         <input type="hidden" name="action" value="update">
         <input type="submit" value="Finish Editing"/>
     <?php else: ?>
         <input type="hidden" name="action" value="create">
         <input type="submit" value="Create"/>
     <?php endif; ?>
-      <a href="<?php echo site_url('assignments/?id=' . $ps->courseId) ?>">
+      <a href="<?php echo site_url('assignments/?id=' . $courseId) ?>">
         <button type="button">Cancel</button>
       </a>
     </div> <!-- create-assignment-buttons -->
@@ -85,9 +93,9 @@ get_header(); ?>
   <div id="sidebar-menu">
     <div id="sidebar-menu-title">Courses</div>
     <ul class="sidebar-menu">
-<?php if($ps->courseList) : ?>
-<?php   foreach($ps->courseList as $course) : ?>
-<?php   if($ps->courseId == $course->Id) : ?>
+<?php if($courseList) : ?>
+<?php   foreach($courseList as $course) : ?>
+<?php   if($courseId == $course->Id) : ?>
           <li class="sidebar-menu-selected">
 <?php   else : ?>
           <li class="sidebar-menu">
@@ -107,7 +115,7 @@ get_header(); ?>
 <!-- Upload Assignments via XML form -->
 <div id="create-student-box-bottom">
   <div id='create-student-title'>Upload Assignments from XML</div>
-  <form action="<?php echo get_permalink() . "?id={$ps->courseId}" ?>"
+  <form action="<?php echo get_permalink() . "?id={$courseId}" ?>"
     method="post" enctype="multipart/form-data">
 
     <div id="create-student-field">
@@ -115,11 +123,11 @@ get_header(); ?>
       <input type="file" name="xml">
     </div>
     <div id="create-student-buttons">
-      <input type="hidden" name="id" value="<?php echo $ps->courseId; ?>">
+      <input type="hidden" name="id" value="<?php echo $courseId; ?>">
       <input type="hidden" name="action" value="upload">
       <input type="submit" value="Upload">
 
-      <a href="<?php echo site_url('/assignments/') . "?id={$ps->courseId}"; ?>">
+      <a href="<?php echo site_url('/assignments/') . "?id={$courseId}"; ?>">
         <button type="button">Cancel</button></a>
     </div>
   </form>
@@ -137,12 +145,12 @@ get_header(); ?>
       </tr>
     </thead>
     <tbody>
-    <?php if (!$ps->assignmentList) : ?>
+    <?php if (!$assignmentList) : ?>
       <tr>
        <th class="center" colspan="3">You have no assignments for this course</th>
       </tr>
     <?php else: ?>
-    <?php foreach ($ps->assignmentList as $assignment) : ?>
+    <?php foreach ($assignmentList as $assignment) : ?>
       <?php $assignLink = site_url('/assignment/?id=' . $assignment->AssignmentId); ?>
       <tr>
         <th><a href="<?php echo $assignLink; ?>">
@@ -152,7 +160,7 @@ get_header(); ?>
         <th><?php echo date('F d, Y', strtotime($assignment->Date)); ?></th>
         <th>
           <form action="
-            <?php echo site_url('/assignments/?id=') . $ps->courseId; ?>" method="post">
+            <?php echo site_url('/assignments/?id=') . $courseId; ?>" method="post">
 
             <select name="action">
               <option disabled="disabled" selected>Choose an action</option>
@@ -164,7 +172,7 @@ get_header(); ?>
               value="<?php echo $assignment->AssignmentId; ?>">
 
             <input type="hidden" name="courseId"
-              value="<?php echo $ps->courseId; ?>">
+              value="<?php echo $courseId; ?>">
 
             <input type="submit" value="Confirm"/>
 
