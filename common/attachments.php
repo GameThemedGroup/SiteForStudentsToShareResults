@@ -90,5 +90,23 @@ function attachFileToPost($post_id, $file_attr, $title, $type_value, $is_feature
   return $attach_id;
 }
 
+// Returns an array of all attachment with the a meta value "type":$attachmentType
+// ex. "type":"jar" or "type":"image"
+//
+// @param assignmentId   the id of the post containing the attachment
+// @param attachmentType the type of attachments to return
+public static function getAttachments($assignmentId, $attachmentType)
+{
+  $attachment_query = array(
+    'post_type'   => 'attachment',
+    'meta_key'    => 'type',
+    'meta_value'  => $attachmentType,
+    'post_status' => 'any',
+    'post_parent' => $assignmentId,
+  );
+
+  return get_posts($attachment_query);
+}
+
 }
 ?>
