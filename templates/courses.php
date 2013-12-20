@@ -104,7 +104,7 @@ get_header(); ?>
           <input type="hidden" name="courseid" value="<?php echo $courseId; ?>">
           <input type="submit" value="Finish Editing"/>
         <?php endif; ?>
-        <a class="lin" href="<?php echo $url['my-class']; ?>">
+        <a class="lin" href="<?php echo $url['courses']; ?>">
           <button type="button">Cancel</button>
         </a>
       </div>
