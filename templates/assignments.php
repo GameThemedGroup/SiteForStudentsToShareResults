@@ -137,42 +137,42 @@ get_header(); ?>
       </tr>
     </thead>
     <tbody>
-      <?php if (!$ps->assignmentList) : ?>
-        <tr>
-         <th class="center" colspan="3">You have no assignments for this course</th>
-        </tr>
-      <?php else: ?>
-      <?php foreach ($ps->assignmentList as $assignment) : ?>
-        <?php $assignLink = site_url('/assignment/?id=' . $assignment->AssignmentId); ?>
-          <tr>
-            <th><a href="<?php echo $assignLink; ?>">
-               <?php echo $assignment->Title ?></a>
-            </th>
+    <?php if (!$ps->assignmentList) : ?>
+      <tr>
+       <th class="center" colspan="3">You have no assignments for this course</th>
+      </tr>
+    <?php else: ?>
+    <?php foreach ($ps->assignmentList as $assignment) : ?>
+      <?php $assignLink = site_url('/assignment/?id=' . $assignment->AssignmentId); ?>
+      <tr>
+        <th><a href="<?php echo $assignLink; ?>">
+           <?php echo $assignment->Title ?></a>
+        </th>
 
-            <th><?php echo date('F d, Y', strtotime($assignment->Date)); ?></th>
-            <th>
-              <form action="
-                <?php echo site_url('/assignments/?id=') . $ps->courseId; ?>" method="post">
+        <th><?php echo date('F d, Y', strtotime($assignment->Date)); ?></th>
+        <th>
+          <form action="
+            <?php echo site_url('/assignments/?id=') . $ps->courseId; ?>" method="post">
 
-                <select name="action">
-                  <option disabled="disabled" selected>Choose an action</option>
-                  <option value="edit">Edit</option>
-                  <option value="delete">Delete</option>
-                </select>
+            <select name="action">
+              <option disabled="disabled" selected>Choose an action</option>
+              <option value="edit">Edit</option>
+              <option value="delete">Delete</option>
+            </select>
 
-                <input type="hidden" name="assignmentId"
-                  value="<?php echo $assignment->AssignmentId; ?>">
+            <input type="hidden" name="assignmentId"
+              value="<?php echo $assignment->AssignmentId; ?>">
 
-                <input type="hidden" name="courseId"
-                  value="<?php echo $ps->courseId; ?>">
+            <input type="hidden" name="courseId"
+              value="<?php echo $ps->courseId; ?>">
 
-                <input type="submit" value="Confirm"/>
+            <input type="submit" value="Confirm"/>
 
-              </form>
-            </th>
-          </tr>
-      <?php endforeach; ?>
-      <?php endif; ?>
+          </form>
+        </th>
+      </tr>
+    <?php endforeach; ?>
+    <?php endif; ?>
     </tbody>
   </table>
 </div>
