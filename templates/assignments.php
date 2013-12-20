@@ -42,6 +42,7 @@ get_header(); ?>
   <div id="action-box"><?php echo $userFeedback; ?></div>
 <?php endif ?>
 
+<!-- Assignment Creation Form -->
 <form action="<?php echo get_permalink(); ?>" method="post" enctype="multipart/form-data">
   <div id='create-assignment-box'>
     <div id='create-assignment-title'>
@@ -89,7 +90,9 @@ get_header(); ?>
     </div> <!-- create-assignment-buttons -->
   </div> <!-- Create-Assignment-Box -->
 </form>
+<!-- Assignment Creation Form -->
 
+<!-- Course Selector -->
   <div id="sidebar-menu">
     <div id="sidebar-menu-title">Courses</div>
     <ul class="sidebar-menu">
@@ -111,6 +114,7 @@ get_header(); ?>
 <?php endif; ?>
     </ul>
   </div> <!-- sidebar-menu -->
+<!-- Course Selector -->
 
 <!-- Upload Assignments via XML form -->
 <div id="create-student-box-bottom">
