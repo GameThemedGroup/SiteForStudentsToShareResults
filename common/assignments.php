@@ -70,12 +70,6 @@ class GTCS_Assignments
   // @return the post_id if successfully created, otherwise wp_error
   public static function createAssignment($args)
   {
-    if (!gtcs_user_has_role('author')) {
-      trigger_error(__FUNCTION__ . " - User does not have permission to
-        perform this action.", E_USER_WARNING);
-      return -1;
-    }
-
     $title = ifsetor($args->title, NULL);
     $courseId = ifsetor($args->courseId, NULL);
 

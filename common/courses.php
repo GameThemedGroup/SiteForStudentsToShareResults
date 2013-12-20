@@ -90,12 +90,6 @@ class GTCS_Courses
   /////////////////////////////////////////////////////////////////////////////
   public static function addCourse($args)
   {
-    if (!gtcs_user_has_role('author')) {
-      trigger_error(__FUNCTION__ . " - User does not have permission to
-        perform this action.", E_USER_WARNING);
-      return -1;
-    }
-
     $isValid = GTCS_Courses::validateParameters($args);
     if (!$isValid)
       return -1;
