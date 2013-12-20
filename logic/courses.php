@@ -84,7 +84,9 @@ function addCourse($professorId)
 {
   $title       = ifsetor($_POST['title'], null);
   $quarter     = ifsetor($_POST['quarter'], null);
-  $year        = ifsetor($_POST['year'], null);
+
+  // passing in 'year' to $_POST causes the page to not be found
+  $year        = ifsetor($_POST['courseYear'], null);
   $description = ifsetor($_POST['description'], null);
 
   if (   $title == null
@@ -112,7 +114,7 @@ function updateCourse($userId)
 {
   $title       = ifsetor($_POST['title'], null);
   $quarter     = ifsetor($_POST['qarter'], null);
-  $year        = ifsetor($_POST['year'], null);
+  $year        = ifsetor($_POST['courseYear'], null);
   $description = ifsetor($_POST['description'], null);
   $courseId    = ifsetor($_POST['courseid'], null);
 

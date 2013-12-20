@@ -79,7 +79,7 @@ get_header(); ?>
 
       <div id='create-course-field'>
         <p class="create-course">Year</p>
-        <select class='create-course' name='year'>
+        <select class='create-course' name='courseYear'>
           <?php foreach ($yearList as $year => $status): ?>
           <option value="<?php echo $year; ?>"
             <?php if ($status) echo "selected"; ?>>
