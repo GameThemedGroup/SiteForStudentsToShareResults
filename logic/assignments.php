@@ -70,8 +70,7 @@ function editAssignmentSetup(&$assignment, &$isEditing)
     return "There was an error attempting to edit the assignment.";
   }
 
-  include_once(get_template_directory() . '/common/assignments.php');
-  $assignment = GTCS_Assignments::getAssignment($assignmentId);
+  $assignment = get_post($assignmentId);
 
   return "Your are now editing the course";
 }
