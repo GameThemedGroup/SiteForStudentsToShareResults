@@ -102,26 +102,25 @@ function deleteAssignment()
   if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
     compact('professorId', 'assignmentId'))) {
 
-    return "Invalid input when deleting  assignment.";
+    return "Invalid input when deleting assignment.";
   }
 
   $assignment = get_post($assignmentId);
 
   if(!$assignment) // assignment does not exist
-    return "This assignment does not exist";
+    return "This assignment does not exist.";
 
   // user does not have permission to delete assignment
-  if ($assignment->post_author != $authorid)
-    return "You do not have permission to delete this";
+  if ($assignment->post_author != $professorId)
+    return "You do not have permission to delete this assignment.";
 
   wp_delete_post($assignmentId);
   DeleteAttachments($assignmentId, 'jar');
   DeleteAttachments($assignmentId, 'image');
 
-  return "{$assignment_info->post_title} has been deleted";
+  return "{$assignment->post_title} has been deleted";
 }
 
-// todo check for missing $_POST data
 function updateAssignment()
 {
   $professorId = wp_get_current_user()->ID;
@@ -165,18 +164,29 @@ function createAssignment()
   $title = ifsetor($_POST['title'], null);
   $description = ifsetor($_POST['description'], null);
 
+  echo "$courseId, $title, $description";
+
+  if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
+    compact('professorId', 'courseId', 'title',
+    'description'))) {
+
+    return "Invalid input when creating assignment.";
+  }
+
   $assignmentLink = '';
   $isEnabled = true;
 
   include_once(get_template_directory() . '/common/assignments.php');
-  $assignmentId = GTCS_Assignments::CreateAssignment(
-    $professorId,
-    $courseId,
-    $title,
-    $description,
-    $assignmentLink,
-    $isEnabled
+  $args = (object) array(
+    'title' => $title,
+    'description' => $description,
+    'professorId' => $professorId,
+    'courseId' => $courseId,
+    'assignmentLink' => $assignmentLink,
+    'isEnabled' => $isEnabled
   );
+
+  $assignmentId = GTCS_Assignments::CreateAssignment($args);
 
   AttachFiles($assignmentId, 'jar', 'jar');
   AttachFiles($assignmentId, 'image', 'image');
