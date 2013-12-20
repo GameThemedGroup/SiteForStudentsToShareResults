@@ -1,7 +1,7 @@
 <?php
 class GTCS_Users
 {
-  public static function AddUser($login, $password, $email, $firstname, $lastname, $role)
+  public static function addUser($login, $password, $email, $firstname, $lastname, $role)
   {
     global $wpdb;
     $userdata = array(
@@ -20,26 +20,25 @@ class GTCS_Users
     return $id;
   }
 
-  public static function GetStudents($courseId)
+  function getStudents($courseId)
   {
     global $wpdb;
     $wpdb->show_errors(true);
     $enrollments = $wpdb->prefix . "enrollments";
     $users       = $wpdb->prefix . "users";
-    $userMeta    = $wpdb->prefix . "usermeta";
-    $capabilities= $wpdb->prefix . "capabilities";
 
-    $sql = "SELECT u.ID as Id, u.display_name as Name,
-      (select studentid from {$enrollments} where courseid = '{$courseId}' AND studentid = u.id) as StudentId
-      FROM {$users} u INNER JOIN {$userMeta} up
-      ON u.id = up.user_id
-      WHERE up.meta_key = '{$capabilities}' AND up.meta_value LIKE '%subscriber%';";
+    $sql = "SELECT studentid from {$enrollments} WHERE courseid={$courseId};";
+    $results = $wpdb->get_results($sql);
 
-    $rows = $wpdb->get_results($sql);
-    return $rows;
+    $studentList = array();
+    foreach($results as $id) {
+      $studentList[] = (int) $id->studentid;
+    }
+
+    return $studentList;
   }
 
-  public static function UpdateStudentEnrollment($courseId, $studentId, $enroll)
+  public static function updateStudentEnrollment($courseId, $studentId, $enroll)
   {
     global $wpdb;
     $wpdb->show_errors(true);
@@ -65,7 +64,7 @@ class GTCS_Users
   //
   // @param courseid  the course id of the course to enroll the student into
   // @param fileindex the index in $_FILES of the csv containing the student data
-  public static function EnrollStudentsViaFile($courseid, $fileindex)
+  public static function enrollStudentsViaFile($courseid, $fileindex)
   {
     if(!$courseid) {
       trigger_error(__FUNCTION__ . " - Course ID not provided.", E_USER_WARNING);

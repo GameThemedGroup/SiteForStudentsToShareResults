@@ -66,18 +66,27 @@ class GTCS_Submissions
 
   public static function GetAllSubmissions($assignmentId)
   {
-    global $wpdb;
-    $wpdb->show_errors(true);
-    $posts  = $wpdb->prefix . "posts";
-    $users  = $wpdb->prefix . "users";
+    $args = array(
+      'post_parent' => $assignmentId
+    );
 
-    $sql = "SELECT p.id as SubmissionId, p.post_title as Title, a.display_name as AuthorName, p.post_date as SubmissionDate
-      FROM {$posts} p INNER JOIN {$users} a ON p.post_author = a.id
-      WHERE p.post_parent = {$assignmentId} AND p.post_status = 'publish';";
+    $submissionPosts = get_posts($args);
 
-    $rows = $wpdb->get_results($sql);
+    $submissionList = array();
 
-    return $rows;
+    foreach ($submissionPosts as $submission) {
+      $author = get_user_by('id', (int) $submission->post_author);
+
+      $submissionList[] = (object) array(
+        'AuthorId'     => (int) $submission->post_author,
+        'AuthorName'   => $author->display_name,
+        'SubmissionId' => (int) $submission->ID,
+        'Title'        => $submission->post_title,
+        'SubmissionDate'=> $submission->post_date
+      );
+    }
+
+    return $submissionList;
   }
 
   public static function CreateSubmission($title, $authorId, $courseId, $assignmentId, $description)
