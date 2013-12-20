@@ -99,6 +99,12 @@ function deleteAssignment()
   $professorId = wp_get_current_user()->ID;
   $assignmentId = ifsetor($_POST['assignmentId'], null);
 
+  if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
+    compact('professorId', 'assignmentId'))) {
+
+    return "Invalid input when deleting  assignment.";
+  }
+
   $assignment = get_post($assignmentId);
 
   if(!$assignment) // assignment does not exist
