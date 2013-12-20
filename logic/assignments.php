@@ -51,16 +51,12 @@ function initializePageState(&$pageState)
 
   include_once(get_template_directory() . '/common/assignments.php');
   $assignmentList = GTCS_Assignments::getAllAssignments($courseId);
-
   $pageState->assignmentList = $assignmentList;
-  $pageState->courseId = $courseId;
   $pageState->courseList = $courseList;
-  $pageState->displayedAssignment = $displayedAssignment;
-  $pageState->isEditing = $isEditing;
   $pageState->userFeedback = $userFeedback;
 }
 
-function editAssignmentSetup(&$assignment, &$isEditing)
+function editAssignmentSetup(&$pageState)
 {
   $assignmentId = ifsetor($_POST['assignmentId'], null);
   $isEditing = $assignmentId != null;
@@ -74,6 +70,10 @@ function editAssignmentSetup(&$assignment, &$isEditing)
   }
 
   $assignment = get_post($assignmentId);
+
+  $pageState->isEditing = true;
+  $pageState->assignmentId = $assignmentId;
+  $pageState->displayedAssignment = $assignment;
 
   return "Your are now editing the course";
 }
