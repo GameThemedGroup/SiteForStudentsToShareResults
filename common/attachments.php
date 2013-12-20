@@ -1,4 +1,5 @@
 <?php
+
 // File: services/attachments.php
 // Description: Functions related to handling attachment
 //
@@ -10,7 +11,9 @@
 //
 // @param file_index the index of $_FILES where the file is located
 // TODO check and handle errors
-function gtcs_HandleFileUpload($fileIndex)
+class GTCS_Attachments {
+
+function handleFileUpload($fileIndex)
 {
   //TODO find out if there are any problems using ABSPATH
   if (!function_exists('wp_handle_upload'))
@@ -46,7 +49,7 @@ function gtcs_HandleFileUpload($fileIndex)
 // @param type_value  the value for the post's 'type' meta_key
 // @param is_featured_image  if true, the file will be used as the post's featured image
 // @param post_author the id of the the post author. If NULL, defaults to current user
-function gtcs_AttachFileToPost($post_id, $file_attr, $title, $type_value, $is_featured_image, $post_author = NULL)
+function attachFileToPost($post_id, $file_attr, $title, $type_value, $is_featured_image, $post_author = NULL)
 {
   if ($post_author === NULL)
     $post_author = get_current_user_id();
@@ -85,5 +88,7 @@ function gtcs_AttachFileToPost($post_id, $file_attr, $title, $type_value, $is_fe
   }
 
   return $attach_id;
+}
+
 }
 ?>
