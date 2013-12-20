@@ -30,15 +30,20 @@ get_header(); ?>
  *   The user will be able to select between Summer and Fall with Summber being
  *   the default selection.
  *
- * url[] - array containing urls to the following pages
- *   courses  => this page
- *   my-class => templates/my-class.php
- *
  * isEditing - true if the user is editing a course
  */
 ?>
 
 <?php include_once(get_template_directory() . '/logic/courses.php'); ?>
+
+<?php
+  $course = $pageState->course;
+  $courseList = $pageState->courseList;
+  $isEditing = $pageState->isEditing;
+  $quarterList = $pageState->quarterList;
+  $userFeedback = $pageState->userFeedback;
+  $yearList = $pageState->yearList;
+?>
 
 <?php if ($userFeedback): ?>
   <div id="error-box"><?php echo $userFeedback; ?></div>

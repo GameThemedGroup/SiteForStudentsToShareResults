@@ -2,16 +2,11 @@
 
 global $url;
 
-$page = (object) array();
+$pageState = (object) array();
 
-initializePageState($page);
+initializePageState($pageState);
 
-$userFeedback = $page->userFeedback;
-$isEditing = $page->isEditing;
-$course = $page->course;
-$courseList = $page->courseList;
-
-function initializePageState(&$page)
+function initializePageState(&$pageState)
 {
   $professorId = wp_get_current_user()->ID;
   $operation = ifsetor($_POST['action'], null);
@@ -59,10 +54,12 @@ function initializePageState(&$page)
   include_once(get_template_directory() . '/common/courses.php');
   $courseList = GTCS_Courses::getCourseByFacultyId($professorId);
 
-  $page->userFeedback = $userFeedback;
-  $page->isEditing = $isEditing;
-  $page->course = $course;
-  $page->courseList= $courseList;
+  $pageState->course = $course;
+  $pageState->courseList= $courseList;
+  $pageState->isEditing = $isEditing;
+  $pageState->quarterList = $quarterList;
+  $pageState->userFeedback = $userFeedback;
+  $pageState->yearList = $yearList;
 }
 
 function editCourseSetup(&$course, &$isEditing)
