@@ -19,8 +19,7 @@ function initializePageState(&$pageState)
 
 
   include_once(get_template_directory() . '/common/submissions.php');
-  $submissions = GTCS_Submissions::GetSubmissions($user->ID);
-  $submissionCount = count($submissions);
+  $submissionList = GTCS_Submissions::GetSubmissions($user->ID);
 
   $commentList = buildCommentList($user->ID);
   $pageState = array_merge($pageState, compact(
@@ -29,8 +28,7 @@ function initializePageState(&$pageState)
     'isOwner',
     'course',
     'professor',
-    'submissoins',
-    'submissionCount',
+    'submissionList',
     'user'
   ));
 }

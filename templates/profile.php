@@ -127,10 +127,10 @@ get_header(); ?>
 
 <?php if ($view == 'submissions' || $view == ''): ?>
 
-  <?php if (!$submissions) : ?>
+  <?php if (sizeof($submissionList) == 0): ?>
     <div id="empty-comment">This user has no submissions</div>
   <?php else: ?>
-    <?php foreach ($submissions as $submission): ?>
+    <?php foreach ($submissionList as $submission): ?>
 
       <!-- Profile Submission Box -->
       <div class="profile-submission-box">
@@ -145,7 +145,7 @@ get_header(); ?>
         </div>
 
         <div class="profile-submission-tab-center">
-          <a href="<?php echo site_url("/?p=$submission->SubmissionId"); ?>">
+          <a href="<?php echo site_url("/?p={$submission->SubmissionId}"); ?>">
             <?php echo $submission->AssignmentName ?>
           </a>
         </div>
