@@ -23,24 +23,29 @@ get_header(); ?>
       <input class="manage-profile" type="file" name="avatar[]">
     </div>
     <div id='manage-profile-field'>
+      <p class='manage-profile'>Public Name</p>
+      <input class='manage-profile' type="text" name="displayname"
+        value="<?php echo $user->display_name; ?>" /><br />
+    </div>
+    <div id='manage-profile-field'>
       <p class='manage-profile'>First Name</p>
       <input class='manage-profile' type="text" name="firstname"
-        value="<?php echo $user->user_firstname ?>" /><br />
+        value="<?php echo $user->user_firstname; ?>" /><br />
     </div>
     <div id='manage-profile-field'>
       <p class='manage-profile'>Last Name</p>
       <input class='manage-profile' type="text" name="lastname"
-        value="<?php echo $user->user_lastname ?>" /><br />
+        value="<?php echo $user->user_lastname; ?>" /><br />
     </div>
     <div id='manage-profile-field'>
       <p class='manage-profile'>Email</p>
       <input class='manage-profile' type="text" name="email"
-        value="<?php echo $user->user_email ?>" /><br />
+        value="<?php echo $user->user_email; ?>" /><br />
     </div>
     <div id="manage-profile-buttons">
       <input type="hidden" name="action" value="update">
       <input type="submit" value="Submit">
-      <a href="<?php echo site_url('/profile/?user=' . $user->ID) ?>">
+      <a href="<?php echo site_url("/profile/?user={$user->ID}"); ?>">
         <button type="button">Cancel</button></a>
     </div>
   </div>
@@ -62,7 +67,7 @@ get_header(); ?>
     <div id="manage-profile-buttons">
       <input type="hidden" name="action" value="changePassword">
       <input type="submit" value="Submit">
-      <a href="<?php echo site_url('/profile/?user=' . $user->ID) ?>">
+      <a href="<?php echo site_url("/profile/?user={$user->ID}"); ?>">
         <button type="button">Cancel</button></a>
     </div>
   </div>

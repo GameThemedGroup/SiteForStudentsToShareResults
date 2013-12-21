@@ -42,7 +42,7 @@
 
   function setupProfileView(&$pageState)
   {
-	  $user = wp_get_current_user();
+	  $user = get_user_by('id', get_current_user_id());
 
     $pageState = array_merge($pageState, compact(
       'user'
@@ -60,16 +60,18 @@
 
     $firstName = $_POST['firstname'];
     $lastName = $_POST['lastname'];
+    $displayName = $_POST['displayname'];
     $email = $_POST['email'];
 
     if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
-      compact('firstName', 'lastName', 'email'))) {
+      compact('displayName', 'firstName', 'lastName', 'email'))) {
 
       return "Invalid values when editing profile.";
     }
 
     $id = get_current_user_id();
     $args = array(
+      'display_name' => $displayName,
       'first_name' => $firstName,
       'last_name'  => $lastName,
       'email'      => $email,
