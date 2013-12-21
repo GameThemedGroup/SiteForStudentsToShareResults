@@ -51,7 +51,7 @@ function setupSubmissionsTab(&$pageState)
 
       $submission->thumbnail = $thumbnail['0'];
     } else {
-      $blankImage = get_template_directory() . '/images/blank-project.png';
+      $blankImage = get_stylesheet_directory_uri() . '/images/blank-project.png';
       $submission->thumbnail = $blankImage;
     }
   }
@@ -87,7 +87,7 @@ function setupCommentTab(&$pageState)
 
       $comment->thumbnail = $thumbnail['0'];
     } else {
-      $blankImage = get_template_directory() . '/images/blank-project.png';
+      $blankImage = get_stylesheet_directory_uri() . '/images/blank-project.png';
       $comment->thumbnail = $blankImage;
     }
 
