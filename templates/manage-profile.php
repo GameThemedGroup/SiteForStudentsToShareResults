@@ -38,7 +38,7 @@ get_header(); ?>
         value="<?php echo $user->user_email ?>" /><br />
     </div>
     <div id="manage-profile-buttons">
-      <input type="hidden" name="action" value="info">
+      <input type="hidden" name="action" value="update">
       <input type="submit" value="Submit">
       <a href="<?php echo site_url('/profile/?user=' . $user->ID) ?>">
         <button type="button">Cancel</button></a>
