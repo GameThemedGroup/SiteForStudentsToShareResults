@@ -37,18 +37,24 @@
 
   function updateProfileInformation(&$pageState)
   {
-		$args = array();
+    $firstName = $_POST['firstname'];
+    $lastName = $_POST['lastname'];
+    $email = $_POST['email'];
 
-		if ($_POST['firstname'])
-			$args['first_name'] = $_POST['firstname'];
+    if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
+      compact('firstName', 'lastName', 'email'))) {
 
-		if ($_POST['lastname'])
-			$args['last_name'] = $_POST['lastname'];
+      return "Invalid values when editing profile.";
+    }
 
-		if ($_POST['email'])
-			$args['user_email'] = $_POST['email'];
+    $id = get_current_user_id();
+    $args = array(
+      'first_name' => $firstName,
+      'last_name'  => $lastName,
+      'email'      => $email,
+      'ID'         => $id
+    );
 
-		$args['ID'] = $currentUser->ID;
 		wp_update_user($args);
 
     return 'Your profile has been updated.';
@@ -58,6 +64,12 @@
   {
     $newPass = $_POST['pass'];
     $newPassConfirm = $_POST['passconfirm'];
+
+    if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
+      compact('newPass', 'newPassConfirm'))) {
+
+      return "Invalid values when updating password.";
+    }
 
     if(($newPass == $newPassConfirm) && $newPass != '') {
       //wp_set_password($newPass, $currentUser->ID);
