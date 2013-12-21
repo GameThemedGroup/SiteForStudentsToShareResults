@@ -36,6 +36,8 @@
     // TODO generalize this error message
     if ($profileId != $userId) {
       echo "You do not have permission to view this page.";
+      $homeUrl = home_url();
+      header("Refresh: 5; url={$homeUrl}");
       exit();
     }
   }
@@ -113,6 +115,8 @@
 
     // logs the user out
     wp_set_password($newPass, $userId);
+    $homeUrl = home_url();
+    header("Refresh: 2; url={$homeUrl}");
     return "Password successfully changed. Please log back in.";
   }
 ?>
