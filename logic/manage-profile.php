@@ -5,6 +5,8 @@
 
   function initializePageState(&$pageState)
   {
+    verifyPermissionOrDie();
+
     $action = ifsetor($_POST['action'], null);
 
     $actionList = array(
@@ -26,6 +28,18 @@
     ));
   }
 
+  function verifyPermissionOrDie()
+  {
+    $profileId = ifsetor($_GET['user'], null);
+    $userId = get_current_user_id();
+
+    // TODO generalize this error message
+    if ($profileId != $userId) {
+      echo "You do not have permission to view this page.";
+      exit();
+    }
+  }
+
   function setupProfileView(&$pageState)
   {
 	  $user = wp_get_current_user();
@@ -37,6 +51,13 @@
 
   function updateProfileInformation(&$pageState)
   {
+    $profileId = ifsetor($_GET['user'], null);
+    $userId = get_current_user_id();
+
+    if ($profileId != $userId) {
+      return "You do not have permission to perform this action.";
+    }
+
     $firstName = $_POST['firstname'];
     $lastName = $_POST['lastname'];
     $email = $_POST['email'];
@@ -62,6 +83,13 @@
 
   function changePassword(&$pageState)
   {
+    $profileId = ifsetor($_GET['user'], null);
+    $userId = get_current_user_id();
+
+    if ($profileId != $userId) {
+      return "You do not have permission to perform this action.";
+    }
+
     $newPass = $_POST['pass'];
     $newPassConfirm = $_POST['passconfirm'];
 
@@ -72,7 +100,7 @@
     }
 
     if(($newPass == $newPassConfirm) && $newPass != '') {
-      //wp_set_password($newPass, $currentUser->ID);
+      wp_set_password($newPass, $userId);
       $userFeedback = 'password changed';
     } else {
       $userFeedback = 'mismatching passwords';
