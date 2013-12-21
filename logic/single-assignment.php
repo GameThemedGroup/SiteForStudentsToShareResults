@@ -37,7 +37,11 @@ function createSubmission(&$pageState)
   $assignmentId = ifsetor($_POST['assignmentId'], 123);
   $courseId = ifsetor($_POST['courseId'], null);
 
-  // TODO gtcs_validate_not_null($description, $title, $assignmentId, $courseId)
+  if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
+    compact('assignmentId', 'courseId', 'description', 'title'))) {
+
+    return "Invalid input when deleting assignment.";
+  }
 
   include_once(get_template_directory() . '/common/submissions.php');
   $submissionId = GTCS_Submissions::CreateSubmission(
