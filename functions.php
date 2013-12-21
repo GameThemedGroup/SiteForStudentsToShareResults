@@ -8,7 +8,7 @@ $url = array(
   'assignment' => site_url('/assignment/'),
   'assignments' => site_url('/assignments/'),
   'courses' => site_url('/courses/'),
-  'my-class' => site_url('/my-class/'),
+  'class' => site_url('/class/'),
   'main' => site_url('/main/'),
   'profile' => site_url('/profile/'),
 );

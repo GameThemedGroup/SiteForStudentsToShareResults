@@ -8,7 +8,7 @@
  */
 get_header(); ?>
 
-<?php include_once(get_template_directory() . '/logic/my-class.php'); ?>
+<?php include_once(get_template_directory() . '/logic/class.php'); ?>
 
 <?php if (!$hasCourse): ?>
   <div id='action-box'>No course specified</div>
@@ -65,7 +65,7 @@ get_header(); ?>
 <?php   else : ?>
       <li class="sidebar-menu">
 <?php   endif ?>
-        <a href="<?php echo site_url('/my-class/?id=' . $course->Id) ?>">
+        <a href="<?php echo site_url('/class/?id=' . $course->Id) ?>">
           <p class="sidebar-menu-top"><?php echo $course->Name ?></p>
           <p class="sidebar-menu-bottom"><?php echo $course->Quarter . ', ' . $course->Year ?></p>
         </a>

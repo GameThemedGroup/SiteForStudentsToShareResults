@@ -126,7 +126,7 @@ get_header(); ?>
       <tbody>
       <?php if ($courseList): ?>
       <?php foreach ($courseList as $course): ?>
-        <?php $courseLink = $url['my-class'] . '/?id=' . $course->Id; ?>
+        <?php $courseLink = $url['class'] . '/?id=' . $course->Id; ?>
         <tr>
           <th><a href="<?php echo $courseLink; ?>"><?php echo $course->Name; ?></th>
           <th><?php echo $course->Quarter; ?></th>

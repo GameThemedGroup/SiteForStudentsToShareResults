@@ -35,7 +35,7 @@ get_header(); ?>
     <div id="action-box"><?php echo $userFeedback; ?></div>
   <?php endif ?>
 
-  <a class="link" href="<?php echo $url['my-class'] . "?id={$courseId}"; ?>">
+  <a class="link" href="<?php echo $url['class'] . "?id={$courseId}"; ?>">
     Back to course</a>
 
   <?php if ($isOwner) : ?>

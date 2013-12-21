@@ -60,7 +60,7 @@ get_header(); ?>
       <div id="create-student-buttons">
         <input type="hidden" name="op" value="create">
         <input type="submit" value="Create"/>
-        <a href="<?php echo site_url('/my-class/') ?>"><button type="button">Cancel</button></a>
+        <a href="<?php echo site_url('/class/') ?>"><button type="button">Cancel</button></a>
       </div>
     </form>
   </div>
@@ -76,7 +76,7 @@ get_header(); ?>
         <input type="hidden" name="courseid" value="<?php echo $courseId; ?>">
         <input type="hidden" name="op" value="file">
         <input type="submit">
-        <a href="<?php echo site_url('/my-class/') ?>"><button type="button">Cancel</button></a>
+        <a href="<?php echo site_url('/class/') ?>"><button type="button">Cancel</button></a>
       </div>
     </form>
   </div>
