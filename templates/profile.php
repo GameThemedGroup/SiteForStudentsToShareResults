@@ -38,27 +38,6 @@ get_header(); ?>
   <div id='profilemeta'>
       <b>Email </b><?php echo $user->user_email; ?>
   </div>
-
-  <?php if($showStudentInfo): ?>
-    <div id='profilemeta'>
-        <b>Class </b><?php echo $course[0]->Name ?>
-        <b>Quarter </b><?php echo $course[0]->Quarter ?>
-        <b>Year </b><?php echo $course[0]->Year ?>
-    </div>
-    <div id='profilemeta'>
-        <b>Professor </b><?php echo $professor->first_name . ', ' . $professor->last_name ?>
-    </div>
-  <?php elseif($showProfessorInfo) : ?>
-    <div id='profilemeta'>
-            <b>Courses</b><br>
-      <?php
-        include_once(get_template_directory() . '/common/courses.php');
-        $courses = GTCS_Courses::GetCourseByFacultyId($user->ID) ?>
-      <?php foreach($courses as $course) : ?>
-      <?php echo $course->Name ?>
-      <?php endforeach ?>
-    </div>
-  <?php endif ?>
 </div>
 <!-- Profile Display -->
 
