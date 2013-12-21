@@ -84,7 +84,7 @@ function create_default_pages()
   $default_pages['main']           = default_page('main', 'Main', 'main.php');
   $default_pages['debug']          = default_page('debug', 'Debug', 'debug.php');
   $default_pages['class']          = default_page('class', 'MyClass', 'class.php');
-  $default_pages['projects']       = default_page('projects', 'Projects', 'projects-search.php');
+  $default_pages['projects']       = default_page('projects', 'Projects', 'search.php');
   $default_pages['profile']        = default_page('profile', 'Profile', 'profile.php');
   $default_pages['manage-profile'] = default_page('manage-profile', 'Manage Profile', 'manage-profile.php');
   $default_pages['courses'] = default_page('courses', 'Manage Courses', 'courses.php');

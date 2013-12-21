@@ -8,7 +8,7 @@
  */
 get_header(); ?>
 
-<?php include_once(get_template_directory() . '/logic/projects-search.php'); ?>
+<?php include_once(get_template_directory() . '/logic/search.php'); ?>
 
 <html>
   <div id="projectsearchfilter">
