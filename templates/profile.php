@@ -82,64 +82,52 @@ get_header(); ?>
   <?php if ($view == 'comments' || $showSubmissions == false): ?>
     <a class="profile-menu-tab-selected"
       href="<?php echo site_url("/profile/?user={$user->ID}&view=comments"); ?>">
-      Comments (<?php echo $commentCount ?>)
+      Comments
     </a>
   <?php else: ?>
     <a class="profile-menu-tab"
       href="<?php echo site_url("/profile/?user={$user->ID}&view=comments"); ?>">
-      Comments (<?php echo $commentCount ?>)
+      Comments
     </a>
   <?php endif; ?>
 
 </div>
 <!-- Profile Menu -->
 
+
 <?php if ($view == 'comments' || $view = '' && $showSubmissions == false): ?>
-  <?php if (!$comments): ?>
+  <?php if (sizeof($commentList) == 0): ?>
     <div id="empty-comment">This user has no comments</div>
   <?php else: ?>
   <!-- Comments -->
   <div id="profile-comments">
 
-  <?php
-    $results_start = ($currentPage - 1) * $comments_per_page;
-    $results_end = $results_start + $comments_per_page;
-    if($results_end > $commentCount)
-      $results_end = $commentCount;
-  ?>
-
-    <?php for ($i = $results_start; $i < $results_end; ++$i): ?>
+    <?php foreach ($commentList as $comment): ?>
       <!-- Comment Box -->
       <div class="commentbox">
-
         <div id="comment-image">
-          <?php if(has_post_thumbnail($comments[$i]->comment_post_ID)) : ?>
-             <?php echo get_the_post_thumbnail($comments[$i]->comment_post_ID, array(100,100)); ?>
-          <?php else: ?>
-            <img
-              src ="<?php echo bloginfo('template_directory') . '/images/blank-project.png'; ?>"
+            <img src ="<?php echo $comment->thumbnail; ?>"
               width="100" height="100" />
-          <?php endif ?>
         </div>
 
         <div id="commentcontent">
-            <?php echo $comments[$i]->comment_content; ?></div>
+            <?php echo $comment->comment_content; ?></div>
 
         <!-- Comment Metabox -->
         <div id="commentmetabox">
 
           <div id="commentmeta">
-            <a href="<?php echo site_url('/?p=') . $comments[$i]->comment_post_ID; ?>">
-              <?php echo get_post($comments[$i]->comment_post_ID)->post_title; ?></a>
+            <a href="<?php echo site_url("/?p={$comment->comment_post_ID}"); ?>">
+              <?php echo $comment->parentTitle; ?></a>
           </div>
 
           <div id="commentmeta">
-            <?php echo date('F d, Y', strtotime($comments[$i]->comment_date)); ?>
+            <?php echo date('F d, Y', strtotime($comment->comment_date)); ?>
           </div>
 
           <div id="commentmeta">
-            <a href="<?php echo site_url('/profile/?user=') . $comments[$i]->user_id ?>">
-              <?php echo $comments[$i]->comment_author ?>
+            <a href="<?php echo site_url("/profile/?user={$comment->user_id}"); ?>">
+              <?php echo $comments->comment_author ?>
             </a>
           </div>
 
@@ -152,25 +140,10 @@ get_header(); ?>
 
       </div>
       <!-- Comment Box -->
+    <?php endforeach; ?>
 
-    <?php endfor; ?>
   </div>
   <!-- Comments -->
-
-  <div id="resultspages">Page
-    <?php
-    $count = 1;
-    while($count <= $pageCount) :
-      if($count == $currentPage)
-        echo "<u>" . $count . "</u>";
-      else
-        echo "<a href=" .
-          site_url('/profile/?user=' . $user->ID . "&x=" . $count) .
-          ">" . " " .  $count . "</a>";
-    $count++;
-    endwhile;
-    ?>
-  </div>
 
   <?php endif; ?>
 <?php endif; ?>

@@ -26,34 +26,18 @@ function initializePageState(&$pageState)
   }
   $isOwner = (get_current_user_id() == $user->ID);
 
-  $commentArgs = array(
-    'number' => 5,
-    'post_id' => 0,
-    'status' => 'approve',
-    'user_id' => $user->ID,
-  );
-
-  $comments = get_comments($commentArgs);
-  $commentCount = count($comments);
-
-  $comments_per_page = 8;
-  $pageCount = ceil($commentCount / $comments_per_page);
-
-  $currentPage = ifsetor($_GET['x'], 1);
 
   include_once(get_template_directory() . '/common/submissions.php');
   $submissions = GTCS_Submissions::GetSubmissions($user->ID);
   $submissionCount = count($submissions);
 
+  $commentList = buildCommentList($user->ID);
   $pageState = array_merge($pageState, compact(
     'submissions',
     'showSubmissions',
     'showStudentInfo',
     'showProfessorInfo',
-    'currentPage',
-    'pageCount',
-    'commentCount',
-    'comments',
+    'commentList',
     'isOwner',
     'course',
     'professor',
@@ -61,5 +45,39 @@ function initializePageState(&$pageState)
     'submissionCount',
     'user'
   ));
+}
+
+
+function buildCommentList($userId)
+{
+  $commentArgs = array(
+    'number' => 10,
+    'post_id' => 0,
+    'status' => 'approve',
+    'user_id' => $userId,
+  );
+
+  $commentList = get_comments($commentArgs);
+
+  foreach ($commentList as $comment) {
+    $parentPost = get_post($comment->comment_post_ID);
+
+    if (has_post_thumbnail($parentPost->ID)) {
+
+      $thumbnail = wp_get_attachment_image_src(
+        get_post_thumbnail_id($parentPost->ID),
+        array(100, 100)
+      );
+
+      $comment->thumbnail = $thumbnail['0'];
+    } else {
+      $blankImage = get_template_directory() . '/images/blank-project.png';
+      $comment->thumbnail = $blankImage;
+    }
+
+    $comment->parentTitle = $parentPost->post_title;
+  }
+
+  return $commentList;
 }
 ?>
