@@ -60,7 +60,7 @@ get_header(); ?>
       <input class='manage-profile' type="password" name="passconfirm" required><br>
     </div>
     <div id="manage-profile-buttons">
-      <input type="hidden" name="action" value="password">
+      <input type="hidden" name="action" value="changePassword">
       <input type="submit" value="Submit">
       <a href="<?php echo site_url('/profile/?user=' . $user->ID) ?>">
         <button type="button">Cancel</button></a>
