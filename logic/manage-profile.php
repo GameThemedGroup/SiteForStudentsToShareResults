@@ -92,20 +92,27 @@
       return "You do not have permission to perform this action.";
     }
 
+    $currentPass = $_POST['currentpass'];
     $newPass = $_POST['pass'];
     $newPassConfirm = $_POST['passconfirm'];
 
     if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
-      compact('newPass', 'newPassConfirm'))) {
+      compact('newPass', 'newPassConfirm', 'currentPass'))) {
 
       return "Invalid values when updating password.";
     }
 
-    if(($newPass == $newPassConfirm) && $newPass != '') {
-      wp_set_password($newPass, $userId);
-      $userFeedback = 'password changed';
-    } else {
-      $userFeedback = 'mismatching passwords';
+    $user = get_user_by('id', $userId);
+    if (!wp_check_password($currentPass, $user->data->user_pass, $user->ID)) {
+      return "Incorrect password entered!";
     }
+
+    if ($newPass != $newPassConfirm) {
+      return "Your passwords do not match!";
+    }
+
+    // logs the user out
+    wp_set_password($newPass, $userId);
+    return "Password successfully changed. Please log back in.";
   }
 ?>

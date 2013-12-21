@@ -57,6 +57,10 @@ get_header(); ?>
   <div id='manage-profile-box'>
     <div id='manage-profile-title'>Edit Password </div>
     <div id='manage-profile-field'>
+      <p class='manage-profile'>Current Password</p>
+      <input class='manage-profile' type="password" name="currentpass" required><br>
+    </div>
+    <div id='manage-profile-field'>
       <p class='manage-profile'>Password</p>
       <input class='manage-profile' type="password" name="pass" required><br>
     </div>
