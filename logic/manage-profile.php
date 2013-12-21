@@ -1,8 +1,42 @@
 <?php
-	$user = wp_get_current_user();
+  $pageState = array();
+  initializePageState($pageState);
+  extract($pageState);
 
-	//update user info
-	if ($_POST['action'] == 'info') {
+  function initializePageState(&$pageState)
+  {
+    $action = ifsetor($_POST['action'], null);
+
+    $actionList = array(
+      'update'   => 'updateProfileInformation',
+      'changePassword'  => 'changePassword',
+    );
+
+    $userFeedback = '';
+    if ($action == null) {
+    } else if (array_key_exists($action, $actionList)) {
+      $userFeedback = call_user_func($actionList[$action], &$pageState);
+    } else {
+      trigger_error("An invalid action was provided.", E_USER_WARNING);
+    }
+
+    setupProfileView($pageState);
+    $pageState = array_merge($pageState, compact(
+      'userFeedback'
+    ));
+  }
+
+  function setupProfileView(&$pageState)
+  {
+	  $user = wp_get_current_user();
+
+    $pageState = array_merge($pageState, compact(
+      'user'
+    ));
+  }
+
+  function updateProfileInformation(&$pageState)
+  {
 		$args = array();
 
 		if ($_POST['firstname'])
@@ -17,8 +51,11 @@
 		$args['ID'] = $currentUser->ID;
 		wp_update_user($args);
 
-    $userFeedback = 'profile updated';
-	} elseif ($_POST['action'] == 'password') {
+    return 'Your profile has been updated.';
+  }
+
+  function changePassword(&$pageState)
+  {
     $newPass = $_POST['pass'];
     $newPassConfirm = $_POST['passconfirm'];
 
