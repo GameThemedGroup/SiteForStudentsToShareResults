@@ -44,26 +44,26 @@ get_header(); ?>
 <!-- Profile Menu -->
 <div id="profile-menu">
 
-  <?php if ($view == 'submissions'): ?>
+  <?php if ($tab == 'submissions'): ?>
     <a class="profile-menu-tab-selected"
-      href="<?php echo site_url("/profile/?user={$user->ID}&view=submissions"); ?>">
+      href="<?php echo site_url("/profile/?user={$user->ID}&tab=submissions"); ?>">
       Submissions
     </a>
   <?php else: ?>
     <a class="profile-menu-tab"
-      href="<?php echo site_url("/profile/?user={$user->ID}&view=submissions"); ?>">
+      href="<?php echo site_url("/profile/?user={$user->ID}&tab=submissions"); ?>">
       Submissions
     </a>
   <?php endif; ?>
 
-  <?php if ($view == 'comments'): ?>
+  <?php if ($tab == 'comments'): ?>
     <a class="profile-menu-tab-selected"
-      href="<?php echo site_url("/profile/?user={$user->ID}&view=comments"); ?>">
+      href="<?php echo site_url("/profile/?user={$user->ID}&tab=comments"); ?>">
       Comments
     </a>
   <?php else: ?>
     <a class="profile-menu-tab"
-      href="<?php echo site_url("/profile/?user={$user->ID}&view=comments"); ?>">
+      href="<?php echo site_url("/profile/?user={$user->ID}&tab=comments"); ?>">
       Comments
     </a>
   <?php endif; ?>
@@ -72,7 +72,7 @@ get_header(); ?>
 <!-- Profile Menu -->
 
 
-<?php if ($view == 'comments' || $view = ''): ?>
+<?php if ($tab == 'comments' || $tab = ''): ?>
   <?php if (sizeof($commentList) == 0): ?>
     <div id="empty-comment">This user has no comments</div>
   <?php else: ?>
@@ -125,7 +125,7 @@ get_header(); ?>
   <?php endif; ?>
 <?php endif; ?>
 
-<?php if ($view == 'submissions' || $view == ''): ?>
+<?php if ($tab == 'submissions' || $tab == ''): ?>
 
   <?php if (sizeof($submissionList) == 0): ?>
     <div id="empty-comment">This user has no submissions</div>

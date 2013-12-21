@@ -3,12 +3,13 @@
   initializePageState($pageState);
   extract($pageState);
 
-  $view = ifsetor($_GET['view'], 'submissions');
 
 function initializePageState(&$pageState)
 {
   $userId = ifsetor($_GET['user'], null);
   $user = get_userdata($userId);
+
+  $tab = ifsetor($_GET['tab'], 'submissions');
 
   include_once(get_template_directory() . '/common/courses.php');
   $course = GTCS_Courses::getCourseByStudentId($userId);
@@ -17,18 +18,18 @@ function initializePageState(&$pageState)
 
   $isOwner = (get_current_user_id() == $user->ID);
 
-
   include_once(get_template_directory() . '/common/submissions.php');
   $submissionList = GTCS_Submissions::GetSubmissions($user->ID);
 
   $commentList = buildCommentList($user->ID);
   $pageState = array_merge($pageState, compact(
-    'submissions',
     'commentList',
-    'isOwner',
     'course',
+    'isOwner',
     'professor',
     'submissionList',
+    'submissions',
+    'tab',
     'user'
   ));
 }
