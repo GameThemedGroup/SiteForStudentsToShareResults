@@ -39,7 +39,7 @@ class GTCS_Courses
 
     $tablename = $wpdb->prefix . "courses";
 
-    $rows = $wpdb->get_row("SELECT c.name as Name, c.quarter as Quarter, c.year as Year, c.facultyid as FacultyId, c.description as Description
+    $rows = $wpdb->get_row("SELECT c.id as ID, c.name as Name, c.quarter as Quarter, c.year as Year, c.facultyid as FacultyId, c.description as Description
       FROM $tablename as c WHERE c.id = '$courseId'");
 
     return $rows;
