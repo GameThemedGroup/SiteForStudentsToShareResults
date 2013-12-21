@@ -10,12 +10,16 @@ get_header(); ?>
 
 <?php include_once(get_template_directory() . '/logic/my-class.php'); ?>
 
-<?php if (!isset($course)) : ?>
-  <div id="action-box">Course can not be found</div>
-  </html>
-  <?php get_footer(); return; ?>
-<?php endif; ?>
-
+<?php if (!$hasCourse): ?>
+  <div id='action-box'>No course specified</div>
+  <div id="class-whole">
+    <div id="class-title">Course Name</div>
+    <div id="class-info1"><b>Professor </b></div>
+    <div id="class-info2"><b>Email</b></div>
+    <div id="class-info1"><b>Quarter</b></div>
+    <div id="class-description"><b>Description</b></div>
+  </div>
+<?php else: ?>
   <div id="class-whole">
     <div id="class-title"><?php echo $course->Name ?>
       <?php if($isOwner) : ?>
@@ -27,8 +31,8 @@ get_header(); ?>
 
     <div id="class-info1"><b>Professor </b>
       <?php echo $professor->last_name . ', ' . $professor->first_name . ' '; ?>
-      [<a href="<?php echo $professor_link; ?>">
-        <?php echo $professor->user_login; ?>
+      [<a href="<?php echo site_url("/profile/?user={$professor->ID}"); ?>">
+        profile
       </a>]
     </div>
 
@@ -48,9 +52,10 @@ get_header(); ?>
     </div>
 
   </div> <!-- class-whole -->
+<?php endif; ?>
 
 <!-- Course Selector -->
-<?php if($isOwner) : ?>
+<?php if($isUser) : ?>
   <div id="sidebar-menu">
     <div id="sidebar-menu-title">My Courses</div>
     <ul class="sidebar-menu">
@@ -66,7 +71,9 @@ get_header(); ?>
         </a>
       </li>
 <?php endforeach; ?>
+<?php if ($isOwner): ?>
       <li class="sidebar-menu-center"><a class="action" href="<?php echo site_url('/courses/') ?>">Create course</a></li>
+<?php endif; ?>
     </ul>
   </div>
 <?php endif; ?> <!-- sidebar-menu -->
@@ -76,18 +83,12 @@ get_header(); ?>
   <div id="sidebar-menu">
     <div id="sidebar-menu-title">Students</div>
       <ul class="sidebar-menu">
-<?php
-  include_once(get_template_directory() . '/common/users.php');
-  $studentIds = GTCS_Users::GetStudents($courseId);
-  $students = get_users(array('include' => $studentIds));
-?>
-<?php if ($students) : ?>
-<?php   foreach($students as $student) : ?>
+<?php   foreach($studentList as $student) : ?>
               <li class="sidebar-menu">
                 <p class="sidebar-menu-middle"><a href="<?php echo site_url('/profile/?user=' . $student->ID) ?>"><?php echo $student->display_name?></a></p>
               </li>
 <?php   endforeach ?>
-<?php endif ?>
+
 <?php if($isOwner) : ?>
         <li class="sidebar-menu-center"><a class="action" href="<?php echo site_url('/students/?id=' . $courseId) ?>">Add students</a></li>
 <?php endif ?>
@@ -125,7 +126,7 @@ get_header(); ?>
       <?php endforeach; ?>
       <?php elseif ($isOwner == false): ?>
         <tr>
-          <th class="center" colspan="2">There are no assignments</th>
+          <th class="center" colspan="3">There are no assignments</th>
         </tr>
       <?php endif; ?>
 

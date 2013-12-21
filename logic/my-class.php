@@ -1,43 +1,112 @@
 <?php
-  $userId = wp_get_current_user()->ID;
-  $isStudent = gtcs_user_has_role('subscriber');
-  $isProfessor = gtcs_user_has_role('author');
+  $pageState = array();
 
-  $courseId = ifsetor($_GET['id'], null);
+  initializePageState($pageState);
 
-  $courseList = array();
+  extract($pageState);
 
-  include_once(get_template_directory() . '/common/courses.php');
+  function initializePageState(&$pageState)
+  {
+    $isStudent = gtcs_user_has_role('subscriber');
+    $isProfessor = gtcs_user_has_role('author');
 
-  if ($courseId != null) {
-    $courseList = GTCS_Courses::getCourseByFacultyId($userId);
-
-  } else {
-
-    if ($isStudent) {
-      $courseList = GTCS_Courses::getCourseByStudentId($userId);
-    } elseif ($isProfessor) {
-      $courseList = GTCS_Courses::getCourseByFacultyId($userId);
+    if ($isStudent || $isProfessor) {
+      $isUser = true;
+    } else {
+      $isUser =  false;
     }
 
-    if ($courseList) { // set default selection to first course
-      $courseId = $courseList[0]->Id;
-    }
+    setupPageView($pageState);
+    $pageState['isUser'] = $isUser;
   }
 
-  if ($courseId != null)
-    $course = GTCS_Courses::getCourseByCourseId($courseId);
-
-  $isOwner = false;
-  if (isset($course))
+  function setupPageView(&$pageState)
   {
+    $userId = wp_get_current_user()->ID;
+    $courseId = ifsetor($_GET['id'], null);
+
+    if ($courseId == null) {
+      $courseId = selectDefaultCourse($userId);
+    }
+
+    include_once(get_template_directory() . '/common/courses.php');
+    $course = ($courseId != null)
+      ? GTCS_Courses::getCourseByCourseId($courseId)
+      : null; // no course could be selected
+
+    if ($course == null)
+      setupBlankPage($pageState);
+    else
+      setupCourseView($pageState, $course);
+
+    $isStudent = gtcs_user_has_role('subscriber');
+    $isProfessor = gtcs_user_has_role('author');
+
+    if ($isProfessor)
+      $courseList = GTCS_Courses::getCourseByFacultyId($userId);
+    else if ($isStudent)
+      $courseList = GTCS_Courses::getCourseByStudentId($userId);
+
+    $pageState = array_merge($pageState, compact(
+      'course',
+      'courseId',
+      'courseList'
+    ));
+  }
+
+  function setupCourseView(&$pageState, $course)
+  {
+    $userId = wp_get_current_user()->ID;
+
+    $hasCourse = true;
+
     include_once(get_template_directory() . '/common/assignments.php');
     $professor = get_userdata($course->FacultyId);
-    $professorLink = site_url('/profile/?user=') . $course->FacultyId;
-    $assignmentList = GTCS_Assignments::getAllAssignments($courseId);
+    $assignmentList = GTCS_Assignments::getAllAssignments($course->ID);
 
-    if($isProfessor) {
-      $isOwner = ($course->FacultyId == $userId);
-    }
+    include_once(get_template_directory() . '/common/users.php');
+    $studentIds = GTCS_Users::GetStudents($course->ID);
+    $studentList = get_users(array('include' => $studentIds));
+
+    $isOwner = ($course->FacultyId == $userId);
+
+    $pageState = array_merge($pageState, compact(
+      'assignmentList',
+      'hasCourse',
+      'isOwner',
+      'professor',
+      'studentList'
+    ));
+  }
+
+  function setupBlankPage(&$pageState)
+  {
+    $hasCourse = false;
+
+    $studentList = array();
+    $assignmentList = array();
+
+    $isOwner = gtcs_user_has_role('author');
+
+    $pageState = array_merge($pageState, compact(
+      'assignmentList',
+      'hasCourse',
+      'isOwner',
+      'studentList'
+    ));
+  }
+
+  function selectDefaultCourse($userId)
+  {
+    $isStudent = gtcs_user_has_role('subscriber');
+    $isProfessor = gtcs_user_has_role('author');
+
+    include_once(get_template_directory() . '/common/courses.php');
+    if ($isProfessor)
+      $courseList = GTCS_Courses::getCourseByFacultyId($userId);
+    else if ($isStudent)
+      $courseList = GTCS_Courses::getCourseByStudentId($userId);
+
+    return ifsetor($courseList[0]->Id, null);
   }
 ?>
