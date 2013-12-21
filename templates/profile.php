@@ -41,35 +41,19 @@ get_header(); ?>
 </div>
 <!-- Profile Display -->
 
-<!-- Profile Menu -->
+<!-- Tab Selections -->
 <div id="profile-menu">
-
-  <?php if ($tab == 'submissions'): ?>
-    <a class="profile-menu-tab-selected"
-      href="<?php echo site_url("/profile/?user={$user->ID}&tab=submissions"); ?>">
-      Submissions
-    </a>
-  <?php else: ?>
-    <a class="profile-menu-tab"
-      href="<?php echo site_url("/profile/?user={$user->ID}&tab=submissions"); ?>">
-      Submissions
-    </a>
-  <?php endif; ?>
-
-  <?php if ($tab == 'comments'): ?>
-    <a class="profile-menu-tab-selected"
-      href="<?php echo site_url("/profile/?user={$user->ID}&tab=comments"); ?>">
-      Comments
-    </a>
-  <?php else: ?>
-    <a class="profile-menu-tab"
-      href="<?php echo site_url("/profile/?user={$user->ID}&tab=comments"); ?>">
-      Comments
-    </a>
-  <?php endif; ?>
-
+  <?php foreach ($tabChoiceList as $tabChoice): ?>
+    <a class=
+      <?php if ($tabChoice == $tab): ?>"profile-menu-tab-selected"
+      <?php else: ?>"profile-menu-tab"
+      <?php endif; ?>
+        href="<?php echo site_url("/profile/?user={$user->ID}&tab={$tabChoice}"); ?>">
+        <?php echo ucwords($tabChoice); ?>
+      </a>
+  <?php endforeach; ?>
 </div>
-<!-- Profile Menu -->
+<!-- Tab Selections -->
 
 
 <?php if ($tab == 'comments' || $tab = ''): ?>

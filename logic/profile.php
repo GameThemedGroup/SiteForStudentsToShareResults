@@ -6,42 +6,57 @@
 
 function initializePageState(&$pageState)
 {
-  $userId = ifsetor($_GET['user'], null);
-  $user = get_userdata($userId);
-
   $tab = ifsetor($_GET['tab'], 'submissions');
 
-  include_once(get_template_directory() . '/common/courses.php');
-  $course = GTCS_Courses::getCourseByStudentId($userId);
-  if ($course != null)
-    $professor = get_user_by('id', $course[0]->FacultyId);
+  $tabList = array(
+    'comments' => 'setupCommentTab',
+    'submissions' => 'setupSubmissionsTab'
+  );
 
+  $tabChoiceList = array_keys($tabList);
+
+  if ($tab != null) {
+    if (array_key_exists($tab, $tabList)) {
+      $userFeedback = call_user_func($tabList[$tab], &$pageState);
+    } else {
+      trigger_error("An invalid tab was selected.", E_USER_WARNING);
+    }
+  }
+
+  $userId = ifsetor($_GET['user'], null);
+  $user = get_userdata($userId);
   $isOwner = (get_current_user_id() == $user->ID);
 
-  include_once(get_template_directory() . '/common/submissions.php');
-  $submissionList = GTCS_Submissions::GetSubmissions($user->ID);
-
-  $commentList = buildCommentList($user->ID);
   $pageState = array_merge($pageState, compact(
-    'commentList',
-    'course',
     'isOwner',
-    'professor',
-    'submissionList',
-    'submissions',
     'tab',
+    'tabChoiceList',
     'user'
   ));
 }
 
-
-function buildCommentList($userId)
+function setupSubmissionsTab(&$pageState)
 {
+  $userId = ifsetor($_GET['user'], null);
+
+  include_once(get_template_directory() . '/common/submissions.php');
+  $submissionList = GTCS_Submissions::GetSubmissions($userId);
+
+  $pageState = array_merge($pageState, compact(
+    'submissionList',
+    'userId'
+  ));
+}
+
+function setupCommentTab(&$pageState)
+{
+  $userId = ifsetor($_GET['user'], null);
+
   $commentArgs = array(
     'number' => 10,
     'post_id' => 0,
     'status' => 'approve',
-    'user_id' => $userId,
+    'user_id' => $userId
   );
 
   $commentList = get_comments($commentArgs);
@@ -65,6 +80,8 @@ function buildCommentList($userId)
     $comment->parentTitle = $parentPost->post_title;
   }
 
-  return $commentList;
+  $pageState = array_merge($pageState, compact(
+    'commentList'
+  ));
 }
 ?>
