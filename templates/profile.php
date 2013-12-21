@@ -11,7 +11,7 @@ get_header(); ?>
 <?php include_once(get_template_directory() . '/logic/profile.php'); ?>
 
 <div id='profile-title'>
-  <?php echo $userInfo->user_login; ?>'s Profile
+  <?php echo $user->user_login; ?>'s Profile
 </div>
 
 <!-- Options Menu -->
@@ -31,12 +31,12 @@ get_header(); ?>
 
 <!-- Profile Display -->
 <div id="profile">
-  <?php echo get_avatar($userInfo->ID, 120); ?>
+  <?php echo get_avatar($user->ID, 120); ?>
   <div id='profilemeta'>
-      <b>Name </b><?php echo "{$userInfo->first_name} {$userInfo->last_name}"; ?>
+      <b>Name </b><?php echo "{$user->first_name} {$user->last_name}"; ?>
   </div>
   <div id='profilemeta'>
-      <b>Email </b><?php echo $userInfo->user_email; ?>
+      <b>Email </b><?php echo $user->user_email; ?>
   </div>
 
   <?php if($showStudentInfo): ?>
@@ -53,7 +53,7 @@ get_header(); ?>
             <b>Courses</b><br>
       <?php
         include_once(get_template_directory() . '/common/courses.php');
-        $courses = GTCS_Courses::GetCourseByFacultyId($currentUser->ID) ?>
+        $courses = GTCS_Courses::GetCourseByFacultyId($user->ID) ?>
       <?php foreach($courses as $course) : ?>
       <?php echo $course->Name ?>
       <?php endforeach ?>
@@ -66,27 +66,27 @@ get_header(); ?>
 <div id="profile-menu">
 
   <?php if ($showSubmissions): ?>
-    <?php if ($_GET['view'] == '' || $_GET['view'] == 'submissions'): ?>
+    <?php if ($view == 'submissions'): ?>
       <a class="profile-menu-tab-selected"
-        href="<?php echo site_url("/profile/?user={$userInfo->ID}&view=submissions"); ?>">
+        href="<?php echo site_url("/profile/?user={$user->ID}&view=submissions"); ?>">
         Submissions (<?php echo $submissionCount ?>)
       </a>
     <?php else: ?>
       <a class="profile-menu-tab"
-        href="<?php echo site_url("/profile/?user={$userInfo->ID}&view=submissions"); ?>">
+        href="<?php echo site_url("/profile/?user={$user->ID}&view=submissions"); ?>">
         Submissions (<?php echo $submissionCount ?>)
       </a>
     <?php endif; ?>
   <?php endif; ?>
 
-  <?php if ($_GET['view'] == 'comments' || $showSubmissions == false): ?>
+  <?php if ($view == 'comments' || $showSubmissions == false): ?>
     <a class="profile-menu-tab-selected"
-      href="<?php echo site_url("/profile/?user={$userInfo->ID}&view=comments"); ?>">
+      href="<?php echo site_url("/profile/?user={$user->ID}&view=comments"); ?>">
       Comments (<?php echo $commentCount ?>)
     </a>
   <?php else: ?>
     <a class="profile-menu-tab"
-      href="<?php echo site_url("/profile/?user={$userInfo->ID}&view=comments"); ?>">
+      href="<?php echo site_url("/profile/?user={$user->ID}&view=comments"); ?>">
       Comments (<?php echo $commentCount ?>)
     </a>
   <?php endif; ?>
@@ -94,7 +94,7 @@ get_header(); ?>
 </div>
 <!-- Profile Menu -->
 
-<?php if ($_GET['view'] == 'comments' || ($_GET['view'] == '' && $showSubmissions == false)): ?>
+<?php if ($view == 'comments' || $view = '' && $showSubmissions == false): ?>
   <?php if (!$comments): ?>
     <div id="empty-comment">This user has no comments</div>
   <?php else: ?>
@@ -102,7 +102,7 @@ get_header(); ?>
   <div id="profile-comments">
 
   <?php
-    $results_start = ($current_page - 1) * $comments_per_page;
+    $results_start = ($currentPage - 1) * $comments_per_page;
     $results_end = $results_start + $comments_per_page;
     if($results_end > $commentCount)
       $results_end = $commentCount;
@@ -160,12 +160,12 @@ get_header(); ?>
   <div id="resultspages">Page
     <?php
     $count = 1;
-    while($count <= $page_count) :
-      if($count == $current_page)
+    while($count <= $pageCount) :
+      if($count == $currentPage)
         echo "<u>" . $count . "</u>";
       else
         echo "<a href=" .
-          site_url('/profile/?user=' . $userInfo->ID . "&x=" . $count) .
+          site_url('/profile/?user=' . $user->ID . "&x=" . $count) .
           ">" . " " .  $count . "</a>";
     $count++;
     endwhile;
@@ -178,7 +178,7 @@ get_header(); ?>
 <?php if (!$showSubmissions): ?>
   <div id="error-box">  You must be logged in to view this page</div>
 <?php else: ?>
-  <?php if ($_GET['view'] == 'submissions' || $_GET['view'] == ''): ?>
+  <?php if ($view == 'submissions' || $view == ''): ?>
 
     <?php if (!$submissions) : ?>
       <div id="empty-comment">This user has no submissions</div>

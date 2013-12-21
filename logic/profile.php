@@ -1,63 +1,65 @@
 <?php
-if(is_user_logged_in())
+  $pageState = array();
+  initializePageState($pageState);
+  extract($pageState);
+
+  $view = ifsetor($_GET['view'], 'submissions');
+
+function initializePageState(&$pageState)
 {
-  $userInfo = get_userdata($_GET['user']);
-  $comments_per_page = 8;
+  $userId = ifsetor($_GET['user'], null);
+  $user = get_userdata($userId);
 
   include_once(get_template_directory() . '/common/courses.php');
-  $course = GTCS_Courses::getCourseByStudentId($userInfo->ID);
-  $professor = get_user_by('id', $course[0]->FacultyId);
-  $currentUser = wp_get_current_user();
+  $course = GTCS_Courses::getCourseByStudentId($userId);
+  if ($course != null)
+    $professor = get_user_by('id', $course[0]->FacultyId);
 
-  if(gtcs_user_has_role('subscriber', $userInfo->ID))
-  {
+  if(gtcs_user_has_role('subscriber', $user->ID)) {
     $showSubmissions = true;
     $showStudentInfo = true;
-  }
-  else if(gtcs_user_has_role('author', $userInfo->ID))
-  {
+    $showProfessorInfo = false;
+  } else if(gtcs_user_has_role('author', $user->ID)) {
+    $showSubmissions = false;
     $showProfessorInfo = true;
+    $showStudentInfo = false;
   }
+  $isOwner = (get_current_user_id() == $user->ID);
 
-  if($currentUser->ID == $userInfo->ID)
-    $isOwner = true;
-
-  $args = array(
-    'author_email' => '',
-    'ID' => '',
-    'karma' => '',
+  $commentArgs = array(
     'number' => 5,
-    'offset' => '',
-    'orderby' => '',
-    'order' => 'DESC',
-    'parent' => '',
     'post_id' => 0,
-    'post_author' => '',
-    'post_name' => '',
-    'post_parent' => '',
-    'post_status' => '',
-    'post_type' => '',
     'status' => 'approve',
-    'type' => '',
-    'user_id' => $userInfo->ID,
-    'search' => '',
-    'count' => false,
-    'meta_key' => '',
-    'meta_value' => '',
-    'meta_query' => '',
+    'user_id' => $user->ID,
   );
 
-  $comments = get_comments($args);
+  $comments = get_comments($commentArgs);
   $commentCount = count($comments);
-  $page_count = ceil($commentCount / $comments_per_page);
 
-  if($_GET['x'])
-    $current_page = $_GET['x'];
-  else
-    $current_page = 1;
+  $comments_per_page = 8;
+  $pageCount = ceil($commentCount / $comments_per_page);
+
+  $currentPage = ifsetor($_GET['x'], 1);
 
   include_once(get_template_directory() . '/common/submissions.php');
-  $submissions = GTCS_Submissions::GetSubmissions($userInfo->ID);
+  $submissions = GTCS_Submissions::GetSubmissions($user->ID);
   $submissionCount = count($submissions);
+
+  $pageState = array_merge($pageState, compact(
+    'submissions',
+    'showSubmissions',
+    'showStudentInfo',
+    'showProfessorInfo',
+    'currentPage',
+    'pageCount',
+    'commentCount',
+    'comments',
+    'isOwner',
+    'course',
+    'professor',
+    'submissoins',
+    'submissionCount',
+    'user'
+  ));
 }
 ?>
