@@ -20,7 +20,7 @@ get_header(); ?>
     <div id="sidebar-menu-title">Options</div>
     <ul class="sidebar-menu">
       <li class="sidebar-menu">
-        <a href="<?php echo site_url('/manage-profile/?user=' . $currentUser->ID) ?>">
+        <a href="<?php echo site_url('/manage-profile/?user=' . $user->ID) ?>">
           <p class="sidebar-menu-top">Edit Profile</p>
         </a>
       </li>
@@ -65,21 +65,19 @@ get_header(); ?>
 <!-- Profile Menu -->
 <div id="profile-menu">
 
-  <?php if ($showSubmissions): ?>
-    <?php if ($view == 'submissions'): ?>
-      <a class="profile-menu-tab-selected"
-        href="<?php echo site_url("/profile/?user={$user->ID}&view=submissions"); ?>">
-        Submissions (<?php echo $submissionCount ?>)
-      </a>
-    <?php else: ?>
-      <a class="profile-menu-tab"
-        href="<?php echo site_url("/profile/?user={$user->ID}&view=submissions"); ?>">
-        Submissions (<?php echo $submissionCount ?>)
-      </a>
-    <?php endif; ?>
+  <?php if ($view == 'submissions'): ?>
+    <a class="profile-menu-tab-selected"
+      href="<?php echo site_url("/profile/?user={$user->ID}&view=submissions"); ?>">
+      Submissions
+    </a>
+  <?php else: ?>
+    <a class="profile-menu-tab"
+      href="<?php echo site_url("/profile/?user={$user->ID}&view=submissions"); ?>">
+      Submissions
+    </a>
   <?php endif; ?>
 
-  <?php if ($view == 'comments' || $showSubmissions == false): ?>
+  <?php if ($view == 'comments'): ?>
     <a class="profile-menu-tab-selected"
       href="<?php echo site_url("/profile/?user={$user->ID}&view=comments"); ?>">
       Comments
@@ -95,7 +93,7 @@ get_header(); ?>
 <!-- Profile Menu -->
 
 
-<?php if ($view == 'comments' || $view = '' && $showSubmissions == false): ?>
+<?php if ($view == 'comments' || $view = ''): ?>
   <?php if (sizeof($commentList) == 0): ?>
     <div id="empty-comment">This user has no comments</div>
   <?php else: ?>
@@ -148,43 +146,39 @@ get_header(); ?>
   <?php endif; ?>
 <?php endif; ?>
 
-<?php if (!$showSubmissions): ?>
-  <div id="error-box">  You must be logged in to view this page</div>
-<?php else: ?>
-  <?php if ($view == 'submissions' || $view == ''): ?>
+<?php if ($view == 'submissions' || $view == ''): ?>
 
-    <?php if (!$submissions) : ?>
-      <div id="empty-comment">This user has no submissions</div>
-    <?php else: ?>
-      <?php foreach ($submissions as $submission): ?>
+  <?php if (!$submissions) : ?>
+    <div id="empty-comment">This user has no submissions</div>
+  <?php else: ?>
+    <?php foreach ($submissions as $submission): ?>
 
-        <!-- Profile Submission Box -->
-        <div class="profile-submission-box">
+      <!-- Profile Submission Box -->
+      <div class="profile-submission-box">
 
-          <div class="profile-submission-tab-left">
-            <?php if(has_post_thumbnail($submission->SubmissionId)): ?>
-              <?php echo get_the_post_thumbnail($submission->SubmissionId, array(50,50)); ?>
-            <?php else: ?>
-            <img src="<?php echo bloginfo('template_directory') . "/images/blank-project.png"; ?>"
-              width="50" height="50" />
-            <?php endif; ?>
-          </div>
-
-          <div class="profile-submission-tab-center">
-            <a href="<?php echo site_url("/?p=$submission->SubmissionId"); ?>">
-              <?php echo $submission->AssignmentName ?>
-            </a>
-          </div>
-
-          <div class="profile-submission-tab-right">
-            Submitted on <b><?php echo date('F d, Y', strtotime($submission->Date)); ?></b>
-          </div>
-
+        <div class="profile-submission-tab-left">
+          <?php if(has_post_thumbnail($submission->SubmissionId)): ?>
+            <?php echo get_the_post_thumbnail($submission->SubmissionId, array(50,50)); ?>
+          <?php else: ?>
+          <img src="<?php echo bloginfo('template_directory') . "/images/blank-project.png"; ?>"
+            width="50" height="50" />
+          <?php endif; ?>
         </div>
-        <!-- Profile Submission Box -->
 
-      <?php endforeach; ?>
-    <?php endif; ?>
+        <div class="profile-submission-tab-center">
+          <a href="<?php echo site_url("/?p=$submission->SubmissionId"); ?>">
+            <?php echo $submission->AssignmentName ?>
+          </a>
+        </div>
+
+        <div class="profile-submission-tab-right">
+          Submitted on <b><?php echo date('F d, Y', strtotime($submission->Date)); ?></b>
+        </div>
+
+      </div>
+      <!-- Profile Submission Box -->
+
+    <?php endforeach; ?>
   <?php endif; ?>
 <?php endif; ?>
 

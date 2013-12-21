@@ -16,11 +16,9 @@ function initializePageState(&$pageState)
     $professor = get_user_by('id', $course[0]->FacultyId);
 
   if(gtcs_user_has_role('subscriber', $user->ID)) {
-    $showSubmissions = true;
     $showStudentInfo = true;
     $showProfessorInfo = false;
   } else if(gtcs_user_has_role('author', $user->ID)) {
-    $showSubmissions = false;
     $showProfessorInfo = true;
     $showStudentInfo = false;
   }
@@ -34,7 +32,6 @@ function initializePageState(&$pageState)
   $commentList = buildCommentList($user->ID);
   $pageState = array_merge($pageState, compact(
     'submissions',
-    'showSubmissions',
     'showStudentInfo',
     'showProfessorInfo',
     'commentList',
