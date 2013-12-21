@@ -55,14 +55,12 @@ get_header(); ?>
 </div>
 <!-- Tab Selections -->
 
-
+<!-- Comment Tab -->
 <?php if ($tab == 'comments' || $tab = ''): ?>
-  <?php if (sizeof($commentList) == 0): ?>
-    <div id="empty-comment">This user has no comments</div>
-  <?php else: ?>
-  <!-- Comments -->
+<?php if (sizeof($commentList) == 0): ?>
+  <div id="empty-comment">This user has no comments</div>
+<?php else: ?>
   <div id="profile-comments">
-
     <?php foreach ($commentList as $comment): ?>
       <!-- Comment Box -->
       <div class="commentbox">
@@ -71,8 +69,7 @@ get_header(); ?>
               width="100" height="100" />
         </div>
 
-        <div id="commentcontent">
-            <?php echo $comment->comment_content; ?></div>
+        <div id="commentcontent"><?php echo $comment->comment_content; ?></div>
 
         <!-- Comment Metabox -->
         <div id="commentmetabox">
@@ -102,47 +99,41 @@ get_header(); ?>
       </div>
       <!-- Comment Box -->
     <?php endforeach; ?>
-
   </div>
-  <!-- Comments -->
 
-  <?php endif; ?>
 <?php endif; ?>
+<?php endif; ?>
+<!-- Comment Tab -->
 
+<!-- Submissions Tab -->
 <?php if ($tab == 'submissions' || $tab == ''): ?>
+<?php if (sizeof($submissionList) == 0): ?>
+  <div id="empty-comment">This user has no submissions</div>
+<?php else: ?>
+  <?php foreach ($submissionList as $submission): ?>
 
-  <?php if (sizeof($submissionList) == 0): ?>
-    <div id="empty-comment">This user has no submissions</div>
-  <?php else: ?>
-    <?php foreach ($submissionList as $submission): ?>
+    <div class="profile-submission-box">
 
-      <!-- Profile Submission Box -->
-      <div class="profile-submission-box">
-
-        <div class="profile-submission-tab-left">
-          <?php if(has_post_thumbnail($submission->SubmissionId)): ?>
-            <?php echo get_the_post_thumbnail($submission->SubmissionId, array(50,50)); ?>
-          <?php else: ?>
-          <img src="<?php echo bloginfo('template_directory') . "/images/blank-project.png"; ?>"
-            width="50" height="50" />
-          <?php endif; ?>
-        </div>
-
-        <div class="profile-submission-tab-center">
-          <a href="<?php echo site_url("/?p={$submission->SubmissionId}"); ?>">
-            <?php echo $submission->AssignmentName ?>
-          </a>
-        </div>
-
-        <div class="profile-submission-tab-right">
-          Submitted on <b><?php echo date('F d, Y', strtotime($submission->Date)); ?></b>
-        </div>
-
+      <div class="profile-submission-tab-left">
+        <img src ="<?php echo $submission->thumbnail; ?>"
+          width="50" height="50" />
       </div>
-      <!-- Profile Submission Box -->
 
-    <?php endforeach; ?>
-  <?php endif; ?>
+      <div class="profile-submission-tab-center">
+        <a href="<?php echo site_url("/?p={$submission->SubmissionId}"); ?>">
+          <?php echo $submission->AssignmentName ?>
+        </a>
+      </div>
+
+      <div class="profile-submission-tab-right">
+        Submitted on <b><?php echo date('F d, Y', strtotime($submission->Date)); ?></b>
+      </div>
+
+    </div><!-- profile-submission-box -->
+
+  <?php endforeach; ?>
 <?php endif; ?>
+<?php endif; ?>
+<!-- Submissions Tab -->
 
 <?php get_footer(); ?>

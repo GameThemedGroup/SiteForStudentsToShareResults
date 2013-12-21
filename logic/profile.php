@@ -41,6 +41,20 @@ function setupSubmissionsTab(&$pageState)
 
   include_once(get_template_directory() . '/common/submissions.php');
   $submissionList = GTCS_Submissions::GetSubmissions($userId);
+  foreach ($submissionList as $submission) {
+    if (has_post_thumbnail($submission->SubmissionId)) {
+
+      $thumbnail = wp_get_attachment_image_src(
+        get_post_thumbnail_id($submission->SubmissionId),
+        array(50, 50)
+      );
+
+      $submission->thumbnail = $thumbnail['0'];
+    } else {
+      $blankImage = get_template_directory() . '/images/blank-project.png';
+      $submission->thumbnail = $blankImage;
+    }
+  }
 
   $pageState = array_merge($pageState, compact(
     'submissionList',
