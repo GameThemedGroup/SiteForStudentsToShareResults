@@ -165,6 +165,7 @@ function toggleAssignmentStatus()
 
 function getListOfNonSubmitters($submissionList, $studentIds)
 {
+  $submitters = array();
   foreach ($submissionList as $submission) {
     $submitters[] = $submission->AuthorId;
   }
