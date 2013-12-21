@@ -128,7 +128,7 @@ get_header(); ?>
 
   <div id='create-assignment-box'>
     <div id='create-assignment-title'>
-      <?php echo $isEditing ? 'Edit ' : 'Create ' . $submissionTitle; ?>
+      <?php echo $isEditing ? 'Edit ' : 'Submit Assignment' . $submissionTitle; ?>
     </div>
 
     <div id='create-assignment-field'>
@@ -163,7 +163,7 @@ get_header(); ?>
         <input type="submit" value="Finish Editing"/>
     <?php else: ?>
         <input type="hidden" name="action" value="create">
-        <input type="submit" value="Create"/>
+        <input type="submit" value="Submit"/>
     <?php endif; ?>
       <a href="<?php echo site_url("assignment/?id={$courseId}"); ?>">
         <button type="button">Cancel</button>
