@@ -40,27 +40,27 @@ function createSubmission(&$pageState)
   if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
     compact('assignmentId', 'courseId', 'description', 'title'))) {
 
-    return "Invalid input when deleting assignment.";
+    return "Invalid values when creating assignment.";
   }
 
   include_once(get_template_directory() . '/common/submissions.php');
-  $submissionId = GTCS_Submissions::CreateSubmission(
-    $title,
-    $studentId,
-    $courseId, // TODO why is this needed?
-    $assignmentId,
-    $description
-  );
+  $submissionId = GTCS_Submissions::CreateSubmission( (object) array(
+    'assignmentId' => $assignmentId,
+    'courseId' => $courseId,
+    'description' => $description,
+    'studentId' => $studentId,
+    'title' => $title
+  ));
 
   include_once(get_template_directory() . '/common/attachments.php');
   if(isset($_FILES['jar'])) {
-    $jarLocation = GTCS_Attachments::UploadFile('jar');
-    GTCS_Attachments::AttachFileToPost($submissionId, $jarLocation, $title, 'jar', false);
+    $jarLocation = GTCS_Attachments::handleFileUpload('jar');
+    GTCS_Attachments::AttachFileToPost($submissionId, $jarLocation, $title, 'jar', false, $studentId);
   }
 
   if(isset($_FILES['image'])) {
-    $imageLocation = GTCS_Attachments::UploadFile('image', $title);
-    GTCS_Attachments::AttachFileToPost($submissionId, $imageLocation, $title, 'image', true);
+    $imageLocation = GTCS_Attachments::handleFileUpload('image');
+    GTCS_Attachments::AttachFileToPost($submissionId, $imageLocation, $title, 'image', true, $studentId);
   }
 
   return "Assignment successfully submitted.";

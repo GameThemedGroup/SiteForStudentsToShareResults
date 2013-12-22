@@ -89,21 +89,46 @@ class GTCS_Submissions
     return $submissionList;
   }
 
-  public static function CreateSubmission($title, $authorId, $courseId, $assignmentId, $description)
+  // @param assignmentId
+  // @param courseId
+  // @param description
+  // @param entryClass
+  // @param studentId
+  // @param title
+  public static function CreateSubmission($args)
   {
+    $assignmentId = $args->assignmentId;
+    $courseId = $args->courseId;
+    $description = $args->description;
+    //$entryClass = $args->entryClass;
+    $userId = $args->studentId;
+    $title = $args->title;
+
+    if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
+      compact('assignmentId', 'courseId', 'description', /*'entryClass',*/
+        'studentId', 'title'))) {
+
+      return -1;
+    }
+
     // save the assignment submission as post
-    $assignmentPost = array(
+    $submissionArgs = array(
       'post_title'    => $title,
       'post_content'  => $description,
       'post_status'   => 'publish',
-      'post_author'   => $authorId,
+      'post_author'   => $userId,
       'comment_status' => 'open',
       'post_parent' => $assignmentId,
       'tags_input' => array('course:' . $courseId)
     );
 
-    // save post and get its id
-    $postId = wp_insert_post($assignmentPost);
+    $postId = wp_insert_post($submissionArgs);
+    if (is_wp_error($postId)) {
+      trigger_error(__FUNCTION__ . " - Error submitting assignment.", E_USER_WARNING);
+      return $postId;
+    }
+
+    //add_post_meta($postId, "entryClass", $entryClass);
 
     global $gtcs_Categories;
     $postCategory = array($gtcs_Categories['submission']);

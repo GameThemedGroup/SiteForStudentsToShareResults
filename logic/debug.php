@@ -137,13 +137,13 @@ function createSubmissionsFromXml($xml, $assignmentIds, $studentIds, $dir)
 function createSubmission($submission, $assignmentid, $studentid, $dir)
 {
   include_once(get_template_directory() . '/common/submissions.php');
-  $submissionid = GTCS_Submissions::CreateSubmission(
-    $submission['title'],
-    $studentid,
-    0, // why is course id needed?
-    $assignmentid,
-    $submission['title']
-  );
+  $submissionid = GTCS_Submissions::CreateSubmission((object) array(
+    'title' => $submission['title'],
+    'studentId' => $studentid,
+    'courseId' => 0, // why is course id needed?
+    'assignmentId' => $assignmentid,
+    'description' => $submission['description']
+  ));
 
   if ($submission['image']) {
     $file = $dir . 'files/' . $submission['image'];
