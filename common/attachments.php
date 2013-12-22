@@ -13,7 +13,7 @@
 // TODO check and handle errors
 class GTCS_Attachments {
 
-function handleFileUpload($fileIndex)
+function handleFileUpload($file_index)
 {
   //TODO find out if there are any problems using ABSPATH
   if (!function_exists('wp_handle_upload'))
@@ -38,7 +38,7 @@ function handleFileUpload($fileIndex)
 
 // Attaches the given file to the post. The file must first exist in the
 // wordpress uploads directory and can most easily be done via
-// UploadFile or gtcs_handle_import_file
+// handleFileUpload or gtcs_handle_import_file
 //
 // @return the id of the attachment/post
 //
