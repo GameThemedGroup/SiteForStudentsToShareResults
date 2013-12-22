@@ -7,7 +7,7 @@ extract((array) $pageState);
 function initializePageState(&$pageState)
 {
   $professorId = wp_get_current_user()->ID;
-  $isProfessor = gtcs_user_has_role('author');
+  $isProfessor = gtcs_user_has_role('professor');
 
   if (!$isProfessor) {
     echo "You do not have permission to view this page. <br />";

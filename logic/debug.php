@@ -27,8 +27,8 @@ function resetTestData()
     include(ABSPATH . './wp-admin/includes/user.php');
   }
 
-  $students = get_users(array('role' => 'Subscriber'));
-  $professors = get_users(array('role' => 'Author'));
+  $students = get_users(array('role' => 'Student'));
+  $professors = get_users(array('role' => 'Professor'));
   $usersToDelete = array_merge($students, $professors);
 
   foreach ($usersToDelete as $user) {
@@ -52,8 +52,8 @@ function loadTestData($testDir, $testFile)
   // convert xml into array
   $xml = json_decode(json_encode((array) simplexml_load_string($xml_string)), 1);
 
-  $studentIds = createUsersFromXml($xml['students'], 'subscriber');
-  $professorIds = createUsersFromXml($xml['professors'], 'author');
+  $studentIds = createUsersFromXml($xml['students'], 'student');
+  $professorIds = createUsersFromXml($xml['professors'], 'professor');
 
   $courseIds = createCoursesFromXml($xml['courses'], $studentIds, $professorIds);
 
@@ -98,8 +98,8 @@ function createSubmissionComment($submissionid, $userid, $comment)
 
   $args = array(
     'comment_post_ID' => $submissionid,
-    'comment_author' => $user->display_name,
-    'comment_author_email' => $user->user_email,
+    'comment_professor' => $user->display_name,
+    'comment_professor_email' => $user->user_email,
     'comment_content' => $comment,
     'user_id' => $userid,
     'comment_approved' => 1

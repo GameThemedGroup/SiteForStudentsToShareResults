@@ -15,20 +15,18 @@ add_action('after_switch_theme', 'initialize_roles');
 function initialize_roles()
 {
   // remove the default roles
-  // remove_role('author');
-  // remove_role('editor');
-  // remove_role('contributor');
-  // remove_role('subscriber');
+  remove_role('author');
+  remove_role('editor');
+  remove_role('contributor');
+  remove_role('subscriber');
 
   // remove old roles so they can be updated
-  remove_role('teacher');
+  remove_role('professor');
   remove_role('student');
 
   $result = add_role(
-    //'teacher',
-    'author',
-    //'Teacher',
-    'Author',
+    'professor',
+    'Professor',
     array(
       'delete_posts' => true,
       'delete_published_posts' => true,
@@ -40,14 +38,12 @@ function initialize_roles()
   );
 
   if ($result === null) {
-    echo "Error. Teacher role not created. <br />";
+    echo "Error. Professor role not created. <br />";
   }
 
   $result = add_role(
-    'subscriber',
-    //'student',
-    'Subscriber',
-    //'Student',
+    'student',
+    'Student',
     array(
       'delete_posts' => true,
       'delete_published_posts' => true,

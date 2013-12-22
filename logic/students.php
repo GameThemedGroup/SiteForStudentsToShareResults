@@ -17,7 +17,7 @@
   {}
   else if ($operation == 'create') // create new user
   {
-    $newUserId = GTCS_Users::addUser($_POST['inptUserName'], 'password', $_POST['inptEmail'], $_POST['inptFirstName'], $_POST['inptLastName'], 'subscriber');
+    $newUserId = GTCS_Users::addUser($_POST['inptUserName'], 'password', $_POST['inptEmail'], $_POST['inptFirstName'], $_POST['inptLastName'], 'student');
     GTCS_Users::updateStudentEnrollment($courseId, $newUserId, true);
   }
   else if ($operation === 'delete') // unenroll and delete student

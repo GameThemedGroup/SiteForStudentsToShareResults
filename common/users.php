@@ -85,7 +85,7 @@ class GTCS_Users
     foreach($fileContents as $studentData) {
       // parses the csv for one student's data
       list($login, $password, $email, $firstname, $lastname, $displayname) = explode(",", $studentData);
-      $role = 'subscriber'; // student role
+      $role = 'student'; // student role
 
       $userdata = array(
         'user_login' => $login,

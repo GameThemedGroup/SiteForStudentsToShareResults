@@ -69,8 +69,8 @@ function createSubmission(&$pageState)
 function setupPageForDisplay(&$pageState)
 {
   $userId = wp_get_current_user()->ID;
-  $isProfessor = gtcs_user_has_role('author');
-  $isStudent = gtcs_user_has_role('subscriber');
+  $isProfessor = gtcs_user_has_role('professor');
+  $isStudent = gtcs_user_has_role('student');
 
   $assignmentId = ifsetor($_GET["id"], null);
 
@@ -89,7 +89,7 @@ function setupPageForDisplay(&$pageState)
   include_once(get_template_directory() . '/common/courses.php');
   $displayedCourse = GTCS_Courses::GetCourseByCourseId($courseId);
 
-  $isOwner = $isProfessor && $displayedAssignment->post_author == $userId;
+  $isOwner = $isProfessor && $displayedAssignment->post_professor == $userId;
 
   $isEnrolled = false;
   if($isStudent) {
@@ -108,7 +108,7 @@ function setupPageForDisplay(&$pageState)
 
   $sort = ifsetor($_GET['sort'], 'date');
   // sort submission table entries
-  if($sort == 'author') {
+  if($sort == 'professor') {
     usort($submissionList, "compareSubmissionAuthor");
     usort($studentList, "compareStudentName");
   } else {
@@ -150,8 +150,8 @@ function toggleAssignmentStatus()
       E_USER_WARNING);
   }
 
-  if (!gtcs_user_has_role('author')
-      || $userId != $assignment->post_author ) {
+  if (!gtcs_user_has_role('professor')
+      || $userId != $assignment->post_professor ) {
     trigger_error("User does not have permission to perform this action");
     return "You do not have permission to perform this action.";
   }

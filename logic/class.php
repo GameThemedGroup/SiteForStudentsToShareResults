@@ -7,8 +7,8 @@
 
   function initializePageState(&$pageState)
   {
-    $isStudent = gtcs_user_has_role('subscriber');
-    $isProfessor = gtcs_user_has_role('author');
+    $isStudent = gtcs_user_has_role('student');
+    $isProfessor = gtcs_user_has_role('professor');
 
     if ($isStudent || $isProfessor) {
       $isUser = true;
@@ -39,8 +39,8 @@
     else
       setupCourseView($pageState, $course);
 
-    $isStudent = gtcs_user_has_role('subscriber');
-    $isProfessor = gtcs_user_has_role('author');
+    $isStudent = gtcs_user_has_role('student');
+    $isProfessor = gtcs_user_has_role('professor');
 
     if ($isProfessor)
       $courseList = GTCS_Courses::getCourseByFacultyId($userId);
@@ -86,7 +86,7 @@
     $studentList = array();
     $assignmentList = array();
 
-    $isOwner = gtcs_user_has_role('author');
+    $isOwner = gtcs_user_has_role('professor');
 
     $pageState = array_merge($pageState, compact(
       'assignmentList',
@@ -98,8 +98,8 @@
 
   function selectDefaultCourse($userId)
   {
-    $isStudent = gtcs_user_has_role('subscriber');
-    $isProfessor = gtcs_user_has_role('author');
+    $isStudent = gtcs_user_has_role('student');
+    $isProfessor = gtcs_user_has_role('professor');
 
     include_once(get_template_directory() . '/common/courses.php');
     if ($isProfessor)

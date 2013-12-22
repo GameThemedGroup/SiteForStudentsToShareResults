@@ -2,163 +2,163 @@
 <root>
 
 <students>
-  <subscriber>
+  <student>
     <login>bbob</login>
     <user_email>bbob@example.com</user_email>
     <first_name>Billy</first_name>
     <last_name>Bob</last_name>
     <display_name>Barnaby Bob</display_name>
-  </subscriber>
+  </student>
 
-  <subscriber>
+  <student>
     <login>lsanders</login>
     <user_email>lsanders@example.com</user_email>
     <first_name>Liz</first_name>
     <last_name>Sanders</last_name>
     <display_name>Lizzy Sanderosa</display_name>
-  </subscriber>
+  </student>
 
-  <subscriber>
+  <student>
     <login>rladia</login>
     <user_email>rladia@example.com</user_email>
     <first_name>Rodelle</first_name>
     <last_name>Ladia</last_name>
     <display_name>Roadkill</display_name>
-  </subscriber>
+  </student>
 
-  <subscriber>
+  <student>
     <login>abrush</login>
     <user_email>abr@example.com</user_email>
     <first_name>Andrey</first_name>
     <last_name>Bruschenko</last_name>
     <display_name>The Brush</display_name>
-  </subscriber>
+  </student>
   
-  <subscriber>
+  <student>
     <display_name />
     <first_name>John</first_name>
     <last_name>Smith</last_name>
     <login>jsmith</login>
     <user_email>jsmith@example.com</user_email>
-  </subscriber>
-  <subscriber>
+  </student>
+  <student>
     <display_name />
     <first_name>Paul</first_name>
     <last_name>Everett</last_name>
     <login>peverett</login>
     <user_email>peverett@example.com</user_email>
-  </subscriber>
-  <subscriber>
+  </student>
+  <student>
     <display_name />
     <first_name>Carl</first_name>
     <last_name>Bowers</last_name>
     <login>cbowers</login>
     <user_email>cbowers@example.com</user_email>
-  </subscriber>
-  <subscriber>
+  </student>
+  <student>
     <display_name />
     <first_name>David</first_name>
     <last_name>Black</last_name>
     <login>dblack</login>
     <user_email>dblack@example.com</user_email>
-  </subscriber>
-  <subscriber>
+  </student>
+  <student>
     <display_name />
     <first_name>Scott</first_name>
     <last_name>Wells</last_name>
     <login>swells</login>
     <user_email>swells@example.com</user_email>
-  </subscriber>
-  <subscriber>
+  </student>
+  <student>
     <display_name />
     <first_name>Rodelle</first_name>
     <last_name>Ladia</last_name>
     <login>awithers</login>
     <user_email>awithers@example.com</user_email>
-  </subscriber>
-  <subscriber>
+  </student>
+  <student>
     <display_name />
     <first_name>Ray</first_name>
     <last_name>White</last_name>
     <login>rwhite</login>
     <user_email>rwhite@example.com</user_email>
-  </subscriber>
-  <subscriber>
+  </student>
+  <student>
     <display_name />
     <first_name>Josh</first_name>
     <last_name>Root</last_name>
     <login>jroot</login>
     <user_email>jroot@example.com</user_email>
-  </subscriber>
-  <subscriber>
+  </student>
+  <student>
     <display_name />
     <first_name>Gary</first_name>
     <last_name>Abrams</last_name>
     <login>gabrams</login>
     <user_email>gabrams@example.com</user_email>
-  </subscriber>
-  <subscriber>
+  </student>
+  <student>
     <display_name />
     <first_name>Mary</first_name>
     <last_name>Bishop</last_name>
     <login>mbishop</login>
     <user_email>mbishop@example.com</user_email>
-  </subscriber>
-  <subscriber>
+  </student>
+  <student>
     <display_name />
     <first_name>Alan</first_name>
     <last_name>Busby</last_name>
     <login>abusby</login>
     <user_email>abusby@example.com</user_email>
-  </subscriber>
-  <subscriber>
+  </student>
+  <student>
     <display_name />
     <first_name>James</first_name>
     <last_name>Brooks</last_name>
     <login>jbrooks</login>
     <user_email>jbrooks@example.com</user_email>
-  </subscriber>
-  <subscriber>
+  </student>
+  <student>
     <display_name />
     <first_name>Ralph</first_name>
     <last_name>Roberts</last_name>
     <login>rroberts</login>
     <user_email>rroberts@example.com</user_email>
-  </subscriber>
-  <subscriber>
+  </student>
+  <student>
     <display_name />
     <first_name>KENNETH REALLY SUPER EXTREMELY SUPERCALIFRAGILISTICEXPIALIDOCIOUS LONG NAME WHY IS IT SO LONG JUST STOP ALREADY</first_name>
     <last_name>COLE DO I RELALY HAVE TO COME UP WITH MORE STREAM OF CONSCIOUSNESS STUFF</last_name>
     <login>kcole</login>
     <user_email>kcole@example.com</user_email>
-  </subscriber>
+  </student>
 </students>
 
 <professors>
-  <author>
+  <professor>
     <login>ksung</login>
     <user_email>ksung@example.com</user_email>
     <first_name>Kelvin</first_name>
     <last_name>Sung</last_name>
-  </author>
-  <author>
+  </professor>
+  <professor>
     <login>czander</login>
     <user_email>czander@example.com</user_email>
     <first_name>Carol</first_name>
     <last_name>Zander</last_name>
-  </author>
-  <author>
+  </professor>
+  <professor>
     <login>mbernstein</login>
     <user_email>mbernstein@example.com</user_email>
     <first_name>Morris</first_name>
     <last_name>Bernstein</last_name>
-  </author>
-  <author>
+  </professor>
+  <professor>
     <login>longnames</login>
     <user_email>longnames@example.com</user_email>
     <first_name>Professor</first_name>
     <last_name>Longnames is my name and longnames is my game of playing with long names and messing with your website</last_name>
-  </author>
+  </professor>
 </professors>
 
 <courses>

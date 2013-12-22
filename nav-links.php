@@ -9,7 +9,7 @@
 <div id="loginbar">
 	<b>Hello</b>, <?php echo $user_identity; ?>.
 	<br>[<a href="<?php echo site_url('/profile/?user=') . get_current_user_id(); ?>">My Profile</a>]
-	<?php if(gtcs_user_has_role('author')):?>
+	<?php if(gtcs_user_has_role('professor')):?>
 		<br>[<a href="<?php echo site_url('/courses/') ?>" title="Manage Courses">Manage Courses</a>]
 		<br>[<a href="<?php echo site_url('/assignments/') ?>" title="Manage Assignments">Manage Assignments</a>]
 		<br>[<a href="<?php echo site_url('/students/') ?>" title="Manage Students">Manage Students</a>]
