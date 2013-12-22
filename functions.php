@@ -3,6 +3,10 @@
 // functions available to all wordpress pages
 require_once('common/global_functions.php');
 
+// disables the admin bar for non-admins
+if (!gtcs_user_has_role('administrator'))
+  show_admin_bar(false);
+
 global $url;
 $url = array(
   'assignment' => site_url('/assignment/'),
