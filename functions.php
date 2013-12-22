@@ -9,7 +9,7 @@ $url = array(
   'assignments' => site_url('/assignments/'),
   'courses' => site_url('/courses/'),
   'class' => site_url('/class/'),
-  'main' => site_url('/main/'),
+  'main' => site_url(),
   'profile' => site_url('/profile/'),
 );
 
@@ -38,7 +38,7 @@ function gtcs_initialize_categories()
 
 add_filter('login_redirect', 'login_redirect');
 function login_redirect() {
-  return site_url('/main');
+  return site_url();
 }
 
 // Allows jar files to be uploaded to the media library

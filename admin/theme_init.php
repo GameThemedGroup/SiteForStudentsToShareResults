@@ -81,7 +81,6 @@ add_action('after_switch_theme', 'create_default_pages');
 function create_default_pages()
 {
   $default_pages = array();
-  $default_pages['main']           = default_page('main', 'Main', 'main.php');
   $default_pages['debug']          = default_page('debug', 'Debug', 'debug.php');
   $default_pages['class']          = default_page('class', 'MyClass', 'class.php');
   $default_pages['projects']       = default_page('projects', 'Projects', 'search.php');
@@ -111,7 +110,6 @@ add_action('after_switch_theme', 'create_default_menus', 9999);
 function create_default_menus()
 {
   $page_id = array();
-  $page_id['main'] = get_page_by_title('Main')->ID;
   $page_id['myclass'] = get_page_by_title('MyClass')->ID;
   $page_id['projects'] = get_page_by_title('Projects')->ID;
 
@@ -120,10 +118,8 @@ function create_default_menus()
       'location' => 'primary',
       'menu-items' =>  array(
         'Home' =>  array(
-          'menu-item-type'      =>  'post_type',
           'menu-item-title'     =>  'Home',
-          'menu-item-object'    =>  'page',
-          'menu-item-object-id' =>  $page_id['main'],
+          'menu-item-url'       =>  home_url(),
           'menu-item-status'    =>  'publish'
         ),
         'My Class' =>  array(
