@@ -71,8 +71,8 @@ $comments = get_comments($comment_args);
   <div class="Jar-Container">
     <?php if($doPlay): ?>
       <object type="application/x-java-applet" height="350" width="500">
-        <param name="code" value="rslj.school.hangman.HangmanApplet.class" />
-        <param name="archive" value="<?php echo wp_get_attachment_url($jarFile->ID); ?>" />
+      <param name="code" value="<?php echo get_post_meta($post->ID, 'entryClass', true); ?>" />
+      <param name="archive" value="<?php echo wp_get_attachment_url($jarFile->ID); ?>" />
         Java is not enabled on your computer!
       </object>
     <?php else: ?>

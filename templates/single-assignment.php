@@ -149,6 +149,14 @@ get_header(); ?>
     </div>
 
     <div id='create-assignment-field'>
+      <p class="create-assignment">Main Class [?]</p><br />
+      <input type="radio" name="class" value="Main.class" checked>Main.class<br />
+      <input type="radio" name="class" value="user.Main.class">user.Main.class<br />
+      <input type="radio" name="class" value="other">Other
+      <input type="text" name="classInput">.class</input>
+    </div>
+
+    <div id='create-assignment-field'>
       <p class="create-assignment">Screenshot</p>
       <input class='create-assignment' type="file" name="image" accept="image/*">
     </div>

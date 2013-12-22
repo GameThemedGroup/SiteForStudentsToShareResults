@@ -33,21 +33,29 @@ function createSubmission(&$pageState)
   $studentId = get_current_user_id();
 
   $description = ifsetor($_POST['description'], null);
+  $entryClass = ifsetor($_POST['class'], null);
   $title = ifsetor($_POST['title'], null);
   $assignmentId = ifsetor($_POST['assignmentId'], 123);
   $courseId = ifsetor($_POST['courseId'], null);
 
+  if ($entryClass == 'other') {
+    $entryClass = ifsetor($_POST['classInput'], null);
+  }
+
   if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
-    compact('assignmentId', 'courseId', 'description', 'title'))) {
+    compact('assignmentId', 'courseId', 'description', 'title',
+    'entryClass'))) {
 
     return "Invalid values when creating assignment.";
   }
+
 
   include_once(get_template_directory() . '/common/submissions.php');
   $submissionId = GTCS_Submissions::CreateSubmission( (object) array(
     'assignmentId' => $assignmentId,
     'courseId' => $courseId,
     'description' => $description,
+    'entryClass' => $entryClass,
     'studentId' => $studentId,
     'title' => $title
   ));

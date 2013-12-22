@@ -100,17 +100,17 @@ class GTCS_Submissions
     $assignmentId = $args->assignmentId;
     $courseId = $args->courseId;
     $description = $args->description;
-    //$entryClass = $args->entryClass;
+    $entryClass = $args->entryClass;
     $userId = $args->studentId;
     $title = $args->title;
 
-    if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
-      compact('assignmentId', 'courseId', 'description', /*'entryClass',*/
+/*    if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
+      compact('assignmentId', 'courseId', 'description', 'entryClass',
         'studentId', 'title'))) {
 
       return -1;
     }
-
+ */
     // save the assignment submission as post
     $submissionArgs = array(
       'post_title'    => $title,
@@ -128,7 +128,7 @@ class GTCS_Submissions
       return $postId;
     }
 
-    //add_post_meta($postId, "entryClass", $entryClass);
+    add_post_meta($postId, "entryClass", $entryClass);
 
     global $gtcs_Categories;
     $postCategory = array($gtcs_Categories['submission']);
