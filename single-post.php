@@ -7,11 +7,11 @@
  * @since Twenty Eleven 1.0
  */
 
-get_header(); 
+get_header();
 ?>
 
-<?php 
-if($_POST['comment']) 
+<?php
+if($_POST['comment'])
 {
   $current_user = wp_get_current_user();
 
@@ -37,108 +37,108 @@ $attachment_query = array(
   'post_parent' => $post->ID,
 );
 
-$jar_query = $attachment_query;
-$jar_query['meta_key']  = 'type';
-$jar_query['meta_value']  = 'jar';
+$jarQuery = $attachment_query;
+$jarQuery['meta_key']  = 'type';
+$jarQuery['meta_value']  = 'jar';
 
-$jar_attachments = get_posts($jar_query);
-$jar_file = $jar_attachments[0];
+$jarAttachments = get_posts($jarQuery);
+$jarFile = $jarAttachments[0];
 
-$image_query = $attachment_query;
-$image_query['meta_key']  = 'type';
-$image_query['meta_value']  = 'image';
-?>
+$imageQuery = $attachment_query;
+$imageQuery['meta_key']  = 'type';
+$imageQuery['meta_value']  = 'image';
 
-<!DOCTYPE html>
-<html lang="en">
-  <?php the_post(); ?>
-  <div class="projectfull"> 
-    <div id="pagetitle">
-      <?php echo $post->post_title; ?>
-    </div>
-    <div id='header1'>
-      by <?php the_author(); ?>
-    </div>
+$imageList = get_posts($imageQuery);
 
-    <div id="meta">
-      <div id="description">
-        <?php echo $post->post_content;  ?>
-      </div>
-      <?php if(function_exists('the_ratings')) { the_ratings(); } ?>
-      <?php include "share-box.php" ?>
-
-      <div class="Jar-Container"> 
-      <?php if($_GET['play']): ?>
-        <object type="application/x-java-applet" height="350" width="500">
-          <param name="code" value="rslj.school.hangman.HangmanApplet.class" />
-          <param name="archive" value="<?php echo wp_get_attachment_url($jar_file->ID); ?>" />
-          Java is not enabled on your computer!
-        </object> 
-      <?php else: ?> 
-        <a class="Jar-Link" href=" <?php echo the_permalink() . '?play=true'; ?>">
-          <div id="container_button">
-            <div id="hole">
-              <div id="button">
-                <div id="triangle"></div>
-                <div id="lighter_triangle"></div>
-                <div id="darker_triangle"></div>
-              </div>
-            </div>
-          </div>
-        </a>
-      <?php endif; ?>
-
-      </div> <!-- Jar Container -->
-
-      <div class="projectcomments">
-      <div id="header1">All Comments</div>
-<?php 
 $comment_args = array('post_id' => get_the_ID());
-$comments = get_comments($comment_args); 
+$comments = get_comments($comment_args);
 ?>
-      <?php foreach($comments as $comment) : ?>   
-        <div class="commentbox">
-        <?php echo get_avatar($comment->user_id, 92) ?>
-          <div id="commentcontent">
-            <?php echo $comment->comment_content; ?>
-          </div>
-          <div id='commentmetabox'>
-            <div id="commentmeta">
-              <a href="<?php echo site_url('/profile/?user=') . $comment->user_id ?>">
-                <?php echo $comment->comment_author ?> 
-              </a> 
-            </div>
-            <div id="commentmeta">
-              <?php echo date('F d, Y', strtotime($comment->comment_date)) ?>   
-            </div>
-          </div>
-        </div><!-- .activitybox -->
-      <?php endforeach; ?>
-    </div><!-- projectcomments -->
-    <?php if($post->comment_status) ?>
-    <div class="postcomment">
-      <form method="post">
-        <textarea cols="25" rows="4" autocomplete="off" name="comment" required></textarea>
-        <input type="hidden" name="time_stamp" value=<?php $time ?>>
-        <input type="Submit" name="Submit"/>
-      </form>   
-    </div>
-    </div><!-- meta -->
-  </div><!-- projectfull -->
 
-  <div id="project-sidebar">
-    <div id="project-sidebar-title"> Images </div>
-    <?php $image_attachments = get_posts($image_query); ?>
-    <?php foreach($image_attachments as $post): ?>  
-      <div id="project-sidebar-box">
-        <div id="project-sidebar-image">
-          <?php setup_postdata($post); ?>
-          <?php the_attachment_link(); ?>
-        </div> <!-- project-sidebar-image -->
-      </div> <!-- project-sidebar-box -->
+<?php the_post(); ?>
+<div class="projectfull">
+  <div id="pagetitle"><?php echo $post->post_title; ?></div>
+  <div id='header1'>by <?php the_author(); ?></div>
+
+  <div id="meta">
+    <div id="description"><?php echo $post->post_content; ?></div>
+  </div>
+
+  <?php the_ratings(); ?>
+  <?php include "share-box.php"; ?>
+
+<!-- Jar Container -->
+  <div class="Jar-Container">
+    <?php if($_GET['play']): ?>
+      <object type="application/x-java-applet" height="350" width="500">
+        <param name="code" value="rslj.school.hangman.HangmanApplet.class" />
+        <param name="archive" value="<?php echo wp_get_attachment_url($jarFile->ID); ?>" />
+        Java is not enabled on your computer!
+      </object>
+    <?php else: ?>
+      <a class="Jar-Link" href=" <?php echo the_permalink() . '?play=true'; ?>">
+        <div id="container_button">
+          <div id="hole">
+            <div id="button">
+              <div id="triangle"></div>
+              <div id="lighter_triangle"></div>
+              <div id="darker_triangle"></div>
+            </div>
+          </div>
+        </div>
+      </a>
+    <?php endif; ?>
+  </div>
+<!-- Jar Container -->
+
+<!-- Comment List -->
+  <div class="projectcomments">
+    <div id="header1">All Comments</div>
+    <?php foreach($comments as $comment) : ?>
+      <div class="commentbox">
+      <?php echo get_avatar($comment->user_id, 92) ?>
+        <div id="commentcontent">
+          <?php echo $comment->comment_content; ?>
+        </div>
+        <div id='commentmetabox'>
+          <div id="commentmeta">
+            <a href="<?php echo site_url("/profile/?user={$comment->user_id}"); ?>">
+              <?php echo $comment->comment_author ?>
+            </a>
+          </div>
+          <div id="commentmeta">
+            <?php echo date('F d, Y', strtotime($comment->comment_date)) ?>
+          </div>
+        </div>
+      </div>
     <?php endforeach; ?>
-    <?php wp_reset_postdata(); ?>
-  </div><!-- project-sidebar -->
-</html>
+  </div>
+<!-- Comment List -->
+
+<!-- Comment Submission Form -->
+  <?php if($post->comment_status) ?>
+  <div class="postcomment">
+    <form method="post">
+      <textarea cols="25" rows="4" autocomplete="off" name="comment" required></textarea>
+      <input type="hidden" name="time_stamp" value=<?php $time ?>>
+      <input type="Submit" name="Submit"/>
+    </form>
+  </div>
+<!-- Comment Submission Form -->
+
+</div><!-- projectfull -->
+
+<!-- Sidebar -->
+<div id="project-sidebar">
+  <div id="project-sidebar-title"> Images </div>
+  <?php foreach($imageList as $image): ?>
+    <div id="project-sidebar-box">
+      <div id="project-sidebar-image">
+        <?php the_attachment_link($image->ID); ?>
+      </div>
+    </div>
+  <?php endforeach; ?>
+  <?php wp_reset_postdata(); ?>
+</div>
+<!-- Sidebar -->
 
 <?php get_footer(); ?>
