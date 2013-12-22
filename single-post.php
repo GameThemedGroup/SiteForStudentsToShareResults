@@ -11,7 +11,9 @@ get_header();
 ?>
 
 <?php
-if($_POST['comment'])
+$doPlay = ifsetor($_GET['play'], false);
+
+if(isset($_POST['comment']))
 {
   $current_user = wp_get_current_user();
 
@@ -32,7 +34,6 @@ $attachment_query = array(
   'post_type'   => 'attachment',
   'meta_key'    => 'type',
   'meta_value'  => 'jar',
-  'numberposts' => 1,
   'post_status' => 'any',
   'post_parent' => $post->ID,
 );
@@ -68,7 +69,7 @@ $comments = get_comments($comment_args);
 
 <!-- Jar Container -->
   <div class="Jar-Container">
-    <?php if($_GET['play']): ?>
+    <?php if($doPlay): ?>
       <object type="application/x-java-applet" height="350" width="500">
         <param name="code" value="rslj.school.hangman.HangmanApplet.class" />
         <param name="archive" value="<?php echo wp_get_attachment_url($jarFile->ID); ?>" />
