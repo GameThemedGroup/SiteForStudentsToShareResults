@@ -3366,7 +3366,7 @@ img.create-assignment {
 p.create-assignment {
   font-size:14px;
   font-weight:bold;
-  float:left;
+  display:inline;
   padding:0px 10px 0px 0px;
 }
 #create-assignment-box {
