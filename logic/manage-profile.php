@@ -1,9 +1,9 @@
 <?php
-  $pageState = array();
+  $pageState = new stdClass();
   initializePageState($pageState);
-  extract($pageState);
+  extract((array) $pageState);
 
-  function initializePageState(&$pageState)
+  function initializePageState(&$ps)
   {
     verifyPermissionOrDie();
 
@@ -17,15 +17,13 @@
     $userFeedback = '';
     if ($action == null) {
     } else if (array_key_exists($action, $actionList)) {
-      $userFeedback = call_user_func($actionList[$action], &$pageState);
+      $userFeedback = call_user_func($actionList[$action], $ps);
     } else {
       trigger_error("An invalid action was provided.", E_USER_WARNING);
     }
 
-    setupProfileView($pageState);
-    $pageState = array_merge($pageState, compact(
-      'userFeedback'
-    ));
+    setupProfileView($ps);
+    $ps->userFeedback = $userFeedback;
   }
 
   function verifyPermissionOrDie()
@@ -42,16 +40,14 @@
     }
   }
 
-  function setupProfileView(&$pageState)
+  function setupProfileView(&$ps)
   {
 	  $user = get_user_by('id', get_current_user_id());
 
-    $pageState = array_merge($pageState, compact(
-      'user'
-    ));
+    $ps->user = $user;
   }
 
-  function updateProfileInformation(&$pageState)
+  function updateProfileInformation(&$ps)
   {
     $profileId = ifsetor($_GET['user'], null);
     $userId = get_current_user_id();
@@ -85,7 +81,7 @@
     return 'Your profile has been updated.';
   }
 
-  function changePassword(&$pageState)
+  function changePassword(&$ps)
   {
     $profileId = ifsetor($_GET['user'], null);
     $userId = get_current_user_id();

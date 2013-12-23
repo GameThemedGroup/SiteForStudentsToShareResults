@@ -3,7 +3,7 @@
   $pageState = (object) array();
   initializePageState($pageState);
 
-function initializePageState(&$pageState)
+function initializePageState(&$ps)
 {
   $action = ifsetor($_POST['action'], null);
   $actionList = array(
@@ -13,22 +13,22 @@ function initializePageState(&$pageState)
     'create' => 'createSubmission'
   );
 
-  $pageState->userFeedback = '';
+  $ps->userFeedback = '';
   if ($action == null) {
   } else if (array_key_exists($action, $actionList)) {
-    $pageState->userFeedback = call_user_func($actionList[$action], $pageState);
+    $ps->userFeedback = call_user_func($actionList[$action], $ps);
   } else {
     trigger_error("An invalid action was provided.", E_USER_WARNING);
   }
 
-  if (!setupPageForDisplay($pageState)) {
+  if (!setupPageForDisplay($ps)) {
     // TODO generalize this error message
     echo "This page could not be displayed <br />";
     exit();
   }
 }
 
-function createSubmission(&$pageState)
+function createSubmission(&$ps)
 {
   $studentId = get_current_user_id();
 
@@ -74,7 +74,7 @@ function createSubmission(&$pageState)
   return "Assignment successfully submitted.";
 }
 
-function setupPageForDisplay(&$pageState)
+function setupPageForDisplay(&$ps)
 {
   $userId = wp_get_current_user()->ID;
   $isProfessor = gtcs_user_has_role('professor');
@@ -126,20 +126,20 @@ function setupPageForDisplay(&$pageState)
   $canSubmit = get_post_meta($assignmentId, 'isEnabled', true);
   $view = ifsetor($_GET['view'], 'description');
 
-  $pageState->assignmentId = $assignmentId;
-  $pageState->canSubmit = $canSubmit;
-  $pageState->courseId = $courseId;
-  $pageState->displayedAssignment = $displayedAssignment;
-  $pageState->displayedCourse = $displayedCourse;
-  $pageState->isEditing = false;
-  $pageState->isEnrolled = $isEnrolled;
-  $pageState->isOwner = $isOwner;
-  $pageState->nonSubmitters = $nonSubmitters;
-  $pageState->studentList = $studentList;
-  $pageState->submissionDescription = '';
-  $pageState->submissionList = $submissionList;
-  $pageState->submissionTitle = '';
-  $pageState->view = $view;
+  $ps->assignmentId = $assignmentId;
+  $ps->canSubmit = $canSubmit;
+  $ps->courseId = $courseId;
+  $ps->displayedAssignment = $displayedAssignment;
+  $ps->displayedCourse = $displayedCourse;
+  $ps->isEditing = false;
+  $ps->isEnrolled = $isEnrolled;
+  $ps->isOwner = $isOwner;
+  $ps->nonSubmitters = $nonSubmitters;
+  $ps->studentList = $studentList;
+  $ps->submissionDescription = '';
+  $ps->submissionList = $submissionList;
+  $ps->submissionTitle = '';
+  $ps->view = $view;
 
   return true;
 }

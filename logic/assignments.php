@@ -1,10 +1,10 @@
 <?php
-$pageState = (object) array();
+$pageState = new stdClass();
 
 initializePageState($pageState);
 extract((array)$pageState);
 
-function initializePageState(&$pageState)
+function initializePageState(&$ps)
 {
   $isProfessor = gtcs_user_has_role('professor');
 
@@ -23,20 +23,19 @@ function initializePageState(&$pageState)
     'upload' => 'uploadFromXml'
   );
 
-  setupDefaultValues($pageState);
+  setupDefaultValues($ps);
   if ($action != null) {
     if (array_key_exists($action, $actionList)) {
-      $pageState->userFeedback = call_user_func($actionList[$action], $pageState);
-      htmldump($pageState);
+      $ps->userFeedback = call_user_func($actionList[$action], $ps);
     } else {
       trigger_error("An invalid action was provided.", E_USER_WARNING);
     }
   }
 
-  setupCourseAndAssignments($pageState);
+  setupCourseAndAssignments($ps);
 }
 
-function setupCourseAndAssignments(&$pageState)
+function setupCourseAndAssignments(&$ps)
 {
   $professorId = wp_get_current_user()->ID;
 
@@ -58,15 +57,13 @@ function setupCourseAndAssignments(&$pageState)
 
   $hasAssignments = sizeof($assignmentList) != 0;
 
-  $pageState = (object) array_merge((array)$pageState, compact(
-    'assignmentList',
-    'courseList',
-    'courseId',
-    'hasAssignments'
-  ));
+  $ps->assignmentList = $assignmentList;
+  $ps->courseList = $courseList;
+  $ps->courseId = $courseId;
+  $ps->hasAssignments = $hasAssignments;
 }
 
-function setupEdit(&$pageState)
+function setupEdit(&$ps)
 {
   $assignmentId = ifsetor($_POST['assignmentId'], null);
 
@@ -87,17 +84,14 @@ function setupEdit(&$pageState)
   $displayedAssignment = get_post($assignmentId);
   $displayedAssignment->link = get_post_meta($assignmentId, 'link', true);
 
-  $pageState = (object) array_merge((array)$pageState, compact(
-    'isEditing',
-    'assignmentId',
-    'displayedAssignment'
-  ));
+  $ps->isEditing = true;
+  $ps->assignmentId = $assignmentId;
+  $ps->displayedAssignment = $displayedAssignment;
 
-  htmldump($pageState);
   return "Your are now editing the course";
 }
 
-function setupDefaultValues(&$pageState)
+function setupDefaultValues(&$ps)
 {
   $assignmentId = '';
   $isEditing = false;
@@ -109,13 +103,11 @@ function setupDefaultValues(&$pageState)
     'post_content' => ''
   );
 
-  $pageState = (object) array_merge((array)$pageState, compact(
-    'assignmentId',
-    'isEditing',
-    'userFeedback',
+  $ps->assignmentId = $assignmentId;
+  $ps->isEditing = $isEditing;
+  $ps->userFeedback = $userFeedback;
 
-    'displayedAssignment'
-  ));
+  $ps->displayedAssignment = $displayedAssignment;
 }
 
 function uploadFromXml()

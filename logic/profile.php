@@ -1,10 +1,10 @@
 <?php
-  $pageState = array();
+  $pageState = new stdClass();
   initializePageState($pageState);
-  extract($pageState);
+  extract((array)$pageState);
 
 
-function initializePageState(&$pageState)
+function initializePageState(&$ps)
 {
   $tab = ifsetor($_GET['tab'], 'submissions');
 
@@ -17,7 +17,7 @@ function initializePageState(&$pageState)
 
   if ($tab != null) {
     if (array_key_exists($tab, $tabList)) {
-      $userFeedback = call_user_func($tabList[$tab], &$pageState);
+      $userFeedback = call_user_func($tabList[$tab], $ps);
     } else {
       trigger_error("An invalid tab was selected.", E_USER_WARNING);
     }
@@ -27,15 +27,13 @@ function initializePageState(&$pageState)
   $user = get_userdata($userId);
   $isOwner = (get_current_user_id() == $user->ID);
 
-  $pageState = array_merge($pageState, compact(
-    'isOwner',
-    'tab',
-    'tabChoiceList',
-    'user'
-  ));
+  $ps->isOwner = $isOwner;
+  $ps->tab = $tab;
+  $ps->tabChoiceList = $tabChoiceList;
+  $ps->user = $user;
 }
 
-function setupSubmissionsTab(&$pageState)
+function setupSubmissionsTab(&$ps)
 {
   $userId = ifsetor($_GET['user'], null);
 
@@ -56,13 +54,11 @@ function setupSubmissionsTab(&$pageState)
     }
   }
 
-  $pageState = array_merge($pageState, compact(
-    'submissionList',
-    'userId'
-  ));
+  $ps->submissionList = $submissionList;
+  $ps->userId = $userId;
 }
 
-function setupCommentTab(&$pageState)
+function setupCommentTab(&$ps)
 {
   $userId = ifsetor($_GET['user'], null);
 
@@ -94,8 +90,6 @@ function setupCommentTab(&$pageState)
     $comment->parentTitle = $parentPost->post_title;
   }
 
-  $pageState = array_merge($pageState, compact(
-    'commentList'
-  ));
+  $ps->commentList = $commentList;
 }
 ?>
