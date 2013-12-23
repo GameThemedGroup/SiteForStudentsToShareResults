@@ -1,18 +1,43 @@
 <?php
-$pageState = (object) array();
+$pageState = array();
 
 initializePageState($pageState);
-extract((array) $pageState);
+extract($pageState);
 
 function initializePageState(&$pageState)
 {
-  $professorId = wp_get_current_user()->ID;
   $isProfessor = gtcs_user_has_role('professor');
 
   if (!$isProfessor) {
     echo "You do not have permission to view this page. <br />";
     return;
   }
+
+  $action = ifsetor($_POST['action'], null);
+
+  $actionList = array(
+    'edit'   => 'setupEdit',
+    'delete' => 'deleteAssignment',
+    'create' => 'createAssignment',
+    'update' => 'updateAssignment',
+    'upload' => 'uploadFromXml'
+  );
+
+  setupDefaultValues($pageState);
+  if ($action != null) {
+    if (array_key_exists($action, $actionList)) {
+      $pageState['userFeedback'] = call_user_func($actionList[$action], &$pageState);
+    } else {
+      trigger_error("An invalid action was provided.", E_USER_WARNING);
+    }
+  }
+
+  setupCourseAndAssignments($pageState);
+}
+
+function setupCourseAndAssignments(&$pageState)
+{
+  $professorId = wp_get_current_user()->ID;
 
   include_once(get_template_directory() . '/common/courses.php');
   $courseList = GTCS_Courses::getCourseByFacultyId($professorId);
@@ -23,64 +48,72 @@ function initializePageState(&$pageState)
     $courseId = ifsetor($courseList[0]->Id, null);
   }
 
-  $action = ifsetor($_POST['action'], null);
+  if ($courseId == null) {
+    $assignmentList = array();
+  } else {
+    include_once(get_template_directory() . '/common/assignments.php');
+    $assignmentList = GTCS_Assignments::getAllAssignments($courseId);
+  }
 
-  $userFeedback = '';
+  $hasAssignments = sizeof($assignmentList) != 0;
+
+  $pageState = array_merge($pageState, compact(
+    'assignmentList',
+    'courseList',
+    'courseId',
+    'hasAssignments'
+  ));
+}
+
+function setupEdit(&$pageState)
+{
+  $assignmentId = ifsetor($_POST['assignmentId'], null);
+
+  if ($assignmentId == null) {
+    return "There was an error attempting to edit the assignment.";
+  }
+
+  $assignment = get_post($assignmentId);
+
+  if ($assignment->post_author != get_current_user_id()) {
+    return "You do not have permission to edit this assignment.";
+  }
+
+  $displayedAssignment = get_post($assignmentId);
+
+  $isEditing = true;
+
+  $displayedAssignment = get_post($assignmentId);
+  $displayedAssignment->link = get_post_meta($assignmentId, 'link', true);
+
+  $pageState = array_merge($pageState, compact(
+    'isEditing',
+    'assignmentId',
+    'displayedAssignment'
+  ));
+
+  return "Your are now editing the course";
+}
+
+function setupDefaultValues(&$pageState)
+{
+  $assignmentId = '';
   $isEditing = false;
+  $userFeedback = '';
+
   $displayedAssignment = (object) array(
     'link' => '',
     'post_title' => '',
     'post_content' => ''
   );
 
-  $pageState->courseId = $courseId;
-  $pageState->isEditing = $isEditing;
-  $pageState->displayedAssignment = $displayedAssignment;
+  $pageState = array_merge($pageState, compact(
+    'assignmentId',
+    'isEditing',
+    'userFeedback',
 
-  $actionList = array(
-    'edit'   => 'editAssignmentSetup',
-    'delete' => 'deleteAssignment',
-    'create' => 'createAssignment',
-    'update' => 'updateAssignment',
-    'upload' => 'uploadFromXml'
-  );
-
-  if ($action != null) {
-    if (array_key_exists($action, $actionList)) {
-      $userFeedback = call_user_func($actionList[$action], $pageState);
-    } else {
-      trigger_error("An invalid action was provided.", E_USER_WARNING);
-    }
-  }
-
-  include_once(get_template_directory() . '/common/assignments.php');
-  $assignmentList = GTCS_Assignments::getAllAssignments($courseId);
-  $pageState->assignmentList = $assignmentList;
-  $pageState->courseList = $courseList;
-  $pageState->userFeedback = $userFeedback;
-}
-
-function editAssignmentSetup(&$pageState)
-{
-  $assignmentId = ifsetor($_POST['assignmentId'], null);
-  $isEditing = $assignmentId != null;
-
-  if ($assignmentId == null) {
-    trigger_error(__FUNCTION__ . "
-      - An invalid Assignment ID was provided.",
-      E_USER_WARNING);
-
-    return "There was an error attempting to edit the assignment.";
-  }
-
-  $assignment = get_post($assignmentId);
-  $assignment->link  = get_post_meta($assignmentId, 'link', true);
-
-  $pageState->isEditing = true;
-  $pageState->assignmentId = $assignmentId;
-  $pageState->displayedAssignment = $assignment;
-
-  return "Your are now editing the course";
+    'displayedAssignment'
+  ));
 }
 
 function uploadFromXml()
@@ -161,7 +194,6 @@ function updateAssignment()
   return "{$title} has been updated";
 }
 
-// todo check for missing $_POST data
 function createAssignment()
 {
   $professorId = wp_get_current_user()->ID;
