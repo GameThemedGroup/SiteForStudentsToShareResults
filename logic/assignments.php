@@ -27,7 +27,11 @@ function initializePageState(&$pageState)
 
   $userFeedback = '';
   $isEditing = false;
-  $displayedAssignment = (object) array('post_title' => '', 'post_content' => '');
+  $displayedAssignment = (object) array(
+    'link' => '',
+    'post_title' => '',
+    'post_content' => ''
+  );
 
   $pageState->courseId = $courseId;
   $pageState->isEditing = $isEditing;
@@ -70,6 +74,7 @@ function editAssignmentSetup(&$pageState)
   }
 
   $assignment = get_post($assignmentId);
+  $assignment->link  = get_post_meta($assignmentId, 'link', true);
 
   $pageState->isEditing = true;
   $pageState->assignmentId = $assignmentId;
@@ -136,7 +141,7 @@ function updateAssignment()
     return "Invalid input when modifying assignment.";
   }
 
-  $assignmentLink = '';
+  $assignmentLink = ifsetor($_POST['link'], '');
   $isEnabled = true;
 
   include_once(get_template_directory() . '/common/assignments.php');
@@ -150,8 +155,8 @@ function updateAssignment()
     $isEnabled
   );
 
-  AttachFiles($assignmentId, 'jar', 'jar');
-  AttachFiles($assignmentId, 'image', 'image');
+  //AttachFiles($assignmentId, 'jar', 'jar');
+  //AttachFiles($assignmentId, 'image', 'image');
 
   return "{$title} has been updated";
 }
@@ -164,16 +169,14 @@ function createAssignment()
   $title = ifsetor($_POST['title'], null);
   $description = ifsetor($_POST['description'], null);
 
-  echo "$courseId, $title, $description";
-
   if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
     compact('professorId', 'courseId', 'title',
     'description'))) {
 
-    return "Invalid input when creating assignment.";
+    return "Invalid values when creating assignment.";
   }
 
-  $assignmentLink = '';
+  $assignmentLink = ifsetor($_POST['link'], '');
   $isEnabled = true;
 
   include_once(get_template_directory() . '/common/assignments.php');
@@ -182,13 +185,13 @@ function createAssignment()
     'description' => $description,
     'professorId' => $professorId,
     'courseId' => $courseId,
-    'assignmentLink' => $assignmentLink,
+    'link' => $assignmentLink,
     'isEnabled' => $isEnabled
   );
 
   $assignmentId = GTCS_Assignments::CreateAssignment($args);
 
-  AttachFiles($assignmentId, 'jar', 'jar');
+  //AttachFiles($assignmentId, 'jar', 'jar');
   AttachFiles($assignmentId, 'image', 'image');
 
   return "{$title} has been created";

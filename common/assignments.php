@@ -8,7 +8,7 @@ class GTCS_Assignments
   {
     // TODO verify the xml schema before continuing
 
-    if (!gtcs_user_has_role('author')) {
+    if (!gtcs_user_has_role('professor')) {
       trigger_error(__FUNCTION__ . " - User does not have permission to
         perform this action.", E_USER_WARNING);
       return array();
@@ -38,7 +38,7 @@ class GTCS_Assignments
       $assignmentArgs->professorId = $professorId;
       $assignmentArgs->isEnabled = true;
 
-      $assignmentId = GTCS_Assignments::CreateAssignment($assignmentArgs);
+      $assignmentId = GTCS_Assignments::createAssignment($assignmentArgs);
 
       // TODO implement jar and image uploads
       if (isset($assignment['image']) || isset($assignments['jar'])) {
@@ -105,11 +105,11 @@ class GTCS_Assignments
       return $postId;
     }
 
-    $courseLink = ifsetor($args->courseLink, "");
+    $link = ifsetor($args->link, "");
     $isEnabled = ifsetor($args->isEnabled, true);
 
     add_post_meta($postId, "course", $courseId);
-    add_post_meta($postId, "link", $courseLink);
+    add_post_meta($postId, "link", $link);
     add_post_meta($postId, "isEnabled", $isEnabled);
 
     global $gtcs_Categories;

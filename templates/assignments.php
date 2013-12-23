@@ -51,19 +51,30 @@ get_header(); ?>
     </div>
 
     <div id='create-assignment-field'>
+      <p class="create-assignment">External URL</p>
+      <input class='create-assignment' type="text" name="link"
+        value="<?php echo $displayedAssignment->link; ?>">
+    </div>
+
+    <div id='create-assignment-field'>
       <p class="create-assignment">Description</p>
       <textarea cols="25" rows="5" name="description" required><?php echo $displayedAssignment->post_content; ?></textarea>
     </div>
 
+<?php
+// TODO Let professors add sample jar files
+/*
     <div id='create-assignment-field'>
       <p class="create-assignment">Sample File</p>
       <input class='create-assignment' type="file" name="jar">
     </div>
-
+*/
+?>
     <div id='create-assignment-field'>
       <p class="create-assignment">Preview Image</p>
       <input class='create-assignment' type="file" name="image" accept="image/*">
     </div>
+
 
     <div id="create-assignment-buttons">
 
