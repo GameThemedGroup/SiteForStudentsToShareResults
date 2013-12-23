@@ -12,7 +12,7 @@ class GTCS_Submissions
 
   private static function ListSubmissionJars($assignmentId)
   {
-    $submissions = $this->GetAllSubmissions($assignmentId);
+    $submissions = GTCS_Submissions::GetAllSubmissions($assignmentId);
     if(count($submissions) == 0)
       return;
 
