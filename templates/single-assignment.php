@@ -149,7 +149,13 @@ get_header(); ?>
     </div>
 
     <div id='create-assignment-field'>
-      <p class="create-assignment">Main Class [?]</p><br />
+      <p class="create-assignment">Main Class
+        [<a href="#"
+          title="Ex. ghostfinder=user.Main.class
+      hangman=rslj.school.hangman.Hangman.class
+      rolodex=alex.rolodex.Rolodex.class">?</a>]
+      </p>
+      <br />
       <input type="radio" name="class" value="Main.class" checked>Main.class<br />
       <input type="radio" name="class" value="user.Main.class">user.Main.class<br />
       <input type="radio" name="class" value="other">Other
