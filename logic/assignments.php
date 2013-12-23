@@ -1,8 +1,8 @@
 <?php
-$pageState = array();
+$pageState = (object) array();
 
 initializePageState($pageState);
-extract($pageState);
+extract((array)$pageState);
 
 function initializePageState(&$pageState)
 {
@@ -26,7 +26,8 @@ function initializePageState(&$pageState)
   setupDefaultValues($pageState);
   if ($action != null) {
     if (array_key_exists($action, $actionList)) {
-      $pageState['userFeedback'] = call_user_func($actionList[$action], &$pageState);
+      $pageState->userFeedback = call_user_func($actionList[$action], $pageState);
+      htmldump($pageState);
     } else {
       trigger_error("An invalid action was provided.", E_USER_WARNING);
     }
@@ -57,7 +58,7 @@ function setupCourseAndAssignments(&$pageState)
 
   $hasAssignments = sizeof($assignmentList) != 0;
 
-  $pageState = array_merge($pageState, compact(
+  $pageState = (object) array_merge((array)$pageState, compact(
     'assignmentList',
     'courseList',
     'courseId',
@@ -86,12 +87,13 @@ function setupEdit(&$pageState)
   $displayedAssignment = get_post($assignmentId);
   $displayedAssignment->link = get_post_meta($assignmentId, 'link', true);
 
-  $pageState = array_merge($pageState, compact(
+  $pageState = (object) array_merge((array)$pageState, compact(
     'isEditing',
     'assignmentId',
     'displayedAssignment'
   ));
 
+  htmldump($pageState);
   return "Your are now editing the course";
 }
 
@@ -107,7 +109,7 @@ function setupDefaultValues(&$pageState)
     'post_content' => ''
   );
 
-  $pageState = array_merge($pageState, compact(
+  $pageState = (object) array_merge((array)$pageState, compact(
     'assignmentId',
     'isEditing',
     'userFeedback',
