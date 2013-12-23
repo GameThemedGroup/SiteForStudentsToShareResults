@@ -116,7 +116,7 @@ function setupPageForDisplay(&$pageState)
 
   $sort = ifsetor($_GET['sort'], 'date');
   // sort submission table entries
-  if($sort == 'professor') {
+  if($sort == 'author') {
     usort($submissionList, "compareSubmissionAuthor");
     usort($studentList, "compareStudentName");
   } else {
