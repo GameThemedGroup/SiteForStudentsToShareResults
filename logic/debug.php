@@ -142,7 +142,8 @@ function createSubmission($submission, $assignmentid, $studentid, $dir)
     'studentId' => $studentid,
     'courseId' => 0, // why is course id needed?
     'assignmentId' => $assignmentid,
-    'description' => $submission['description']
+    'description' => $submission['description'],
+    'entryClass' => $submission['entryClass']
   ));
 
   if ($submission['image']) {

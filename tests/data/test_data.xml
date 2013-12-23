@@ -276,6 +276,7 @@
     <title>Hangman</title>
     <description>The best hangman applet ever!</description>
     <jar>hangman.jar</jar>
+    <entryClass>rslj.school.hangman.HangmanApplet.class</entryClass>
     <image>hangman.jpg</image>
   </submission>
 
@@ -285,6 +286,7 @@
     <title>Rolodex</title>
     <description>The best hangman applet ever!</description>
     <jar>rolodex.jar</jar>
+    <entryClass>alex.rolodex.Rolodex.class</entryClass>
     <image>rolodex.jpg</image>
   </submission>
 </submissions>
