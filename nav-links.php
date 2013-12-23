@@ -14,7 +14,7 @@
 		<br>[<a href="<?php echo site_url('/assignments/') ?>" title="Manage Assignments">Manage Assignments</a>]
 		<br>[<a href="<?php echo site_url('/students/') ?>" title="Manage Students">Manage Students</a>]
 	<?php endif; ?>
-	<br>[<a href="<?php echo wp_logout_url(get_permalink()); ?>" title="Log out of this account">Log Out</a>]
+	<br>[<a href="<?php echo wp_logout_url(site_url()); ?>" title="Log out of this account">Log Out</a>]
 </div>
 
 <?php else : ?>
