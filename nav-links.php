@@ -22,6 +22,7 @@
 	<form name="loginform" id="loginform" action="<?php echo get_option('siteurl'); ?>/wp-login.php" method="post">
 		Username <input value="Username" class="input" type="text" size="20" tabindex="10" name="log" id="user_login" onfocus="if (this.value == 'Username') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Username';}" /> 
 		Password <input value="Password" class="input" type="password" size="20" tabindex="20" name="pwd" id="user_pass" onfocus="if (this.value == 'Password') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Password';}" />
+<?php do_action('login_form'); ?>
 		<input name="rememberme" id="rememberme" value="forever" tabindex="90" type="checkbox"> Remember Me? <br />
 		<input name="wp-submit" id="wp-submit" value="Log In" tabindex="100" type="submit">
 		<input name="redirect_to" value="<?php echo get_option('siteurl'); ?>/wp-admin/" type="hidden">

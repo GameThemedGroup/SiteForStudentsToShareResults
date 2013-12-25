@@ -8,100 +8,77 @@
  */
 get_header(); ?>
 
-<?php 
-	$currentUser = wp_get_current_user();
+<?php
+  global $gtcs12_db;
+	$current_user = wp_get_current_user();
 
 	//update user info
-	if($_POST['op'] == 'info') 
+	if($_POST && $_GET['user'] == $current_user->ID) 
 	{
 		$args = array();
 		
 		if($_POST['firstname']) 
-			$args['first_name'] = $_POST['firstname'];
+			$args ['first_name'] = $_POST['firstname'];
 			
 		if($_POST['lastname']) 
-			$args['last_name'] = $_POST['lastname'];
+			$args ['last_name'] = $_POST['lastname'];
 		
 		if($_POST['email']) 
-			$args['user_email'] = $_POST['email'];
-			
-		$args['ID'] = $currentUser->ID;
-		wp_update_user($args);
-    
-    $action = 'profile updated';
-	}
-  elseif($_POST['op'] == 'password') 
-  {
-    $newPass = $_POST['pass'];
-    $newPassConfirm = $_POST['passconfirm'];
-    
-    if(($newPass == $newPassConfirm) && $newPass != '')
+			$args ['user_email'] = $_POST['email'];
+
+    if($_POST['alternateEmail'])
+      $args['alternate_email']= $_POST['alternateEmail'];
+
+		$args['ID'] = $current_user->ID;
+
+    $PreexistingAlternateEmail = $gtcs12_db->HasSameAlternateEmail($_POST['alternateEmail']);
+    if($PreexistingAlternateEmail = 'false')
     {
-      //wp_set_password($newPass, $currentUser->ID);
-      $action = 'password changed';
+     add_user_meta($current_user->ID,AlternateEmail,$_POST['alternateEmail']);
     }
     else
     {
-      $error = 'mismatching passwords';
+     echo "The Alternate Email is already registerd please choose a different one";
     }
-  }
+
+		wp_update_user($args);
+	}
+	
+	$user_info = get_userdata($_GET['user']);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-<?php if($action != '') : ?>
-	<div id="action-box"><?php echo $action ?></div>
-<?php endif ?>
-
-<?php if($error != '') : ?>
-	<div id="error-box"><?php echo $error ?></div>
-<?php endif ?>
-
-  <form action="" method="post">
-    <div id='manage-profile-box'>
-      <div id='manage-profile-title'>Edit Profile Information</div>	
-      <div id='manage-profile-field'>
-        <p class='manage-profile'>Avatar</p>
-        <input class="manage-profile" type="file" name="avatar[]">
-      </div>
-      <div id='manage-profile-field'>
-        <p class='manage-profile'>First Name</p>
-        <input class='manage-profile' type="text" name="firstname" value="<?php echo $currentUser->user_firstname ?>"><br>
-      </div>	
-      <div id='manage-profile-field'>
-        <p class='manage-profile'>Last Name</p>
-        <input class='manage-profile' type="text" name="lastname" value="<?php echo $currentUser->user_lastname ?>"><br>
-      </div>	
-      <div id='manage-profile-field'>
-        <p class='manage-profile'>Email</p>
-        <input class='manage-profile' type="text" name="email" value="<?php echo $currentUser->user_email ?>"><br>
-      </div>	
-      <div id="manage-profile-buttons">
-        <input type="hidden" name="op" value="info">
-        <input type="submit" value="Submit">
-        <a href="<?php echo site_url('/profile/?user=' . $currentUser->ID) ?>"><button type="button">Cancel</button></a>
-      </div>
-    </div>	
-  </form>
-     
-  <form action="" method="post">
-    <div id='manage-profile-box'>
-      <div id='manage-profile-title'>Edit Password </div>	
-        <div id='manage-profile-field'>
-        <p class='manage-profile'>Password</p>
-        <input class='manage-profile' type="password" name="pass" required><br>
-      </div>	   
-      <div id='manage-profile-field'>
-        <p class='manage-profile'>Confirm Password</p>
-        <input class='manage-profile' type="password" name="passconfirm" required><br>
-      </div>	
-      <div id="manage-profile-buttons">
-        <input type="hidden" name="op" value="password">
-        <input type="submit" value="Submit">
-        <a href="<?php echo site_url('/profile/?user=' . $currentUser->ID) ?>"><button type="button">Cancel</button></a>
-      </div>
-    </div>	
-  </form>
+	<?php if($_GET['user'] == $current_user->ID) : ?>
+		<form action="" method="post">
+			<div id='manage-profile-box'>
+				<div id='pagetitle'>Edit Profile</div>	
+				<div id='manage-profile-field'>
+					<p class='manage-profile'>Avatar</p>
+					<input class="manage-profile" type="file" name="avatar[]">
+				</div>
+				<div id='manage-profile-field'>
+					<p class='manage-profile'>First Name</p>
+					<input class='manage-profile' type="text" name="firstname" value="<?php echo $user_info->user_firstname ?>"><br>
+				</div>	
+				<div id='manage-profile-field'>
+					<p class='manage-profile'>Last Name</p>
+					<input class='manage-profile' type="text" name="lastname" value="<?php echo $user_info->user_lastname ?>"><br>
+				</div>	
+				<div id='manage-profile-field'>
+					<p class='manage-profile'>Email</p>
+					<input class='manage-profile' type="text" name="email" value="<?php echo $user_info->user_email ?>"><br>
+				</div>
+        <div id ='manage-profile-field'>
+          <p class='manage-profile'>Alternate Email</p>
+          <input class='manage-profile' type="text" name="alternateEmail" value="<?php echo $user_info->AlternateEmail ?>"><br>
+        </div>
+				<input type="submit" value="Submit"/>
+			</div>	
+		</form>
+	<?php else : ?>
+		<div id="notfound">Page Not Found</div>
+	<?php endif ?>
 </html>
 
 <?php get_footer(); ?>

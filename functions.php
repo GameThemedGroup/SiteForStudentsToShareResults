@@ -6,23 +6,17 @@ $gtcs12_db = new GTCS12_DB(); // todo change these to static methods
 
 require_once('admin/theme_init.php');
 
-add_filter('login_redirect', 'login_redirect');
+add_filter('login_redirect', login_redirect);
 function login_redirect() {
   return site_url('/main');
 }
 
 // Allows jar files to be uploaded to the media library
-add_filter('upload_mimes', 'gtcs_add_custom_mime_types');
+add_filter('upload_mimes', gtcs_add_custom_mime_types);
 function gtcs_add_custom_mime_types($existing_mimes)
 {
   $existing_mimes['jar'] = 'application/x-java-applet';
   return $existing_mimes;
-}
-
-function htmldump($variable, $height="15em") {
-  echo "<pre style=\"border: 1px solid #000; height: {$height}; overflow: auto; margin: 0.5em;\">";
-  var_dump($variable);
-  echo "</pre>\n";
 }
 
 /**
@@ -166,26 +160,54 @@ function twentyeleven_setup() {
 
 	// Default custom headers packaged with the theme. %s is a placeholder for the theme template directory URI.
 	register_default_headers( array(
-		'ghost_light' => array(
-			'url' => '%s/images/headers/ghost_light.png',
-			'thumbnail_url' => '%s/images/headers/ghost_light - thumbnail.png',
-			'description' => __( 'Ghost Light', 'twentyeleven' )
+		'wheel' => array(
+			'url' => '%s/images/headers/wheel.jpg',
+			'thumbnail_url' => '%s/images/headers/wheel-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Wheel', 'twentyeleven' )
 		),
-		'match_three' => array(
-			'url' => '%s/images/headers/match_three.png',
-			'thumbnail_url' => '%s/images/headers/match_three - thumbnail.png',
-			'description' => __( 'Match Three', 'twentyeleven' )
+		'shore' => array(
+			'url' => '%s/images/headers/shore.jpg',
+			'thumbnail_url' => '%s/images/headers/shore-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Shore', 'twentyeleven' )
 		),
-		'rainbow_road' => array(
-			'url' => '%s/images/headers/rainbow_road.png',
-			'thumbnail_url' => '%s/images/headers/rainbow_road - thumbnail.png',
-			'description' => __( 'Rainbow Road', 'twentyeleven' )
+		'trolley' => array(
+			'url' => '%s/images/headers/trolley.jpg',
+			'thumbnail_url' => '%s/images/headers/trolley-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Trolley', 'twentyeleven' )
 		),
-		'space_smasher' => array(
-			'url' => '%s/images/headers/space_smasher.png',
-			'thumbnail_url' => '%s/images/headers/space_smasher - thumbnail.png',
-			'description' => __( 'Space Smasher', 'twentyeleven' )
+		'pine-cone' => array(
+			'url' => '%s/images/headers/pine-cone.jpg',
+			'thumbnail_url' => '%s/images/headers/pine-cone-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Pine Cone', 'twentyeleven' )
 		),
+		'chessboard' => array(
+			'url' => '%s/images/headers/chessboard.jpg',
+			'thumbnail_url' => '%s/images/headers/chessboard-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Chessboard', 'twentyeleven' )
+		),
+		'lanterns' => array(
+			'url' => '%s/images/headers/lanterns.jpg',
+			'thumbnail_url' => '%s/images/headers/lanterns-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Lanterns', 'twentyeleven' )
+		),
+		'willow' => array(
+			'url' => '%s/images/headers/willow.jpg',
+			'thumbnail_url' => '%s/images/headers/willow-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Willow', 'twentyeleven' )
+		),
+		'hanoi' => array(
+			'url' => '%s/images/headers/hanoi.jpg',
+			'thumbnail_url' => '%s/images/headers/hanoi-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Hanoi Plant', 'twentyeleven' )
+		)
 	) );
 }
 endif; // twentyeleven_setup
@@ -593,3 +615,15 @@ function twentyeleven_body_classes( $classes ) {
 }
 add_filter( 'body_class', 'twentyeleven_body_classes' );
 
+
+function switchToUser($userId)
+{
+  $success = false;
+  if (function_exists( 'switch_to_user' )) {
+    if (switch_to_user($userId, false, false)) {
+      $success = true;
+    }
+  }
+
+  return $success;
+}
