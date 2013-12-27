@@ -59,5 +59,9 @@
       <input name="testcookie" value="1" type="hidden">
     </form>
 
+    <div class="fb-login-button" data-max-rows="1" data-show-faces="false"
+      onlogin="jfb_js_login_callback();">
+      Login with Facebook
+    </div>
   </div>
 <?php endif; ?>

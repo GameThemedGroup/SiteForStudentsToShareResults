@@ -28,6 +28,31 @@ function do_output_buffer() {
   ob_start();
 }
 
+// This action is called if the user clicks on the facebook login button while
+// already logged into the website. A somewhat kludgy method of associating
+// the facebook id with the gtcs account
+add_action('wpfb_connect', 'gtcs_associate_loggedin_account');
+function gtcs_associate_loggedin_account($args)
+{
+  if (!is_user_logged_in()) // attempting to login
+    return;
+
+  // TODO should there be a check or message if the user is overwriting
+  // their old facebook login?
+  update_user_meta(get_current_user_id(), 'facebook_uid', $args['FB_ID']);
+}
+
+// Users are not allowed to log in with their facebook account unless they
+// have already associated it with their gtcs account. If wpfb is attempting
+// to insert a new user, that means there is no associated account and we
+// should stop the attempt to insert a new user
+add_action('wpfb_insert_user', 'gtcs_disable_new_fb_login');
+function gtcs_disable_new_fb_login($args)
+{
+  do_action('wp_login_failed');
+  exit;
+}
+
 add_action('after_setup_theme', 'gtcs_initialize_categories');
 function gtcs_initialize_categories()
 {

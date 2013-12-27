@@ -12,6 +12,7 @@
     $actionList = array(
       'update'   => 'updateProfileInformation',
       'changePassword'  => 'changePassword',
+      'unlinkFacebook'  => 'unlinkFacebookAccount',
     );
 
     $userFeedback = '';
@@ -44,7 +45,15 @@
   {
 	  $user = get_user_by('id', get_current_user_id());
 
+    $ps->hasLinkedFb = get_user_meta($user->ID, 'facebook_uid', true) != '';
     $ps->user = $user;
+  }
+
+  function unlinkFacebookAccount(&$ps)
+  {
+    $userId = get_current_user_id();
+    delete_user_meta($userId, 'facebook_uid');
+    $ps->hasLinkedFb = false;
   }
 
   function updateProfileInformation(&$ps)

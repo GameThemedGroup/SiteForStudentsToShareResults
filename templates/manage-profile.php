@@ -14,6 +14,7 @@ get_header(); ?>
 	<div id="action-box"><?php echo $userFeedback; ?></div>
 <?php endif; ?>
 
+
 <!-- Edit Profile Form -->
 <form action="" method="post">
   <div id='manage-profile-box'>
@@ -77,5 +78,24 @@ get_header(); ?>
   </div>
 </form>
 <!-- Edit Password Form -->
+
+<form action="" method="post">
+  <div id="manage-profile-box">
+    <div id='manage-profile-title'>Facebook Account</div>
+
+    <div id='manage-profile-buttons'>
+      <?php if ($hasLinkedFb): ?>
+        <input type="hidden" name="action" value="unlinkFacebook">
+        <input type="submit" value="Unlink">
+      <?php else: ?>
+        <div class="fb-login-button" data-max-rows="1" data-show-faces="false"
+          onlogin="jfb_js_login_callback();">
+          Link Facebook Account
+        </div>
+      <?php endif; ?>
+    </div>
+
+  </div>
+</form>
 
 <?php get_footer(); ?>
