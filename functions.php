@@ -28,6 +28,28 @@ function do_output_buffer() {
   ob_start();
 }
 
+add_filter('manage_users_columns', 'gtcs_admin_add_user_columns');
+function gtcs_admin_add_user_columns($columns)
+{
+    $columns['user_id'] = 'User ID';
+    $columns['fb_id'] = 'Facebook ID';
+    return $columns;
+}
+
+add_action('manage_users_custom_column', 'gtcs_admin_show_user_columns', 10, 3);
+function gtcs_admin_show_user_columns($value, $column_name, $user_id)
+{
+  $user = get_userdata($user_id);
+
+  if ('user_id' == $column_name)
+    return $user_id;
+
+  if ('fb_id' == $column_name)
+    return get_user_meta($user_id, 'facebook_uid', true);
+
+  return $value;
+}
+
 // This action is called if the user clicks on the facebook login button while
 // already logged into the website. A somewhat kludgy method of associating
 // the facebook id with the gtcs account
