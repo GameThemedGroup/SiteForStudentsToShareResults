@@ -10,13 +10,16 @@
 get_header(); ?>
 
 <?php include_once(get_template_directory() . '/logic/students.php'); ?>
+<?php if ($userFeedback): ?>
+  <div id="action-box"><?php echo $userFeedback; ?></div>
+<?php endif; ?>
 
 <!-- Course Selector -->
 <div id="sidebar-menu">
   <div id="sidebar-menu-title">Courses</div>
   <ul class="sidebar-menu">
-<?php if($courses) : ?>
-<?php   foreach($courses as $course) : ?>
+<?php if($courseList) : ?>
+<?php   foreach($courseList as $course) : ?>
 <?php     if($courseId == $course->Id) : ?>
     <li class="sidebar-menu">
       <p class="sidebar-menu-top"><?php echo $course->Name ?></p>
@@ -59,7 +62,7 @@ get_header(); ?>
       <input class='create-student' type="text" name="inptEmail" required>
     </div>
     <div id="create-student-buttons">
-      <input type="hidden" name="op" value="create">
+      <input type="hidden" name="action" value="create">
       <input type="submit" value="Create"/>
       <a href="<?php echo site_url('/class/') ?>"><button type="button">Cancel</button></a>
     </div>
@@ -70,14 +73,14 @@ get_header(); ?>
 <!-- Student File Upload Form -->
 <div id="create-student-box-bottom">
   <div id='create-student-title'>Create students via file</div>
-  <form action="<?php echo get_permalink() . "/?courseid={$courseId}" ?>" method="post" enctype="multipart/form-data">
+  <form action="<?php echo get_permalink() . "?courseid={$courseId}" ?>" method="post" enctype="multipart/form-data">
     <div id="create-student-field">
       <p class="create-student-bottom">Spreadsheet</p>
       <input type="file" name="studentdata">
     </div>
     <div id="create-student-buttons">
       <input type="hidden" name="courseid" value="<?php echo $courseId; ?>">
-      <input type="hidden" name="op" value="file">
+      <input type="hidden" name="action" value="csvUpload">
       <input type="submit">
       <a href="<?php echo site_url('/class/') ?>"><button type="button">Cancel</button></a>
     </div>
@@ -97,26 +100,28 @@ get_header(); ?>
     </thead>
     <tbody>
 
-<?php if(sizeof($students) == 0): ?>
+<?php if(false == $hasStudents): ?>
   <tr>
     <th class="center" colspan="4">This course has no enrolled students</th>
   </tr>
 <?php else: ?>
-<?php foreach($students as $student): ?>
+<?php foreach($studentList as $student): ?>
   <tr>
     <th><?php echo $student->display_name; ?></th>
     <th>
       <form action="<?php echo site_url('/students/') ?>" method="post">
-        <select name="op">
+        <select name="action">
           <option disabled="disabled" selected>Choose an action</option>
           <option value="delete">Delete</option>
+          <option value="emailPassword">Email Password</option>
         </select>
         <input type="hidden" name="studentid" value="<?php echo $student->ID; ?>">
         <input type="hidden" name="courseid" value="<?php echo $courseId; ?>">
         <input type="submit" value="Confirm"/>
       </form>
     </th>
-<?php endforeach ?>
+  </tr>
+<?php endforeach; ?>
 <?php endif; ?>
     </tbody>
   </table>
