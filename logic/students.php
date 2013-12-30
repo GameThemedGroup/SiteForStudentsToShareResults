@@ -20,7 +20,8 @@ function initializePageState(&$ps)
     'csvUpload' => 'uploadFromCsv',
     'delete' => 'deleteStudent',
     'deleteAll' => 'deleteAllStudents',
-    'emailPassword' => 'emailStudentPassword'
+    'resetPassword' => 'resetStudentPassword',
+    'resetAllPasswords' => 'resetAllStudentPasswords'
   );
 
   setupDefaultValues($ps);
@@ -87,6 +88,80 @@ function deleteAllStudents(&$ps)
   }
 
   return "All students deleted.";
+}
+
+function resetStudentPassword(&$ps)
+{
+  $studentId = $_POST['studentid'];
+  $passwordLength = 15;
+  $useSpecialChars = false;
+  $newPassword = wp_generate_password($passwordLength, $useSpecialChars);
+
+  $result = wp_update_user(array(
+    'ID' => $studentId,
+    'user_pass' => $newPassword)
+  );
+
+  if (is_wp_error($result))
+    return "The password was not changed.";
+
+  emailPassword($studentId, $newPassword);
+  return "The password was reset and emailed to the student.";
+}
+
+function resetAllStudentPasswords(&$ps)
+{
+  $courseId = $_POST['courseid'];
+
+  $passwordLength = 15;
+  $useSpecialChars = false;
+
+  include_once(get_template_directory() . '/common/users.php');
+  $studentList = GTCS_Users::getStudents($courseId);
+
+  foreach ($studentList as $student) {
+    $studentId = $student->ID;
+    $newPassword = wp_generate_password($passwordLength, $useSpecialChars);
+
+    $updateResult = wp_update_user(array(
+      'ID' => $studentId,
+      'user_pass' => $newPassword)
+    );
+
+    // TODO log this error
+    if (is_wp_error($updateResult)) { // password not updated
+      echo "Error updating password for {$user->display_name} <br />";
+      continue;
+    }
+
+    $emailResult = emailPassword($studentId, $newPassword);
+
+    // TODO log this error
+    if (!$emailResult) { // email not successfully sent
+      echo "Error emailing password for {$user->display_name} <br />";
+    }
+  }
+
+  return "All passwords were reset and emailed to the students.";
+}
+
+function emailPassword($userId, $password)
+{
+  $user = get_user_by('id', $userId);
+  $subject = "[GTCS12] Your username and password";
+  $siteUrl = site_url();
+
+  $message = "<p>Usename: {$user->user_login}</p>";
+  $message.= "<p>Password: {$password}</p>";
+  $message.= "<p><a href=\"{$siteUrl}\">{$siteUrl}</a></p>";
+
+  add_filter( 'wp_mail_content_type', 'set_html_content_type' );
+  return wp_mail($user->user_email, $subject, $message);
+  remove_filter( 'wp_mail_content_type', 'set_html_content_type' );
+}
+
+function set_html_content_type() {
+  return 'text/html';
 }
 
 function uploadFromCsv(&$ps)

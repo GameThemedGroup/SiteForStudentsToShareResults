@@ -116,7 +116,7 @@ get_header(); ?>
           <select name="action">
             <option disabled="disabled" selected>Choose an action</option>
             <option value="delete">Delete</option>
-            <option value="emailPassword">Email Password</option>
+            <option value="resetPassword">Reset Password</option>
           </select>
 
           <input type="hidden" name="studentid" value="<?php echo $student->ID; ?>">
@@ -136,7 +136,7 @@ get_header(); ?>
         <select name="action">
           <option disabled="disabled" selected>Choose an action</option>
           <option value="deleteAll">Delete</option>
-          <option value="emailAllPasswords">Email Password</option>
+          <option value="resetAllPasswords">Reset Passwords</option>
         </select>
 
         <input type="hidden" name="courseid" value="<?php echo $courseId; ?>">
