@@ -197,6 +197,11 @@ function setupStudentList(&$ps)
   $courseId = $ps->courseId;
 
   $studentList = GTCS_Users::getStudents($courseId);
+  foreach ($studentList as $student) {
+    $lastName = get_user_meta($student->ID, 'last_name', true);
+    $firstName = get_user_meta($student->ID, 'first_name', true);
+    $student->real_name = "{$lastName}, {$firstName}";
+  }
 
   $ps->hasStudents = sizeof($studentList) != 0;
   $ps->studentList = $studentList;

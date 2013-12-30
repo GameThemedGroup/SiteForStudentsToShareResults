@@ -94,7 +94,9 @@ get_header(); ?>
   <table>
     <thead>
       <tr>
-        <th>Student</th>
+        <th>Login</th>
+        <th>Name</th>
+        <th>Display Name</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -108,6 +110,8 @@ get_header(); ?>
 
   <?php foreach($studentList as $student): ?>
     <tr>
+      <th><?php echo $student->user_login; ?></th>
+      <th><?php echo $student->real_name; ?></th>
       <th><?php echo $student->display_name; ?></th>
       <th>
         <form action="<?php echo site_url('/students/?courseid=') . $courseId; ?>"
@@ -128,7 +132,7 @@ get_header(); ?>
   <?php endforeach; ?>
 
   <tr>
-    <th><strong>All Students</strong></th>
+    <th colspan="3"><strong>All Students</strong></th>
     <th>
       <form action="<?php echo site_url('/students/?courseid=') . $courseId; ?>"
         method="post">
