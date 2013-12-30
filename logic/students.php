@@ -19,6 +19,7 @@ function initializePageState(&$ps)
     'create'   => 'createStudent',
     'csvUpload' => 'uploadFromCsv',
     'delete' => 'deleteStudent',
+    'deleteAll' => 'deleteAllStudents',
     'emailPassword' => 'emailStudentPassword'
   );
 
@@ -68,13 +69,33 @@ function deleteStudent(&$ps)
   return "Student deleted.";
 }
 
+function deleteAllStudents(&$ps)
+{
+  $courseId = ifsetor($_POST['courseid'], null);
+
+  include_once(get_template_directory() . '/common/users.php');
+  $studentList = GTCS_Users::getStudents($courseId);
+
+  if (!function_exists('wp_delete_user')) {
+    include(ABSPATH . './wp-admin/includes/user.php');
+  }
+
+  foreach ($studentList as $student) {
+    $studentId = $student->ID;
+    wp_delete_user($studentId);
+    GTCS_Users::UpdateStudentEnrollment($courseId, $studentId, false);
+  }
+
+  return "All students deleted.";
+}
+
 function uploadFromCsv(&$ps)
 {
   include_once(get_template_directory() . '/common/users.php');
   $courseId = $_POST['courseid'];
   GTCS_Users::EnrollStudentsViaFile($courseId, 'studentdata');
 
-  return "Students created."
+  return "Students created.";
 }
 
 // Returns the id of the course if one selected, otherwise returns the id of

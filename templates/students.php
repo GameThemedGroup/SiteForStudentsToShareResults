@@ -105,24 +105,47 @@ get_header(); ?>
     <th class="center" colspan="4">This course has no enrolled students</th>
   </tr>
 <?php else: ?>
-<?php foreach($studentList as $student): ?>
+
+  <?php foreach($studentList as $student): ?>
+    <tr>
+      <th><?php echo $student->display_name; ?></th>
+      <th>
+        <form action="<?php echo site_url('/students/?courseid=') . $courseId; ?>"
+          method="post">
+
+          <select name="action">
+            <option disabled="disabled" selected>Choose an action</option>
+            <option value="delete">Delete</option>
+            <option value="emailPassword">Email Password</option>
+          </select>
+
+          <input type="hidden" name="studentid" value="<?php echo $student->ID; ?>">
+          <input type="hidden" name="courseid" value="<?php echo $courseId; ?>">
+          <input type="submit" value="Confirm"/>
+        </form>
+      </th>
+    </tr>
+  <?php endforeach; ?>
+
   <tr>
-    <th><?php echo $student->display_name; ?></th>
+    <th><strong>All Students</strong></th>
     <th>
-      <form action="<?php echo site_url('/students/') ?>" method="post">
+      <form action="<?php echo site_url('/students/?courseid=') . $courseId; ?>"
+        method="post">
+
         <select name="action">
           <option disabled="disabled" selected>Choose an action</option>
-          <option value="delete">Delete</option>
-          <option value="emailPassword">Email Password</option>
+          <option value="deleteAll">Delete</option>
+          <option value="emailAllPasswords">Email Password</option>
         </select>
-        <input type="hidden" name="studentid" value="<?php echo $student->ID; ?>">
+
         <input type="hidden" name="courseid" value="<?php echo $courseId; ?>">
         <input type="submit" value="Confirm"/>
       </form>
     </th>
   </tr>
-<?php endforeach; ?>
 <?php endif; ?>
+
     </tbody>
   </table>
 </div>
