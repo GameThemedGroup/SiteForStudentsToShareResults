@@ -30,12 +30,15 @@ class GTCS_Users
     $sql = "SELECT studentid from {$enrollments} WHERE courseid={$courseId};";
     $results = $wpdb->get_results($sql);
 
-    $studentList = array();
+    $studentIds = array();
     foreach($results as $id) {
-      $studentList[] = (int) $id->studentid;
+      $studentIds[] = (int) $id->studentid;
     }
 
-    return $studentList;
+    if (sizeof($studentIds) == 0)
+      return array();
+
+    return get_users(array('include' => $studentIds));
   }
 
   public static function updateStudentEnrollment($courseId, $studentId, $enroll)

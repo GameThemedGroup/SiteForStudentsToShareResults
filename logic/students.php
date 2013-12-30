@@ -100,8 +100,7 @@ function setupStudentList(&$ps)
   include_once(get_template_directory() . '/common/users.php');
   $courseId = $ps->courseId;
 
-  $studentIds = GTCS_Users::getStudents($courseId);
-  $studentList = get_users(array('include' => $studentIds));
+  $studentList = GTCS_Users::getStudents($courseId);
 
   $ps->hasStudents = sizeof($studentList) != 0;
   $ps->studentList = $studentList;

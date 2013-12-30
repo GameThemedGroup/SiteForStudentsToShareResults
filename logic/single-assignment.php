@@ -97,8 +97,7 @@ function setupPageForDisplay(&$ps)
   include_once(get_template_directory() . '/common/courses.php');
   $displayedCourse = GTCS_Courses::GetCourseByCourseId($courseId);
 
-  $isOwner = $isProfessor && $displayedAssignment->post_professor == $userId;
-
+  $isOwner = $isProfessor && $displayedAssignment->post_author == $userId;
   $isEnrolled = false;
   if($isStudent) {
     $isEnrolled = true; // TODO fix this
@@ -106,13 +105,12 @@ function setupPageForDisplay(&$ps)
 
   // retrieve students and submissions for table
   include_once(get_template_directory() . '/common/users.php');
-  $studentIds = GTCS_Users::GetStudents($courseId);
-  $studentList = get_users(array('include' => $studentIds));
+  $studentList = GTCS_Users::GetStudents($courseId);
 
   include_once(get_template_directory() . '/common/submissions.php');
   $submissionList = GTCS_Submissions::GetAllSubmissions($assignmentId);
 
-  $nonSubmitters = getListOfNonSubmitters($submissionList, $studentIds);
+  $nonSubmitters = getListOfNonSubmitters($submissionList, $studentList);
 
   $sort = ifsetor($_GET['sort'], 'date');
   // sort submission table entries
@@ -175,11 +173,16 @@ function toggleAssignmentStatus()
   }
 }
 
-function getListOfNonSubmitters($submissionList, $studentIds)
+function getListOfNonSubmitters($submissionList, $studentList)
 {
   $submitters = array();
   foreach ($submissionList as $submission) {
     $submitters[] = $submission->AuthorId;
+  }
+
+  $studentIds = array();
+  foreach($studentList as $student) {
+    $studentIds[] = (int) $student->ID;
   }
 
   $submitters = array_unique($submitters);
