@@ -12,22 +12,6 @@ get_header(); ?>
 
 <?php include_once(get_template_directory() . '/logic/single-assignment.php'); ?>
 
-<?php
-  $assignmentId = $pageState->assignmentId;
-  $canSubmit = $pageState->canSubmit;
-  $courseId = $pageState->courseId;
-  $displayedAssignment = $pageState->displayedAssignment;
-  $displayedCourse = $pageState->displayedCourse;
-  $isEditing = $pageState->isEditing;
-  $isEnrolled = $pageState->isEnrolled;
-  $isOwner = $pageState->isOwner;
-  $nonSubmitters = $pageState->nonSubmitters;
-  $studentList = $pageState->studentList;
-  $submissionList = $pageState->submissionList;
-  $userFeedback = $pageState->userFeedback;
-  $view = $pageState->view;
-?>
-
 <!-- Assignment Display -->
 <div id="assignment-whole">
 
@@ -116,11 +100,6 @@ get_header(); ?>
 </div> <!-- assignment-whole -->
 <!-- Assignment Display -->
 
-<?php
-  $submissionTitle = $pageState->submissionTitle;
-  $submissionDescription = $pageState->submissionDescription;
-  $isEditing = $pageState->isEditing;
-?>
 <!-- Assignment Submission Form -->
 <?php if ($isEnrolled && $canSubmit): ?>
 <form action="<?php echo $url['assignment'] . "?id={$assignmentId}"; ?>"

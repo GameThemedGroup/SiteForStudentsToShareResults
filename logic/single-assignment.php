@@ -1,7 +1,8 @@
 <?php
   global $url;
-  $pageState = (object) array();
+  $pageState = new stdClass();
   initializePageState($pageState);
+  extract((array)$pageState);
 
 function initializePageState(&$ps)
 {
