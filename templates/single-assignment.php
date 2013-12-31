@@ -23,9 +23,17 @@ get_header(); ?>
     Back to course</a>
 
   <?php if ($isOwner) : ?>
-    <a class="link" href="<?php echo $url['assignments'] .
-      "?editId={$assignmentId}&id={$courseId}"; ?>">
-      Edit this Assignment</a>
+    <form action="
+      <?php echo site_url("/assignments/?id={$courseId}"); ?>" method="post">
+
+      <input type="hidden" name="action" value="edit">
+      <input type="hidden" name="assignmentId"
+        value="<?php echo $assignmentId; ?>">
+      <input type="hidden" name="courseId"
+        value="<?php echo $courseId; ?>">
+
+      <input type="submit" value="Edit this Assignment"/>
+    </form>
   <?php endif; ?>
 
   <div id="assignnment-title">
