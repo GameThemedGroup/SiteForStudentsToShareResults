@@ -175,7 +175,7 @@ function toggleAssignmentStatus()
   }
 
   if (!gtcs_user_has_role('professor')
-      || $userId != $assignment->post_professor ) {
+      || $userId != $assignment->post_author) {
     trigger_error("User does not have permission to perform this action");
     return "You do not have permission to perform this action.";
   }
