@@ -237,7 +237,13 @@ function AttachFiles($assignmentId, $fileIndex, $attachmentType)
     DeleteAttachments($assignmentId, $attachmentType);
     $title = pathinfo($_FILES[$fileIndex]['name'], PATHINFO_FILENAME);
     $isImage = ($attachmentType == "image");
-    GTCS_Attachments::AttachFileToPost($assignmentId, $fileIndex, $title, $attachmentType, $isImage);
+    GTCS_Attachments::attachFileToPost_old(
+      $assignmentId,
+      $fileIndex,
+      $title,
+      $attachmentType,
+      $isImage
+    );
   }
 }
 

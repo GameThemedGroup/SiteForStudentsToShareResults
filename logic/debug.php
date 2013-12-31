@@ -166,7 +166,7 @@ function attachFileToSubmission($file, $title, $submissionid, $userid, $isImage)
 
   include_once(get_template_directory() . '/common/attachments.php');
   $attachmentType = $isImage ? 'image' : 'jar';
-  $attachmentid = GTCS_Attachments::attachFileToPost(
+  $attachmentid = GTCS_Attachments::attachFileToPost_old(
     $submissionid,
     $fileAttributes,
     $title,

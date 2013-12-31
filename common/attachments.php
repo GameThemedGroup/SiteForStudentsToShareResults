@@ -13,7 +13,7 @@
 // TODO check and handle errors
 class GTCS_Attachments {
 
-function handleFileUpload($file_index)
+public static function handleFileUpload($file_index)
 {
   //TODO find out if there are any problems using ABSPATH
   if (!function_exists('wp_handle_upload'))
@@ -42,16 +42,23 @@ function handleFileUpload($file_index)
 //
 // @return the id of the attachment/post
 //
-// @param post_id     the id of the post the media is being added to
-// @param file_attr   the file attributes returned by a successful call to
+// @param postId      the id of the post the media is being added to
+// @param fileAttr    the file attributes returned by a successful call to
 //                    UploadFile or gtcs_handle_import_file
 // @param title       the title to be used by the wordpress media library
-// @param type_value  the value for the post's 'type' meta_key
-// @param is_featured_image  if true, the file will be used as the post's featured image
-// @param post_author the id of the the post author. If NULL, defaults to current user
-function attachFileToPost($post_id, $file_attr, $title, $type_value, $is_featured_image, $post_author = NULL)
+// @param type        the value for the post's 'type' meta_key
+// @param isFeaturedImage  if true, the file will be used as the post's featured image
+// @param authorId    the id of the the post author. If NULL, defaults to current user
+public static function attachFileToPost($args)
 {
-  if ($post_author === NULL)
+  $post_id = $args->postId;
+  $file_attr = $args->fileAttr;
+  $title = $args->title;
+  $type_value = $args->type;
+  $is_featured_image = $args->isFeaturedImage;
+  $post_author = ifsetor($args->authorId, null);
+
+  if ($post_author === null)
     $post_author = get_current_user_id();
 
   $file_name = $file_attr['file'];
@@ -88,6 +95,21 @@ function attachFileToPost($post_id, $file_attr, $title, $type_value, $is_feature
   }
 
   return $attach_id;
+}
+
+// Created for backwards compatibility
+public static function attachFileToPost_old($postId, $fileAttr, $title, $type, $isFeaturedImage, $authorId = NULL)
+{
+  $args = (object) array(
+    'postId' => $postId,
+    'fileAttr' => $fileAttr,
+    'title' => $title,
+    'type' => $type,
+    'isFeaturedImage' => $isFeaturedImage,
+    'authorId' => $authorId
+  );
+
+  return GTCS_Attachments::attachFileToPost($args);
 }
 
 // Returns an array of all attachment with the a meta value "type":$attachmentType

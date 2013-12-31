@@ -37,8 +37,10 @@ function createSubmission(&$ps)
   $assignmentId = ifsetor($_POST['assignmentId'], 123);
   $courseId = ifsetor($_POST['courseId'], null);
 
-  if ($entryClass == 'other') {
+  if ($entryClass == 'Other') {
     $entryClass = ifsetor($_POST['classInput'], null);
+    if ($entryClass != null)
+      $entryClass .= '.class';
   }
 
   if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
@@ -59,15 +61,28 @@ function createSubmission(&$ps)
     'title' => $title
   ));
 
+  $attachmentArgs = (object) array(
+    'postId' => $submissionId,
+    'title' => $title,
+    'authorId' => $studentId
+  );
+
   include_once(get_template_directory() . '/common/attachments.php');
   if(isset($_FILES['jar'])) {
-    $jarLocation = GTCS_Attachments::handleFileUpload('jar');
-    GTCS_Attachments::AttachFileToPost($submissionId, $jarLocation, $title, 'jar', false, $studentId);
+    $jar = GTCS_Attachments::handleFileUpload('jar');
+    $attachmentArgs->fileAttr = $jar;
+    $attachmentArgs->type = 'jar';
+    $attachmentArgs->isFeaturedImage = false;
+
+    GTCS_Attachments::attachFileToPost($attachmentArgs);
   }
 
   if(isset($_FILES['image'])) {
-    $imageLocation = GTCS_Attachments::handleFileUpload('image');
-    GTCS_Attachments::AttachFileToPost($submissionId, $imageLocation, $title, 'image', true, $studentId);
+    $image = GTCS_Attachments::handleFileUpload('image');
+    $attachmentArgs->fileAttr = $image;
+    $attachmentArgs->type = 'image';
+    $attachmentArgs->isFeaturedImage = true;
+    GTCS_Attachments::attachFileToPost($attachmentArgs);
   }
 
   return "Assignment successfully submitted.";
