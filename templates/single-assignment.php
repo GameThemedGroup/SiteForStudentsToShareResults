@@ -41,8 +41,7 @@ get_header(); ?>
   </div>
 
   <div id="assignment-top">
-    <img src="<?php bloginfo('template_directory'); ?>/images/blank-project.png"
-      width="155" height="155" />
+    <?php echo get_the_post_thumbnail($assignmentId, array(155, 155)); ?>
 
     <p class="assignment-meta"><b>Course </b>
       <?php echo $displayedCourse->Name ?></p>
