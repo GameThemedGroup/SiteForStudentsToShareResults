@@ -135,10 +135,17 @@ get_header(); ?>
       rolodex=alex.rolodex.Rolodex.class">?</a>]
       </p>
       <br />
-      <input type="radio" name="class" value="Main.class" checked>Main.class<br />
-      <input type="radio" name="class" value="user.Main.class">user.Main.class<br />
-      <input type="radio" name="class" value="other">Other
-      <input type="text" name="classInput">.class</input>
+
+      <?php foreach ($jarClassList as $jarClass => $isSelected): ?>
+        <input type="radio" name="class" value="<?php echo $jarClass; ?>"
+          <?php if ($isSelected) echo "checked"; ?>>
+          <?php echo $jarClass; ?><br />
+      <?php endforeach; ?>
+
+      <input type="text" name="classInput"
+        value="<?php echo $defaultClassValue; ?>">.class
+      </input>
+
     </div>
 
     <div id='create-assignment-field'>

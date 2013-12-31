@@ -22,11 +22,9 @@ function initializePageState(&$ps)
     trigger_error("An invalid action was provided.", E_USER_WARNING);
   }
 
-  if (!setupPageForDisplay($ps)) {
-    // TODO generalize this error message
-    echo "This page could not be displayed <br />";
-    exit();
-  }
+  setupAssignmentDisplay($ps);
+  setupSubmissionForm($ps);
+  setupSubmissionList($ps);
 }
 
 function createSubmission(&$ps)
@@ -75,34 +73,63 @@ function createSubmission(&$ps)
   return "Assignment successfully submitted.";
 }
 
-function setupPageForDisplay(&$ps)
+function setupAssignmentDisplay(&$ps)
 {
-  $userId = wp_get_current_user()->ID;
-  $isProfessor = gtcs_user_has_role('professor');
-  $isStudent = gtcs_user_has_role('student');
-
   $assignmentId = ifsetor($_GET["id"], null);
 
   if ($assignmentId == null) {
-    trigger_error(__FUNCTION__ . "
-      - Assignment ID not provided.",
+    trigger_error(__FUNCTION__ . " - Assignment ID not provided.",
       E_USER_WARNING);
     return false;
   }
 
+  $userId = wp_get_current_user()->ID;
+  $isProfessor = gtcs_user_has_role('professor');
+  $isStudent = gtcs_user_has_role('student');
+
   $displayedAssignment = get_post($assignmentId);
-
-  $terms = wp_get_post_terms($assignmentId);
-  $courseId = str_ireplace ('course:' ,'' , $terms[0]->name);
-
-  include_once(get_template_directory() . '/common/courses.php');
-  $displayedCourse = GTCS_Courses::GetCourseByCourseId($courseId);
 
   $isOwner = $isProfessor && $displayedAssignment->post_author == $userId;
   $isEnrolled = false;
   if($isStudent) {
     $isEnrolled = true; // TODO fix this
   }
+
+  $canSubmit = get_post_meta($assignmentId, 'isEnabled', true);
+
+  $ps->assignmentId = $assignmentId;
+  $ps->canSubmit = $canSubmit;
+  $ps->displayedAssignment = $displayedAssignment;
+  $ps->isEditing = false;
+  $ps->isEnrolled = $isEnrolled;
+  $ps->isOwner = $isOwner;
+}
+
+function setupSubmissionForm(&$ps)
+{
+  $jarClassList = array(
+    'Main.class' => true,
+    'user.Main.class' => false,
+    'Other' => false
+  );
+
+  $defaultClassValue = '';
+
+  $ps->submissionTitle = '';
+  $ps->submissionDescription = '';
+  $ps->jarClassList = $jarClassList;
+  $ps->defaultClassValue = $defaultClassValue;
+}
+
+function setupSubmissionList(&$ps)
+{
+  $assignmentId = ifsetor($_GET["id"], null);
+
+  $terms = wp_get_post_terms($assignmentId);
+  $courseId = str_ireplace ('course:' ,'' , $terms[0]->name);
+
+  include_once(get_template_directory() . '/common/courses.php');
+  $displayedCourse = GTCS_Courses::GetCourseByCourseId($courseId);
 
   // retrieve students and submissions for table
   include_once(get_template_directory() . '/common/users.php');
@@ -111,9 +138,11 @@ function setupPageForDisplay(&$ps)
   include_once(get_template_directory() . '/common/submissions.php');
   $submissionList = GTCS_Submissions::GetAllSubmissions($assignmentId);
 
+  // list of students who have not submitted any work for this assignment
   $nonSubmitters = getListOfNonSubmitters($submissionList, $studentList);
 
   $sort = ifsetor($_GET['sort'], 'date');
+
   // sort submission table entries
   if($sort == 'author') {
     usort($submissionList, "compareSubmissionAuthor");
@@ -122,25 +151,13 @@ function setupPageForDisplay(&$ps)
     usort($submissionList, "compareDate");
   }
 
-  $canSubmit = get_post_meta($assignmentId, 'isEnabled', true);
-  $view = ifsetor($_GET['view'], 'description');
-
-  $ps->assignmentId = $assignmentId;
-  $ps->canSubmit = $canSubmit;
   $ps->courseId = $courseId;
-  $ps->displayedAssignment = $displayedAssignment;
   $ps->displayedCourse = $displayedCourse;
   $ps->isEditing = false;
-  $ps->isEnrolled = $isEnrolled;
-  $ps->isOwner = $isOwner;
   $ps->nonSubmitters = $nonSubmitters;
   $ps->studentList = $studentList;
-  $ps->submissionDescription = '';
   $ps->submissionList = $submissionList;
-  $ps->submissionTitle = '';
-  $ps->view = $view;
-
-  return true;
+  $ps->view = ifsetor($_GET['view'], 'description');
 }
 
 function toggleAssignmentStatus()
