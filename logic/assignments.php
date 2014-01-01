@@ -88,7 +88,7 @@ function setupEdit(&$ps)
   $ps->assignmentId = $assignmentId;
   $ps->displayedAssignment = $displayedAssignment;
 
-  return "Your are now editing the course";
+  return "Your are now editing the course.";
 }
 
 function setupDefaultValues(&$ps)
@@ -150,7 +150,7 @@ function deleteAssignment()
   DeleteAttachments($assignmentId, 'jar');
   DeleteAttachments($assignmentId, 'image');
 
-  return "{$assignment->post_title} has been deleted";
+  return "{$assignment->post_title} has been deleted.";
 }
 
 function updateAssignment()
@@ -185,7 +185,7 @@ function updateAssignment()
   //AttachFiles($assignmentId, 'jar', 'jar');
   //AttachFiles($assignmentId, 'image', 'image');
 
-  return "{$title} has been updated";
+  return "{$title} has been updated.";
 }
 
 function createAssignment()
@@ -220,7 +220,7 @@ function createAssignment()
   //AttachFiles($assignmentId, 'jar', 'jar');
   AttachFiles($assignmentId, 'image', 'image');
 
-  return "{$title} has been created";
+  return "{$title} has been created.";
 }
 
 // Checks the $_FILES array for images and attaches them to the given assignment
