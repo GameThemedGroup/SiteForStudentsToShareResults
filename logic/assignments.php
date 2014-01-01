@@ -234,16 +234,23 @@ function AttachFiles($assignmentId, $fileIndex, $attachmentType)
   include_once(get_template_directory() . '/common/attachments.php');
   if (   file_exists($_FILES[$fileIndex]['tmp_name'])
       && is_uploaded_file($_FILES[$fileIndex]['tmp_name'])) {
+
     DeleteAttachments($assignmentId, $attachmentType);
+
     $title = pathinfo($_FILES[$fileIndex]['name'], PATHINFO_FILENAME);
     $isImage = ($attachmentType == "image");
-    GTCS_Attachments::attachFileToPost_old(
-      $assignmentId,
-      $fileIndex,
-      $title,
-      $attachmentType,
-      $isImage
+
+    $fileAttr = GTCS_Attachments::handleFileUpload($fileIndex);
+
+    $attachmentArgs = (object) array(
+      'postId' => $assignmentId,
+      'fileAttr' => $fileAttr,
+      'title' => $title,
+      'type' => $attachmentType,
+      'isFeaturedImage' => $isImage
     );
+
+    GTCS_Attachments::attachFileToPost($attachmentArgs);
   }
 }
 
