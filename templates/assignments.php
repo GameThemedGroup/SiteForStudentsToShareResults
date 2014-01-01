@@ -36,7 +36,7 @@ get_header(); ?>
 <?php endif ?>
 
 <!-- Assignment Creation Form -->
-<form action="<?php echo get_permalink(); ?>" method="post" enctype="multipart/form-data">
+<form action="<?php echo site_url("assignments/?id={$courseId}"); ?>" method="post" enctype="multipart/form-data">
   <div id='create-assignment-box'>
     <div id='create-assignment-title'>
       <?php if ($isEditing): ?>Edit Assignment
