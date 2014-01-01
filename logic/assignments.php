@@ -172,7 +172,7 @@ function updateAssignment()
   $isEnabled = true;
 
   include_once(get_template_directory() . '/common/assignments.php');
-  GTCS_Assignments::UpdateAssignment(
+  GTCS_Assignments::updateAssignment(
     $assignmentId,
     $professorId,
     $courseId,
@@ -182,8 +182,13 @@ function updateAssignment()
     $isEnabled
   );
 
-  //AttachFiles($assignmentId, 'jar', 'jar');
-  //AttachFiles($assignmentId, 'image', 'image');
+  if (isset($_FILES['image'])) {
+    AttachFiles($assignmentId, 'image', 'image');
+  }
+
+  if (isset($_FILES['jar'])) {
+    //AttachFiles($assignmentId, 'jar', 'jar');
+  }
 
   return "{$title} has been updated.";
 }
