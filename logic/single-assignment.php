@@ -91,6 +91,7 @@ function createSubmission(&$ps)
 function setupAssignmentDisplay(&$ps)
 {
   $assignmentId = ifsetor($_GET["id"], null);
+  $doSubmit = isset($_GET["doSubmit"]) ? true : false;
 
   if ($assignmentId == null) {
     trigger_error(__FUNCTION__ . " - Assignment ID not provided.",
@@ -115,6 +116,7 @@ function setupAssignmentDisplay(&$ps)
   $ps->assignmentId = $assignmentId;
   $ps->canSubmit = $canSubmit;
   $ps->displayedAssignment = $displayedAssignment;
+  $ps->doSubmit = $doSubmit && $isEnrolled && $canSubmit;
   $ps->isEditing = false;
   $ps->isEnrolled = $isEnrolled;
   $ps->isOwner = $isOwner;

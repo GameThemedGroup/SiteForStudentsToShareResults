@@ -108,7 +108,7 @@ get_header(); ?>
 <!-- Assignment Display -->
 
 <!-- Assignment Submission Form -->
-<?php if ($isEnrolled && $canSubmit): ?>
+<?php if ($doSubmit): ?>
   <?php include_once(get_template_directory() . '/templates/submit_assignment_form.php'); ?>
 <?php endif; ?>
 <!-- Assignment Submission Form -->
@@ -173,13 +173,11 @@ get_header(); ?>
 
     <?php if($isEnrolled && $canSubmit) : ?>
       <tr class="break">
-        <th></th>
-        <th></th>
-        <th></th>
+        <th colspan="4"></th>
       </tr>
       <tr>
-        <th class="action" colspan="3">
-          <b><a href="<?php echo $url['assignment'] . "?id={$courseId}"; ?>">
+        <th class="action" colspan="4">
+          <b><a href="<?php echo site_url("assignment?id={$assignmentId}&doSubmit=true"); ?>">
             Submit Assignment
           </a></b>
         </th>
