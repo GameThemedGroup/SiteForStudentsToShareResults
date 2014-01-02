@@ -216,7 +216,7 @@ function updateAssignment()
     return "Invalid input when modifying assignment.";
   }
 
-  $assignmentLink = ifsetor($_POST['class'], '');
+  $entryClass = ifsetor($_POST['class'], '');
   $assignmentLink = ifsetor($_POST['link'], '');
   $isEnabled = true;
 
