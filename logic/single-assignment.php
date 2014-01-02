@@ -8,11 +8,15 @@ function initializePageState(&$ps)
 {
   $action = ifsetor($_POST['action'], null);
   $actionList = array(
-    'open'   => 'toggleAssignmentStatus',
     'close'  => 'toggleAssignmentStatus',
-    //'edit'   => 'setupSubmissionEdit',
-    'create' => 'createSubmission'
+    'create' => 'createSubmission',
+    'delete' => 'deleteSubmission',
+    'edit'   => 'setupEdit',
+    'open'   => 'toggleAssignmentStatus',
+    'update' => 'updateSubmission'
   );
+
+  setupSubmissionForm($ps);
 
   $ps->userFeedback = '';
   if ($action == null) {
@@ -23,7 +27,6 @@ function initializePageState(&$ps)
   }
 
   setupAssignmentDisplay($ps);
-  setupSubmissionForm($ps);
   setupSubmissionList($ps);
 }
 
@@ -91,7 +94,8 @@ function createSubmission(&$ps)
 function setupAssignmentDisplay(&$ps)
 {
   $assignmentId = ifsetor($_GET["id"], null);
-  $doSubmit = isset($_GET["doSubmit"]) ? true : false;
+
+  $doSubmit = isset($ps->doSubmit) || isset($_GET["doSubmit"]) ? true : false;
 
   if ($assignmentId == null) {
     trigger_error(__FUNCTION__ . " - Assignment ID not provided.",
@@ -130,7 +134,6 @@ function setupSubmissionForm(&$ps)
   );
 
   $assignmentId = ifsetor($_GET["id"], null);
-
   $terms = wp_get_post_terms($assignmentId);
   $courseId = str_ireplace ('course:' ,'' , $terms[0]->name);
 
@@ -168,6 +171,11 @@ function setupSubmissionList(&$ps)
 
   include_once(get_template_directory() . '/common/submissions.php');
   $submissionList = GTCS_Submissions::GetAllSubmissions($assignmentId);
+
+  $userId = get_current_user_id();
+  foreach ($submissionList as $submission) {
+    $submission->canEdit = $submission->AuthorId == $userId;
+  }
 
   // list of students who have not submitted any work for this assignment
   $nonSubmitters = getListOfNonSubmitters($submissionList, $studentList);
@@ -220,6 +228,159 @@ function toggleAssignmentStatus()
     update_post_meta($assignmentId, 'isEnabled', false);
     return "Assignment is now closed to submissions.";
   }
+}
+
+function updateSubmission()
+{
+  $courseId = ifsetor($_POST['courseId'], null);
+  $description = ifsetor($_POST['description'], null);
+  $studentId = get_current_user_id();
+  $submissionId = ifsetor($_POST['submissionId'], null);
+  $title = ifsetor($_POST['title'], null);
+
+  if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
+    compact('studentId', 'submissionId', 'title', 'description'))) {
+
+    return "Invalid input when modifying submission.";
+  }
+
+  $entryClass = ifsetor($_POST['class'], '');
+  if ($entryClass == 'other') {
+    $entryClass = ifsetor($_POST['classInput'], null);
+    if ($entryClass != null)
+      $entryClass .= '.class';
+  }
+
+  // TODO create updateSubmission function
+  // updateAssignment works because assignments and submissions are both posts
+  // and submissions are not affected by the additional properties
+  include_once(get_template_directory() . '/common/assignments.php');
+  GTCS_Assignments::updateAssignment(
+    $submissionId,
+    $studentId,
+    0,
+    $title,
+    $description,
+    "",
+    false
+  );
+
+  if (isset($_FILES['image'])) {
+    AttachFiles($submissionId, 'image', 'image');
+  }
+
+  if (isset($_FILES['jar'])) {
+    AttachFiles($submissionId, 'jar', 'jar');
+    update_post_meta($submissionId, "entryClass", $entryClass);
+  }
+
+  return "{$title} has been updated.";
+}
+
+function setupEdit(&$ps)
+{
+  $submissionId = ifsetor($_POST['submissionId'], null);
+
+  if ($submissionId == null) {
+    return "There was an error attempting to edit the assignment.";
+  }
+
+  $submission = get_post($submissionId);
+
+  if ($submission->post_author != get_current_user_id()) {
+    return "You do not have permission to edit this assignment.";
+  }
+
+  $formHiddenValues = ifsetor($ps->formHiddenValues, null);
+  $formHiddenValues['submissionId'] = $submissionId;
+
+  $formClassValue = get_post_meta($submissionId, 'entryClass', true);
+  if ($formClassValue != '') { // strip off '.class'
+    $formClassValue = substr($formClassValue, 0, -1 * strlen('.class'));
+  }
+
+  $ps->doSubmit = true;
+  $ps->formAction = 'update';
+  $ps->formClassValue = $formClassValue;
+  $ps->formDescriptionValue = $submission->post_content;
+  $ps->formHiddenValues = $formHiddenValues;
+  $ps->formSubmitText = 'Finish Updating';
+  $ps->formTitle = "Update Assignment";
+  $ps->formTitleValue = $submission->post_title;
+  $ps->formUrlValue = get_post_meta($submissionId, 'link', true);
+
+  return "Your are now editing the course.";
+}
+
+function deleteSubmission()
+{
+  $studentId = get_current_user_id();
+  $submissionId = ifsetor($_POST['submissionId'], null);
+
+  if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
+    compact('studentId', 'submissionId'))) {
+
+    return "Invalid input when deleting assignment.";
+  }
+
+  $submission = get_post($submissionId);
+
+  if(!$submission) // assignment does not exist
+    return "This assignment does not exist.";
+
+  // user does not have permission to delete assignment
+  if ($submission->post_author != $studentId)
+    return "You do not have permission to delete this assignment.";
+
+  wp_delete_post($submissionId);
+  DeleteAttachments($submissionId, 'jar');
+  DeleteAttachments($submissionId, 'image');
+
+  return "{$submission->post_title} has been deleted.";
+}
+
+// Checks the $_FILES array for images and attaches them to the given assignment
+// Removes any current attachments
+//
+// @param assignmentId    the id of the post holding the assignment information
+// @param fileindex       the index of $_FILES where the file is located
+// @param assignmentType  the type of attachment (ex. 'jar' or 'image')
+function AttachFiles($assignmentId, $fileIndex, $attachmentType)
+{
+  include_once(get_template_directory() . '/common/attachments.php');
+  if (   file_exists($_FILES[$fileIndex]['tmp_name'])
+      && is_uploaded_file($_FILES[$fileIndex]['tmp_name'])) {
+
+    DeleteAttachments($assignmentId, $attachmentType);
+
+    $title = pathinfo($_FILES[$fileIndex]['name'], PATHINFO_FILENAME);
+    $isImage = ($attachmentType == "image");
+
+    $fileAttr = GTCS_Attachments::handleFileUpload($fileIndex);
+
+    $attachmentArgs = (object) array(
+      'postId' => $assignmentId,
+      'fileAttr' => $fileAttr,
+      'title' => $title,
+      'type' => $attachmentType,
+      'isFeaturedImage' => $isImage
+    );
+
+    GTCS_Attachments::attachFileToPost($attachmentArgs);
+  }
+}
+
+// Removes attachments of the given type from the post
+//
+// @param assignmentId    the id of the post holding the assignment information
+// @param fileindex       the index of $_FILES where the file is located
+// @param assignmentType  the type of attachment (ex. 'jar' or 'image')
+function DeleteAttachments($assignmentId, $attachmentType)
+{
+  include_once(get_template_directory() . '/common/attachments.php');
+  $oldAttachments = GTCS_Attachments::GetAttachments($assignmentId, $attachmentType);
+  foreach($oldAttachments as $attachment)
+    wp_delete_attachment($attachment->ID, true);
 }
 
 function getListOfNonSubmitters($submissionList, $studentList)

@@ -136,6 +136,7 @@ get_header(); ?>
         <th>Title</th>
         <th>Author</th>
         <th>Date Submitted</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody>
@@ -155,6 +156,27 @@ get_header(); ?>
           </a>
         </th>
         <th><?php echo date('m/d/y (h:i a)', strtotime($submission->SubmissionDate)) ?></th>
+
+        <!-- Action Selector -->
+        <th>
+          <?php if ($submission->canEdit): ?>
+            <form action="
+              <?php echo site_url("/assignment/?id={$assignmentId}"); ?>" method="post">
+
+              <select name="action">
+                <option disabled="disabled" selected>Choose an action</option>
+                <option value="edit">Edit</option>
+                <option value="delete">Delete</option>
+              </select>
+
+              <input type="hidden" name="submissionId"
+                value="<?php echo $submission->SubmissionId; ?>">
+
+              <input type="submit" value="Confirm"/>
+            </form>
+          <?php endif; ?>
+        </th>
+
       </tr>
     <?php endforeach; ?>
 
