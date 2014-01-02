@@ -24,6 +24,7 @@ function initializePageState(&$ps)
   );
 
   setupDefaultValues($ps);
+  setupAssignmentSubmissionForm($ps);
   if ($action != null) {
     if (array_key_exists($action, $actionList)) {
       $ps->userFeedback = call_user_func($actionList[$action], $ps);
@@ -35,8 +36,61 @@ function initializePageState(&$ps)
   setupCourseAndAssignments($ps);
 }
 
+function setupAssignmentSubmissionForm(&$ps)
+{
+  $assignmentId = ifsetor($_GET["id"], null);
+  $courseId = getCourseId($ps);
+  $jarClassList = array(
+    'Main.class',
+    'user.Main.class'
+  );
+
+  $formValues = array(
+    'courseId' => $courseId
+  );
+
+  $ps->doShowUrl = true;
+  $ps->formCallback = site_url("assignments?id={$courseId}");
+  $ps->formAppletClassList = $jarClassList;
+
+  $ps->formAction = 'create';
+  $ps->formClassValue = '';
+  $ps->formDescriptionValue = '';
+  $ps->formHiddenValues = $formValues;
+  $ps->formSubmitText = 'Create';
+  $ps->formTitle = 'Create Assignment';
+  $ps->formTitleValue = '';
+  $ps->formUrlValue = '';
+}
+
 function setupCourseAndAssignments(&$ps)
 {
+  $courseId = getCourseId($ps);
+
+  if ($courseId == null) {
+    $assignmentList = array();
+  } else {
+    include_once(get_template_directory() . '/common/assignments.php');
+    $assignmentList = GTCS_Assignments::getAllAssignments($courseId);
+  }
+
+  $hasAssignments = sizeof($assignmentList) != 0;
+
+  include_once(get_template_directory() . '/common/courses.php');
+  $professorId = get_current_user_id();
+  $courseList = GTCS_Courses::getCourseByFacultyId($professorId);
+
+  $ps->assignmentList = $assignmentList;
+  $ps->courseList = $courseList;
+  $ps->courseId = $courseId;
+  $ps->hasAssignments = $hasAssignments;
+}
+
+function getCourseId(&$ps)
+{
+  if (isset($ps->courseId))
+    return $ps->courseId;
+
   $professorId = wp_get_current_user()->ID;
 
   include_once(get_template_directory() . '/common/courses.php');
@@ -48,19 +102,7 @@ function setupCourseAndAssignments(&$ps)
     $courseId = ifsetor($courseList[0]->Id, null);
   }
 
-  if ($courseId == null) {
-    $assignmentList = array();
-  } else {
-    include_once(get_template_directory() . '/common/assignments.php');
-    $assignmentList = GTCS_Assignments::getAllAssignments($courseId);
-  }
-
-  $hasAssignments = sizeof($assignmentList) != 0;
-
-  $ps->assignmentList = $assignmentList;
-  $ps->courseList = $courseList;
-  $ps->courseId = $courseId;
-  $ps->hasAssignments = $hasAssignments;
+  return $courseId;
 }
 
 function setupEdit(&$ps)
@@ -77,16 +119,22 @@ function setupEdit(&$ps)
     return "You do not have permission to edit this assignment.";
   }
 
-  $displayedAssignment = get_post($assignmentId);
+  $formHiddenValues = ifsetor($ps->formHiddenValues, null);
+  $formHiddenValues['assignId'] = $assignmentId;
 
-  $isEditing = true;
+  $formClassValue = get_post_meta($assignmentId, 'entryClass', true);
+  if ($formClassValue != '') { // strip off '.class'
+    $formClassValue = substr($formClassValue, 0, -1 * strlen('.class'));
+  }
 
-  $displayedAssignment = get_post($assignmentId);
-  $displayedAssignment->link = get_post_meta($assignmentId, 'link', true);
-
-  $ps->isEditing = true;
-  $ps->assignmentId = $assignmentId;
-  $ps->displayedAssignment = $displayedAssignment;
+  $ps->formAction = 'update';
+  $ps->formClassValue = $formClassValue;
+  $ps->formDescriptionValue = $assignment->post_content;
+  $ps->formHiddenValues = $formHiddenValues;
+  $ps->formSubmitText = 'Finish Updating';
+  $ps->formTitle = "Update Assignment";
+  $ps->formTitleValue = $assignment->post_title;
+  $ps->formUrlValue = get_post_meta($assignmentId, 'link', true);
 
   return "Your are now editing the course.";
 }
@@ -168,6 +216,7 @@ function updateAssignment()
     return "Invalid input when modifying assignment.";
   }
 
+  $assignmentLink = ifsetor($_POST['class'], '');
   $assignmentLink = ifsetor($_POST['link'], '');
   $isEnabled = true;
 
@@ -187,7 +236,8 @@ function updateAssignment()
   }
 
   if (isset($_FILES['jar'])) {
-    //AttachFiles($assignmentId, 'jar', 'jar');
+    AttachFiles($assignmentId, 'jar', 'jar');
+    update_post_meta($assignmentId, "entryClass", $entryClass);
   }
 
   return "{$title} has been updated.";
@@ -199,12 +249,18 @@ function createAssignment()
   $courseId = ifsetor($_POST['courseId'], null);
   $title = ifsetor($_POST['title'], null);
   $description = ifsetor($_POST['description'], null);
-
   if (!gtcs_validate_not_null(__FUNCTION__, __FILE__, __LINE__,
     compact('professorId', 'courseId', 'title',
     'description'))) {
 
     return "Invalid values when creating assignment.";
+  }
+
+  $entryClass = ifsetor($_POST['class'], null);
+  if ($entryClass == 'other') {
+    $entryClass = ifsetor($_POST['classInput'], null);
+    if ($entryClass != null)
+      $entryClass .= '.class';
   }
 
   $assignmentLink = ifsetor($_POST['link'], '');
@@ -222,7 +278,9 @@ function createAssignment()
 
   $assignmentId = GTCS_Assignments::CreateAssignment($args);
 
-  //AttachFiles($assignmentId, 'jar', 'jar');
+  AttachFiles($assignmentId, 'jar', 'jar');
+  update_post_meta($assignmentId, "entryClass", $entryClass);
+
   AttachFiles($assignmentId, 'image', 'image');
 
   return "{$title} has been created.";

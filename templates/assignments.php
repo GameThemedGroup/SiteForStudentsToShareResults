@@ -36,65 +36,7 @@ get_header(); ?>
 <?php endif ?>
 
 <!-- Assignment Creation Form -->
-<form action="<?php echo site_url("assignments/?id={$courseId}"); ?>" method="post" enctype="multipart/form-data">
-  <div id='create-assignment-box'>
-    <div id='create-assignment-title'>
-      <?php if ($isEditing): ?>Edit Assignment
-      <?php else: ?>Create Assignment
-      <?php endif; ?>
-    </div>
-
-    <div id='create-assignment-field'>
-      <p class="create-assignment">Title</p>
-      <input class='create-assignment' type="text" name="title"
-        value="<?php echo $displayedAssignment->post_title; ?>" required>
-    </div>
-
-    <div id='create-assignment-field'>
-      <p class="create-assignment">External URL</p>
-      <input class='create-assignment' type="text" name="link"
-        value="<?php echo $displayedAssignment->link; ?>">
-    </div>
-
-    <div id='create-assignment-field'>
-      <p class="create-assignment">Description</p>
-      <textarea cols="25" rows="5" name="description" required><?php echo $displayedAssignment->post_content; ?></textarea>
-    </div>
-
-<?php
-// TODO Let professors add sample jar files
-/*
-    <div id='create-assignment-field'>
-      <p class="create-assignment">Sample File</p>
-      <input class='create-assignment' type="file" name="jar">
-    </div>
-*/
-?>
-    <div id='create-assignment-field'>
-      <p class="create-assignment">Preview Image</p>
-      <input class='create-assignment' type="file" name="image" accept="image/*">
-    </div>
-
-
-    <div id="create-assignment-buttons">
-
-      <input type="hidden" name="assignId" value="<?php echo $assignmentId; ?>">
-      <input type="hidden" name="courseId" value="<?php echo $courseId; ?>">
-
-    <?php if ($isEditing): ?>
-        <input type="hidden" name="action" value="update">
-        <input type="submit" value="Finish Editing"/>
-    <?php else: ?>
-        <input type="hidden" name="action" value="create">
-        <input type="submit" value="Create"/>
-    <?php endif; ?>
-      <a href="<?php echo site_url('assignments/?id=' . $courseId) ?>">
-        <button type="button">Cancel</button>
-      </a>
-    </div> <!-- create-assignment-buttons -->
-  </div> <!-- Create-Assignment-Box -->
-</form>
-<!-- Assignment Creation Form -->
+<?php include_once(get_template_directory() . '/templates/submit_assignment_form.php'); ?>
 
 <!-- Course Selector -->
   <div id="sidebar-menu">
@@ -142,6 +84,7 @@ get_header(); ?>
 </div>
 <!-- Upload Assignments via XML form -->
 
+<!-- Assignment List -->
 <div id='table'>
   <div id='table-title'>Manage Assignments</div>
   <table>
@@ -192,6 +135,6 @@ get_header(); ?>
     </tbody>
   </table>
 </div>
-</html>
+<!-- Assignment List -->
 
 <?php get_footer(); ?>

@@ -34,10 +34,10 @@ function createSubmission(&$ps)
   $description = ifsetor($_POST['description'], null);
   $entryClass = ifsetor($_POST['class'], null);
   $title = ifsetor($_POST['title'], null);
-  $assignmentId = ifsetor($_POST['assignmentId'], 123);
+  $assignmentId = ifsetor($_POST['assignmentId'], null);
   $courseId = ifsetor($_POST['courseId'], null);
 
-  if ($entryClass == 'Other') {
+  if ($entryClass == 'other') {
     $entryClass = ifsetor($_POST['classInput'], null);
     if ($entryClass != null)
       $entryClass .= '.class';
@@ -123,17 +123,31 @@ function setupAssignmentDisplay(&$ps)
 function setupSubmissionForm(&$ps)
 {
   $jarClassList = array(
-    'Main.class' => true,
-    'user.Main.class' => false,
-    'Other' => false
+    'Main.class',
+    'user.Main.class'
   );
 
-  $defaultClassValue = '';
+  $assignmentId = ifsetor($_GET["id"], null);
 
-  $ps->submissionTitle = '';
-  $ps->submissionDescription = '';
-  $ps->jarClassList = $jarClassList;
-  $ps->defaultClassValue = $defaultClassValue;
+  $terms = wp_get_post_terms($assignmentId);
+  $courseId = str_ireplace ('course:' ,'' , $terms[0]->name);
+
+  $formHiddenValues = array(
+    'assignmentId' => $assignmentId,
+    'courseId' => $courseId
+  );
+
+  $ps->doShowUrl = false;
+  $ps->formAction = 'create';
+  $ps->formCallback = site_url("assignment?id={$assignmentId}");
+  $ps->formClassValue = '';
+  $ps->formDescriptionValue = '';
+  $ps->formSubmitText = 'Submit';
+  $ps->formTitle = 'Submit Assignment';
+  $ps->formTitleValue = '';
+  $ps->formUrlValue = '';
+  $ps->formHiddenValues = $formHiddenValues;
+  $ps->formAppletClassList = $jarClassList;
 }
 
 function setupSubmissionList(&$ps)

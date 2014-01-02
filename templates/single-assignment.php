@@ -109,76 +109,8 @@ get_header(); ?>
 
 <!-- Assignment Submission Form -->
 <?php if ($isEnrolled && $canSubmit): ?>
-<form action="<?php echo $url['assignment'] . "?id={$assignmentId}"; ?>"
-  method="post" enctype="multipart/form-data">
-
-  <div id='create-assignment-box'>
-    <div id='create-assignment-title'>
-      <?php echo $isEditing ? 'Edit ' : 'Submit Assignment' . $submissionTitle; ?>
-    </div>
-
-    <div id='create-assignment-field'>
-      <p class="create-assignment">Title</p>
-      <input class='create-assignment' type="text" name="title"
-        value="<?php //echo $displayedSubmission->post_title; ?>" required>
-    </div>
-
-    <div id='create-assignment-field'>
-      <p class="create-assignment">Description</p>
-      <textarea cols="25" rows="5" name="description"
-        required><?php echo $submissionDescription; ?></textarea>
-    </div>
-
-    <div id='create-assignment-field'>
-      <p class="create-assignment">Jar File</p>
-      <input class='create-assignment' type="file" name="jar">
-    </div>
-
-    <div id='create-assignment-field'>
-      <p class="create-assignment">Main Class
-        [<a href="#"
-          title="Ex. ghostfinder=user.Main.class
-      hangman=rslj.school.hangman.Hangman.class
-      rolodex=alex.rolodex.Rolodex.class">?</a>]
-      </p>
-      <br />
-
-      <?php foreach ($jarClassList as $jarClass => $isSelected): ?>
-        <input type="radio" name="class" value="<?php echo $jarClass; ?>"
-          <?php if ($isSelected) echo "checked"; ?>>
-          <?php echo $jarClass; ?><br />
-      <?php endforeach; ?>
-
-      <input type="text" name="classInput"
-        value="<?php echo $defaultClassValue; ?>">.class
-      </input>
-
-    </div>
-
-    <div id='create-assignment-field'>
-      <p class="create-assignment">Screenshot</p>
-      <input class='create-assignment' type="file" name="image" accept="image/*">
-    </div>
-
-    <div id="create-assignment-buttons">
-
-      <input type="hidden" name="assignmentId" value="<?php echo $assignmentId; ?>">
-      <input type="hidden" name="courseId" value="<?php echo $courseId; ?>">
-
-    <?php if ($isEditing): ?>
-        <input type="hidden" name="action" value="edit">
-        <input type="submit" value="Finish Editing"/>
-    <?php else: ?>
-        <input type="hidden" name="action" value="create">
-        <input type="submit" value="Submit"/>
-    <?php endif; ?>
-      <a href="<?php echo site_url("assignment/?id={$courseId}"); ?>">
-        <button type="button">Cancel</button>
-      </a>
-    </div> <!-- create-assignment-buttons -->
-  </div> <!-- Create-Assignment-Box -->
-</form>
-<? endif; ?>
+  <?php include_once(get_template_directory() . '/templates/submit_assignment_form.php'); ?>
+<?php endif; ?>
 <!-- Assignment Submission Form -->
 
 <!-- Sort Selector -->
