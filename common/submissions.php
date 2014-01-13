@@ -1,18 +1,18 @@
 <?php
 class GTCS_Submissions
 {
-  public static function DownloadAllSubmissions($assignmentId)
+  public static function downloadAllSubmissions($assignmentId)
   {
-    $allFilePaths = GTCS_Submissions::ListSubmissionJars($assignmentId);
-    $zipLocation = GTCS_Submissions::BuildSubmissionZipFile($allFilePaths);
+    $allFilePaths = GTCS_Submissions::listSubmissionJars($assignmentId);
+    $zipLocation = GTCS_Submissions::buildSubmissionZipFile($allFilePaths);
 
     echo "<br /> Path: " . $zipLocation['path'];
     echo "<br /> Url:  " . $zipLocation['url'];
   }
 
-  private static function ListSubmissionJars($assignmentId)
+  private static function listSubmissionJars($assignmentId)
   {
-    $submissions = GTCS_Submissions::GetAllSubmissions($assignmentId);
+    $submissions = GTCS_Submissions::getAllSubmissions($assignmentId);
     if(count($submissions) == 0)
       return;
 
@@ -33,7 +33,7 @@ class GTCS_Submissions
     return $allFilePaths;
   }
 
-  private static function BuildSubmissionZipFile($allFilePaths)
+  private static function buildSubmissionZipFile($allFilePaths)
   {
     ini_set('max_execution_time', 0);
 
@@ -64,7 +64,7 @@ class GTCS_Submissions
     return $zipLocation;
   }
 
-  public static function GetAllSubmissions($assignmentId)
+  public static function getAllSubmissions($assignmentId)
   {
     $args = array(
       'post_parent' => $assignmentId
@@ -95,7 +95,7 @@ class GTCS_Submissions
   // @param entryClass
   // @param studentId
   // @param title
-  public static function CreateSubmission($args)
+  public static function createSubmission($args)
   {
     $assignmentId = $args->assignmentId;
     $courseId = $args->courseId;
@@ -137,7 +137,7 @@ class GTCS_Submissions
     return $postId;
   }
 
-  public static function UpdateSubmission($subId, $description)
+  public static function updateSubmission($subId, $description)
   {
     global $wpdb;
     $wpdb->show_errors(true);
@@ -149,7 +149,7 @@ class GTCS_Submissions
     wp_update_post($assignmentPost);
   }
 
-  public static function GetSubmissions($studentId)
+  public static function getSubmissions($studentId)
   {
     global $wpdb;
     $wpdb->show_errors(true);
@@ -164,7 +164,7 @@ class GTCS_Submissions
     return $rows;
   }
 
-  public static function GetSubmissionBySubmissionName($submissionName)
+  public static function getSubmissionBySubmissionName($submissionName)
   {
     global $wpdb;
     $wpdb->show_errors(true);

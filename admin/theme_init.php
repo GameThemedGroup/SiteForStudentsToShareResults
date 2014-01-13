@@ -8,7 +8,7 @@ add_action('after_switch_theme', 'initialize_tables');
 function initialize_tables()
 {
   include_once(get_template_directory() . '/common/admin.php');
-  GTCS_Admin::RecreateTables();
+  GTCS_Admin::recreateTables();
 }
 
 add_action('after_switch_theme', 'initialize_roles');

@@ -38,7 +38,7 @@ function setupSubmissionsTab(&$ps)
   $userId = ifsetor($_GET['user'], null);
 
   include_once(get_template_directory() . '/common/submissions.php');
-  $submissionList = GTCS_Submissions::GetSubmissions($userId);
+  $submissionList = GTCS_Submissions::getSubmissions($userId);
   foreach ($submissionList as $submission) {
     if (has_post_thumbnail($submission->SubmissionId)) {
 

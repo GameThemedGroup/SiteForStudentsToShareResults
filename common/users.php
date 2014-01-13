@@ -115,7 +115,7 @@ class GTCS_Users
 
       // Enrolls the user
       $doEnroll = true;
-      GTCS_Users::UpdateStudentEnrollment($courseid, $studentid, $doEnroll);
+      GTCS_Users::updateStudentEnrollment($courseid, $studentid, $doEnroll);
     }
   }
 }

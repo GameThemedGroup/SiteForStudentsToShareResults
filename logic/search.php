@@ -57,5 +57,5 @@ else
 // gets count of search result pages
 $numPages = ceil($numPosts / $resultsPerPage);
 
-//$gtcs12_db->CreateSubmission('submission post', 23, 4, 184, 'submission description');
+//$gtcs12_db->createSubmission('submission post', 23, 4, 184, 'submission description');
 ?>

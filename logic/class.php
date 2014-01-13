@@ -65,7 +65,7 @@
     $assignmentList = GTCS_Assignments::getAllAssignments($course->ID);
 
     include_once(get_template_directory() . '/common/users.php');
-    $studentList = GTCS_Users::GetStudents($course->ID);
+    $studentList = GTCS_Users::getStudents($course->ID);
 
     $isOwner = ($course->FacultyId == $userId);
 

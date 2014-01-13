@@ -65,7 +65,7 @@ function deleteStudent(&$ps)
 
   include_once(get_template_directory() . '/common/users.php');
   wp_delete_user($oldUserId);
-  GTCS_Users::UpdateStudentEnrollment($courseId, $oldUserId, false);
+  GTCS_Users::updateStudentEnrollment($courseId, $oldUserId, false);
 
   return "Student deleted.";
 }
@@ -84,7 +84,7 @@ function deleteAllStudents(&$ps)
   foreach ($studentList as $student) {
     $studentId = $student->ID;
     wp_delete_user($studentId);
-    GTCS_Users::UpdateStudentEnrollment($courseId, $studentId, false);
+    GTCS_Users::updateStudentEnrollment($courseId, $studentId, false);
   }
 
   return "All students deleted.";
@@ -168,7 +168,7 @@ function uploadFromCsv(&$ps)
 {
   include_once(get_template_directory() . '/common/users.php');
   $courseId = $_POST['courseid'];
-  GTCS_Users::EnrollStudentsViaFile($courseId, 'studentdata');
+  GTCS_Users::enrollStudentsViaFile($courseId, 'studentdata');
 
   return "Students created.";
 }

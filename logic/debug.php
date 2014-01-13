@@ -21,7 +21,7 @@ if ($operation) {
 function resetTestData()
 {
   include_once(get_template_directory() . '/common/admin.php');
-  GTCS_Admin::RecreateTables();
+  GTCS_Admin::recreateTables();
 
   if (!function_exists('wp_delete_user')) {
     include(ABSPATH . './wp-admin/includes/user.php');
@@ -137,7 +137,7 @@ function createSubmissionsFromXml($xml, $assignmentIds, $studentIds, $dir)
 function createSubmission($submission, $assignmentid, $studentid, $dir)
 {
   include_once(get_template_directory() . '/common/submissions.php');
-  $submissionid = GTCS_Submissions::CreateSubmission((object) array(
+  $submissionid = GTCS_Submissions::createSubmission((object) array(
     'title' => $submission['title'],
     'studentId' => $studentid,
     'courseId' => 0, // why is course id needed?
@@ -207,7 +207,7 @@ function createAssignment($assignment, $courseid, $professorid)
   include_once(get_template_directory() . '/common/assignments.php');
   $assignment['courseId'] = $courseid;
   $assignment['professorId'] = $professorid;
-  $assignmentid = GTCS_Assignments::CreateAssignment((object) $assignment);
+  $assignmentid = GTCS_Assignments::createAssignment((object) $assignment);
 
   return $assignmentid;
 }
@@ -239,7 +239,7 @@ function updateStudentEnrollments($courseid, $students, $studentIds)
   include_once(get_template_directory() . '/common/users.php');
   foreach ($students as $student) {
     $studentid = $studentIds[$student];
-    GTCS_Users::UpdateStudentEnrollment($courseid, $studentid, true);
+    GTCS_Users::updateStudentEnrollment($courseid, $studentid, true);
   }
 }
 
@@ -277,7 +277,7 @@ function createUser($user, $role)
   $user['role'] = $role;
 
   include_once(get_template_directory() . '/common/users.php');
-  $user_id = GTCS_Users::AddUser(
+  $user_id = GTCS_Users::addUser(
     $user['login'],
     $user['password'],
     $user['user_email'],

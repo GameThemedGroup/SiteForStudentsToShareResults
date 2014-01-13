@@ -55,7 +55,7 @@ function createSubmission(&$ps)
 
 
   include_once(get_template_directory() . '/common/submissions.php');
-  $submissionId = GTCS_Submissions::CreateSubmission( (object) array(
+  $submissionId = GTCS_Submissions::createSubmission( (object) array(
     'assignmentId' => $assignmentId,
     'courseId' => $courseId,
     'description' => $description,
@@ -163,14 +163,14 @@ function setupSubmissionList(&$ps)
   $courseId = str_ireplace ('course:' ,'' , $terms[0]->name);
 
   include_once(get_template_directory() . '/common/courses.php');
-  $displayedCourse = GTCS_Courses::GetCourseByCourseId($courseId);
+  $displayedCourse = GTCS_Courses::getCourseByCourseId($courseId);
 
   // retrieve students and submissions for table
   include_once(get_template_directory() . '/common/users.php');
-  $studentList = GTCS_Users::GetStudents($courseId);
+  $studentList = GTCS_Users::getStudents($courseId);
 
   include_once(get_template_directory() . '/common/submissions.php');
-  $submissionList = GTCS_Submissions::GetAllSubmissions($assignmentId);
+  $submissionList = GTCS_Submissions::getAllSubmissions($assignmentId);
 
   $userId = get_current_user_id();
   foreach ($submissionList as $submission) {
@@ -266,11 +266,11 @@ function updateSubmission()
   );
 
   if (isset($_FILES['image'])) {
-    AttachFiles($submissionId, 'image', 'image');
+    attachFiles($submissionId, 'image', 'image');
   }
 
   if (isset($_FILES['jar'])) {
-    AttachFiles($submissionId, 'jar', 'jar');
+    attachFiles($submissionId, 'jar', 'jar');
     update_post_meta($submissionId, "entryClass", $entryClass);
   }
 
@@ -333,8 +333,8 @@ function deleteSubmission()
     return "You do not have permission to delete this assignment.";
 
   wp_delete_post($submissionId);
-  DeleteAttachments($submissionId, 'jar');
-  DeleteAttachments($submissionId, 'image');
+  deleteAttachments($submissionId, 'jar');
+  deleteAttachments($submissionId, 'image');
 
   return "{$submission->post_title} has been deleted.";
 }
@@ -345,13 +345,13 @@ function deleteSubmission()
 // @param assignmentId    the id of the post holding the assignment information
 // @param fileindex       the index of $_FILES where the file is located
 // @param assignmentType  the type of attachment (ex. 'jar' or 'image')
-function AttachFiles($assignmentId, $fileIndex, $attachmentType)
+function attachFiles($assignmentId, $fileIndex, $attachmentType)
 {
   include_once(get_template_directory() . '/common/attachments.php');
   if (   file_exists($_FILES[$fileIndex]['tmp_name'])
       && is_uploaded_file($_FILES[$fileIndex]['tmp_name'])) {
 
-    DeleteAttachments($assignmentId, $attachmentType);
+    deleteAttachments($assignmentId, $attachmentType);
 
     $title = pathinfo($_FILES[$fileIndex]['name'], PATHINFO_FILENAME);
     $isImage = ($attachmentType == "image");
@@ -375,10 +375,10 @@ function AttachFiles($assignmentId, $fileIndex, $attachmentType)
 // @param assignmentId    the id of the post holding the assignment information
 // @param fileindex       the index of $_FILES where the file is located
 // @param assignmentType  the type of attachment (ex. 'jar' or 'image')
-function DeleteAttachments($assignmentId, $attachmentType)
+function deleteAttachments($assignmentId, $attachmentType)
 {
   include_once(get_template_directory() . '/common/attachments.php');
-  $oldAttachments = GTCS_Attachments::GetAttachments($assignmentId, $attachmentType);
+  $oldAttachments = GTCS_Attachments::getAttachments($assignmentId, $attachmentType);
   foreach($oldAttachments as $attachment)
     wp_delete_attachment($attachment->ID, true);
 }

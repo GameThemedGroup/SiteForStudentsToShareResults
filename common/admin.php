@@ -1,7 +1,7 @@
 <?php
 class GTCS_Admin
 {
-  public static function DeleteTables()
+  public static function deleteTables()
   {
     global $wpdb;
     $wpdb->show_errors(true);
@@ -19,7 +19,7 @@ class GTCS_Admin
     return "Tables deleted";
   }
 
-  public static function CreateTables()
+  public static function createTables()
   {
     global $wpdb;
     $wpdb->show_errors(true);
@@ -53,10 +53,10 @@ class GTCS_Admin
     $wpdb->query($sql);
   }
 
-  public static function RecreateTables()
+  public static function recreateTables()
   {
-    self::DeleteTables();
-    self::CreateTables();
+    self::deleteTables();
+    self::createTables();
 
     return "Tables recreated<br/>";
   }
