@@ -30,7 +30,11 @@
   </div>
 
 <?php else: ?>
+
   <div id="loginbar">
+    <?php if (isset($_GET) && isset($_GET['login'])): ?>
+      <div class="error">Invalid user name or password</div>
+    <?php endif; ?>
     <form name="loginform" id="loginform"
       action="<?php echo get_option('siteurl'); ?>/wp-login.php"
       method="post">
@@ -49,9 +53,8 @@
         onblur="if (this.value == '') {this.value = 'Password';}"
       />
 
-      <input name="rememberme" id="rememberme" value="forever" tabindex="90" type="checkbox">
+      <br /><input name="rememberme" id="rememberme" value="forever" tabindex="90" type="checkbox">
         Remember Me?
-
       <br />
 
       <input name="wp-submit" id="wp-submit" value="Log In" tabindex="100" type="submit">
