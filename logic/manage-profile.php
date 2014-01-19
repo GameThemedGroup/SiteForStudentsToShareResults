@@ -114,6 +114,10 @@
       return "Incorrect password entered!";
     }
 
+    if (strlen($newPass) < 8) {
+      return "Please choose a password that is at least 8 characters long.";
+    }
+
     if ($newPass != $newPassConfirm) {
       return "Your passwords do not match!";
     }
