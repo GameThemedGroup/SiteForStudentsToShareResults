@@ -3624,7 +3624,6 @@ p.sidebar-menu-middle {
 p.sidebar-menu-bottom {
   height:19px;
   font-size:12px;
-  margin:0px;
   padding:0px 3px 0px 3px;
 }
 li.sidebar-menu{
@@ -3645,13 +3644,9 @@ li.sidebar-menu-selected {
   margin:4px 0px 0px 0px;
   font-weight:bold;
   color:rgb(100,100,100);
-  background-color:rgb(255,255,255);
+  background-color: beige;
   border-style: solid;
-  border-width:1px 1px 3px 1px;
-  border-top-color:rgb(255,255,255);
-  border-bottom-color:rgb(200,200,200);
-  border-right-color:rgb(233,233,233);
-  border-left-color:rgb(233,233,233);
+  box-shadow: 1px 1px 1px 1px black;
 }
 li.sidebar-menu-center{
   text-align:center;
