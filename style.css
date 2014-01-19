@@ -2855,15 +2855,15 @@ img {
   width:725px;
   padding:6px;
 }
-/*----------------- Activity Feed -----------------*/
-/* the front page list of comments */
-.activityfeed {
+/*----------------- Recent Submission Feed -----------------*/
+/* the front page list of recent submissions*/
+#recent-submission-feed {
   float:left;
   margin:0px 0px 10px 10px;
   width:635px;
   padding:6px;
 }
-#activityfeed-title {
+#recent-submission-feed-title {
   font-family:Tahoma, Geneva, sans-serif;
   padding-left:8px;
   font-size:20px;
