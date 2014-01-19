@@ -114,7 +114,14 @@ function gtcs_front_end_login_fail($username){
   }
 }
 
-
+// fix for cookie error on login
+// source: http://wordpress.org/support/topic/cookie-error-when-logging-in/page/2
+add_action('after_setup_theme', 'gtcs_set_wp_test_cookie', 101);
+function gtcs_set_wp_test_cookie() {
+  setcookie(TEST_COOKIE, 'WP Cookie check', 0, COOKIEPATH, COOKIE_DOMAIN);
+  if ( SITECOOKIEPATH != COOKIEPATH )
+    setcookie(TEST_COOKIE, 'WP Cookie check', 0, SITECOOKIEPATH, COOKIE_DOMAIN);
+}
 
 
 
