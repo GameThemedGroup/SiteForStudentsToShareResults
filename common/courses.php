@@ -182,5 +182,28 @@ class GTCS_Courses
     );
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+  ///
+  /////////////////////////////////////////////////////////////////////////////
+  public static function getSelectedCourse()
+  {
+    $userId = wp_get_current_user()->ID;
+    $courseId = ifsetor($_GET['courseId'], null);
+
+    if ($courseId != null) {
+      return $courseId;
+    }
+
+    $isStudent = gtcs_user_has_role('student');
+    $isProfessor = gtcs_user_has_role('professor');
+
+    include_once(get_template_directory() . '/common/courses.php');
+    if ($isProfessor)
+      $courseList = GTCS_Courses::getCourseByFacultyId($userId);
+    else if ($isStudent)
+      $courseList = GTCS_Courses::getCourseByStudentId($userId);
+
+    return ifsetor($courseList[0]->Id, null);
+  }
 }
 ?>
