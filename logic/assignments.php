@@ -7,7 +7,7 @@ extract((array)$pageState);
 function initializePageState(&$ps)
 {
   $isProfessor = gtcs_user_has_role('professor');
-
+  $ps->isUser = $isProfessor;
   if (!$isProfessor) {
     echo "You do not have permission to view this page. <br />";
     return;
@@ -25,6 +25,8 @@ function initializePageState(&$ps)
 
   setupDefaultValues($ps);
   setupAssignmentSubmissionForm($ps);
+  setupCourseSelector(&$ps);
+
   if ($action != null) {
     if (array_key_exists($action, $actionList)) {
       $ps->userFeedback = call_user_func($actionList[$action], $ps);
@@ -36,10 +38,38 @@ function initializePageState(&$ps)
   setupCourseAndAssignments($ps);
 }
 
+function setupCourseSelector(&$ps)
+{
+  $userId = get_current_user_id();
+  $isStudent = gtcs_user_has_role('student');
+  $isProfessor = gtcs_user_has_role('professor');
+  $isUser = $isStudent || $isProfessor;
+
+  include_once(get_template_directory() . '/common/courses.php');
+
+  if ($isProfessor) {
+    $courseList = GTCS_Courses::getCourseByFacultyId($userId);
+  } else if ($isStudent) {
+    $courseList = GTCS_Courses::getCourseByStudentId($userId);
+  }
+
+  $courseId = ifsetor($ps->courseId,
+    GTCS_Courses::getSelectedCourse());
+
+  $ps->courseId = $courseId;
+  $ps->courseList = $courseList;
+  $ps->isOwner = true; // TODO fix this
+  $ps->isUser = $isUser;
+  $ps->pageCallback = site_url('/assignments/');
+}
+
 function setupAssignmentSubmissionForm(&$ps)
 {
   $assignmentId = ifsetor($_GET["id"], null);
-  $courseId = getCourseId($ps);
+
+  include_once(get_template_directory() . '/common/courses.php');
+  $courseId = ifsetor($ps->courseId, GTCS_Courses::getSelectedCourse());
+
   $jarClassList = array(
     'Main.class',
     'user.Main.class'
@@ -50,7 +80,7 @@ function setupAssignmentSubmissionForm(&$ps)
   );
 
   $ps->doShowUrl = true;
-  $ps->formCallback = site_url("assignments?id={$courseId}");
+  $ps->formCallback = site_url("assignments?courseId={$courseId}");
   $ps->formAppletClassList = $jarClassList;
 
   $ps->formAction = 'create';
@@ -65,7 +95,7 @@ function setupAssignmentSubmissionForm(&$ps)
 
 function setupCourseAndAssignments(&$ps)
 {
-  $courseId = getCourseId($ps);
+  $courseId = ifsetor($ps->courseId, GTCS_Courses::getSelectedCourse());
 
   if ($courseId == null) {
     $assignmentList = array();
@@ -96,7 +126,7 @@ function getCourseId(&$ps)
   include_once(get_template_directory() . '/common/courses.php');
   $courseList = GTCS_Courses::getCourseByFacultyId($professorId);
 
-  $courseId = ifsetor($_GET['id'], null);
+  $courseId = ifsetor($_GET['courseId'], null);
 
   if($courseId == null) {
     $courseId = ifsetor($courseList[0]->Id, null);
@@ -161,7 +191,7 @@ function setupDefaultValues(&$ps)
 function uploadFromXml()
 {
   $professorId = wp_get_current_user()->ID;
-  $courseId = ifsetor($_POST['id'], null);
+  $courseId = ifsetor($_POST['courseId'], null);
 
   // if(gtcs_validate_not_null($professorId, $courseId))
 

@@ -39,33 +39,12 @@ get_header(); ?>
 <?php include_once(get_template_directory() . '/templates/submit_assignment_form.php'); ?>
 
 <!-- Course Selector -->
-  <div id="sidebar-menu">
-    <div id="sidebar-menu-title">Courses</div>
-    <ul class="sidebar-menu">
-<?php if($courseList) : ?>
-<?php   foreach($courseList as $course) : ?>
-<?php   if($courseId == $course->Id) : ?>
-          <li class="sidebar-menu-selected">
-<?php   else : ?>
-          <li class="sidebar-menu">
-<?php   endif ?>
-        <a class="sidebar-menu" href="<?php echo site_url('/assignments/?id=' . $course->Id) ?>">
-          <p class="sidebar-menu-top"><?php echo $course->Name ?></p>
-          <p class="sidebar-menu-bottom"><?php echo $course->Quarter . ', ' . $course->Year ?></p>
-        </a>
-      </li>
-<?php   endforeach ?>
-<?php else : ?>
-      <li class="sidebar-menu-center">You have no courses</li>
-<?php endif; ?>
-    </ul>
-  </div> <!-- sidebar-menu -->
-<!-- Course Selector -->
+<?php require_once(get_template_directory() . '/templates/course-selector.php'); ?>
 
 <!-- Upload Assignments via XML form -->
 <div id="create-student-box-bottom">
   <div id='create-student-title'>Upload Assignments from XML</div>
-  <form action="<?php echo get_permalink() . "?id={$courseId}" ?>"
+  <form action="<?php echo get_permalink() . "?courseId={$courseId}" ?>"
     method="post" enctype="multipart/form-data">
 
     <div id="create-student-field">
@@ -73,11 +52,11 @@ get_header(); ?>
       <input type="file" name="xml">
     </div>
     <div id="create-student-buttons">
-      <input type="hidden" name="id" value="<?php echo $courseId; ?>">
+      <input type="hidden" name="courseId" value="<?php echo $courseId; ?>">
       <input type="hidden" name="action" value="upload">
       <input type="submit" value="Upload">
 
-      <a href="<?php echo site_url('/assignments/') . "?id={$courseId}"; ?>">
+      <a href="<?php echo site_url('/assignments/') . "?courseId={$courseId}"; ?>">
         <button type="button">Cancel</button></a>
     </div>
   </form>
@@ -102,7 +81,7 @@ get_header(); ?>
       </tr>
     <?php else: ?>
     <?php foreach ($assignmentList as $assignment) : ?>
-      <?php $assignLink = site_url('/assignment/?id=' . $assignment->AssignmentId); ?>
+      <?php $assignLink = site_url('/assignment/?courseId=' . $assignment->AssignmentId); ?>
       <tr>
         <th><a href="<?php echo $assignLink; ?>">
            <?php echo $assignment->Title ?></a>
@@ -111,7 +90,7 @@ get_header(); ?>
         <th><?php echo date('F d, Y', strtotime($assignment->Date)); ?></th>
         <th>
           <form action="
-            <?php echo site_url('/assignments/?id=') . $courseId; ?>" method="post">
+            <?php echo site_url('/assignments/?courseId=') . $courseId; ?>" method="post">
 
             <select name="action">
               <option disabled="disabled" selected>Choose an action</option>

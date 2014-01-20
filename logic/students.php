@@ -24,6 +24,7 @@ function initializePageState(&$ps)
     'resetAllPasswords' => 'resetAllStudentPasswords'
   );
 
+  setupCourseSelector($ps);
   setupDefaultValues($ps);
   getSelectedCourseId($ps);
   if ($action != null) {
@@ -35,6 +36,31 @@ function initializePageState(&$ps)
   }
 
   setupStudentList($ps);
+}
+
+function setupCourseSelector(&$ps)
+{
+  $userId = get_current_user_id();
+  $isStudent = gtcs_user_has_role('student');
+  $isProfessor = gtcs_user_has_role('professor');
+  $isUser = $isStudent || $isProfessor;
+
+  include_once(get_template_directory() . '/common/courses.php');
+
+  if ($isProfessor) {
+    $courseList = GTCS_Courses::getCourseByFacultyId($userId);
+  } else if ($isStudent) {
+    $courseList = GTCS_Courses::getCourseByStudentId($userId);
+  }
+
+  $courseId = ifsetor($ps->courseId,
+    GTCS_Courses::getSelectedCourse());
+
+  $ps->courseId = $courseId;
+  $ps->courseList = $courseList;
+  $ps->isOwner = true; // TODO fix this
+  $ps->isUser = $isUser;
+  $ps->pageCallback = site_url('/students/');
 }
 
 function setupDefaultValues(&$ps)
@@ -72,7 +98,7 @@ function deleteStudent(&$ps)
 
 function deleteAllStudents(&$ps)
 {
-  $courseId = ifsetor($_POST['courseid'], null);
+  $courseId = ifsetor($_POST['courseId'], null);
 
   include_once(get_template_directory() . '/common/users.php');
   $studentList = GTCS_Users::getStudents($courseId);
@@ -111,7 +137,7 @@ function resetStudentPassword(&$ps)
 
 function resetAllStudentPasswords(&$ps)
 {
-  $courseId = $_POST['courseid'];
+  $courseId = $_POST['courseId'];
 
   $passwordLength = 15;
   $useSpecialChars = false;
@@ -167,7 +193,7 @@ function set_html_content_type() {
 function uploadFromCsv(&$ps)
 {
   include_once(get_template_directory() . '/common/users.php');
-  $courseId = $_POST['courseid'];
+  $courseId = $_POST['courseId'];
   GTCS_Users::enrollStudentsViaFile($courseId, 'studentdata');
 
   return "Students created.";
@@ -182,7 +208,7 @@ function getSelectedCourseId(&$ps)
   include_once(get_template_directory() . '/common/courses.php');
   $courseList = GTCS_Courses::getCourseByFacultyId($userId);
 
-  $courseId = ifsetor($_GET['courseid'], null);
+  $courseId = ifsetor($_GET['courseId'], null);
 
   if($courseId == null && $courseList != null)
     $courseId = $courseList[0]->Id;

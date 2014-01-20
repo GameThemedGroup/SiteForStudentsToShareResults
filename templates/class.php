@@ -10,8 +10,8 @@ get_header(); ?>
 
 <?php include_once(get_template_directory() . '/logic/class.php'); ?>
 
-<?php if (!$hasCourse): ?>
-  <div id='action-box'>No course specified</div>
+<?php if (!$isCourseSelected): ?>
+  <div id='action-box'>No course specified. Please select or create a course.</div>
   <div id="class-whole">
     <div id="class-title">Course Name</div>
     <div id="class-info1"><b>Professor </b></div>
@@ -30,7 +30,7 @@ get_header(); ?>
     </div>
 
     <div id="class-info1"><b>Professor </b>
-      <?php echo $professor->last_name . ', ' . $professor->first_name . ' '; ?>
+      <?php echo "{$professor->last_name}, {$professor->first_name} "; ?>
       [<a href="<?php echo site_url("/profile/?user={$professor->ID}"); ?>">
         profile
       </a>]
@@ -55,29 +55,7 @@ get_header(); ?>
 <?php endif; ?>
 
 <!-- Course Selector -->
-<?php if($isUser) : ?>
-  <div id="sidebar-menu">
-    <div id="sidebar-menu-title">My Courses</div>
-    <ul class="sidebar-menu">
-<?php foreach($courseList as $course) : ?>
-<?php   if($courseId == $course->Id) : ?>
-      <li class="sidebar-menu-selected">
-<?php   else : ?>
-      <li class="sidebar-menu">
-<?php   endif ?>
-        <a href="<?php echo site_url('/class/?id=' . $course->Id) ?>">
-          <p class="sidebar-menu-top"><?php echo $course->Name ?></p>
-          <p class="sidebar-menu-bottom"><?php echo $course->Quarter . ', ' . $course->Year ?></p>
-        </a>
-      </li>
-<?php endforeach; ?>
-<?php if ($isOwner): ?>
-      <li class="sidebar-menu-center"><a class="action" href="<?php echo site_url('/courses/') ?>">Create course</a></li>
-<?php endif; ?>
-    </ul>
-  </div>
-<?php endif; ?> <!-- sidebar-menu -->
-<!-- Course Selector -->
+<?php require_once(get_template_directory() . '/templates/course-selector.php'); ?>
 
 <!-- Student List -->
   <div id="sidebar-menu">

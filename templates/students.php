@@ -15,36 +15,12 @@ get_header(); ?>
 <?php endif; ?>
 
 <!-- Course Selector -->
-<div id="sidebar-menu">
-  <div id="sidebar-menu-title">Courses</div>
-  <ul class="sidebar-menu">
-<?php if($courseList) : ?>
-<?php   foreach($courseList as $course) : ?>
-<?php     if($courseId == $course->Id) : ?>
-    <li class="sidebar-menu">
-      <p class="sidebar-menu-top"><?php echo $course->Name ?></p>
-      <p class="sidebar-menu-bottom"><?php echo $course->Quarter . ', ' . $course->Year ?></p>
-    </li>
-<?php     else : ?>
-    <li class="sidebar-menu">
-      <a class="sidebar-menu" href="<?php echo site_url('/students/?courseid=' . $course->Id) ?>">
-        <p class="sidebar-menu-top"><?php echo $course->Name ?></p>
-        <p class="sidebar-menu-bottom"><?php echo $course->Quarter . ', ' . $course->Year ?></p>
-      </a>
-    </li>
-<?php     endif ?>
-<?php   endforeach ?>
-<?php else : ?>
-    <li class="sidebar-menu-center">You have no courses</li>
-<?php endif ?>
-  </ul>
-</div>
-<!-- Course Selector -->
+<?php require_once(get_template_directory() . '/templates/course-selector.php'); ?>
 
 <!-- Single Student Creation Form -->
 <div id="create-student-box-top">
   <div id='create-student-title'>Create student</div>
-  <form action="<?php echo site_url('/students/?courseid=' . $courseId) ?>" method="post">
+  <form action="<?php echo site_url('/students/?courseId=' . $courseId) ?>" method="post">
     <div id="create-student-field">
       <p class="create-student-top">Username</p>
       <input class='create-student' type="text" name="inptUserName" required>
@@ -73,13 +49,13 @@ get_header(); ?>
 <!-- Student File Upload Form -->
 <div id="create-student-box-bottom">
   <div id='create-student-title'>Create students via file</div>
-  <form action="<?php echo get_permalink() . "?courseid={$courseId}" ?>" method="post" enctype="multipart/form-data">
+  <form action="<?php echo get_permalink() . "?courseId={$courseId}" ?>" method="post" enctype="multipart/form-data">
     <div id="create-student-field">
       <p class="create-student-bottom">Spreadsheet</p>
       <input type="file" name="studentdata">
     </div>
     <div id="create-student-buttons">
-      <input type="hidden" name="courseid" value="<?php echo $courseId; ?>">
+      <input type="hidden" name="courseId" value="<?php echo $courseId; ?>">
       <input type="hidden" name="action" value="csvUpload">
       <input type="submit">
       <a href="<?php echo site_url('/class/') ?>"><button type="button">Cancel</button></a>
@@ -114,7 +90,7 @@ get_header(); ?>
       <th><?php echo $student->real_name; ?></th>
       <th><?php echo $student->display_name; ?></th>
       <th>
-        <form action="<?php echo site_url('/students/?courseid=') . $courseId; ?>"
+        <form action="<?php echo site_url('/students/?courseId=') . $courseId; ?>"
           method="post">
 
           <select name="action">
@@ -124,7 +100,7 @@ get_header(); ?>
           </select>
 
           <input type="hidden" name="studentid" value="<?php echo $student->ID; ?>">
-          <input type="hidden" name="courseid" value="<?php echo $courseId; ?>">
+          <input type="hidden" name="courseId" value="<?php echo $courseId; ?>">
           <input type="submit" value="Confirm"/>
         </form>
       </th>
@@ -134,7 +110,7 @@ get_header(); ?>
   <tr>
     <th colspan="3"><strong>All Students</strong></th>
     <th>
-      <form action="<?php echo site_url('/students/?courseid=') . $courseId; ?>"
+      <form action="<?php echo site_url('/students/?courseId=') . $courseId; ?>"
         method="post">
 
         <select name="action">
@@ -143,7 +119,7 @@ get_header(); ?>
           <option value="resetAllPasswords">Reset Passwords</option>
         </select>
 
-        <input type="hidden" name="courseid" value="<?php echo $courseId; ?>">
+        <input type="hidden" name="courseId" value="<?php echo $courseId; ?>">
         <input type="submit" value="Confirm"/>
       </form>
     </th>
