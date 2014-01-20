@@ -34,13 +34,24 @@ class GTCS_Courses
 
   public static function getCourseByCourseId($courseId)
   {
+    if ($courseId == null)
+      return null;
+
     global $wpdb;
     $wpdb->show_errors(true);
 
     $tablename = $wpdb->prefix . "courses";
 
-    $rows = $wpdb->get_row("SELECT c.id as ID, c.name as Name, c.quarter as Quarter, c.year as Year, c.facultyid as FacultyId, c.description as Description
-      FROM $tablename as c WHERE c.id = '$courseId'");
+    $rows = $wpdb->get_row("SELECT
+      c.description as Description,
+      c.facultyid as FacultyId,
+      c.id as ID,
+      c.name as Name,
+      c.quarter as Quarter,
+      c.year as Year
+      FROM {$tablename} as c
+      WHERE c.id='$courseId'
+    ");
 
     return $rows;
   }
