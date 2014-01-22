@@ -9,7 +9,15 @@ class Tests_CreateAssignment extends WP_UnitTestCase {
   }
 */
 
-  function test_sunny_day() {
+  function test_standard() {
+    $args = array(
+      'title' => 'test',
+      'courseId' => 0,
+      'description' => 'test description',
+      'professorId' => '1',
+      'courseLink' => 'http://www.example.com',
+      'isEnabled' => true
+    );
     /*
     switch_theme(wp_get_theme('GTCS12'));
     include_once(get_template_directory() . '/common/users.php');
@@ -23,7 +31,7 @@ class Tests_CreateAssignment extends WP_UnitTestCase {
 
     */
     global $wp_roles;
-    var_dump($wp_roles->roles);
+    //var_dump($wp_roles->roles);
     $id = $this->factory->user->create(array('role'=>'student'));
     $isStudent = gtcs_user_has_role('student', $id);
     $this->assertEquals(true, $isStudent);
