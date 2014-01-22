@@ -28,6 +28,7 @@ require_once( dirname( __FILE__ ) . '/mock-mailer.php' );
 $phpmailer = new MockPHPMailer();
 
 $wpdb->query( 'SET storage_engine = INNODB' );
+$wpdb->query( 'SET FOREIGN_KEY_CHECKS = 0' );
 $wpdb->select( DB_NAME, $wpdb->dbh );
 
 echo "Installing..." . PHP_EOL;
