@@ -81,7 +81,7 @@ get_header(); ?>
       </tr>
     <?php else: ?>
     <?php foreach ($assignmentList as $assignment) : ?>
-      <?php $assignLink = site_url('/assignment/?courseId=' . $assignment->AssignmentId); ?>
+      <?php $assignLink = site_url('/assignment/?id=' . $assignment->AssignmentId); ?>
       <tr>
         <th><a href="<?php echo $assignLink; ?>">
            <?php echo $assignment->Title ?></a>
