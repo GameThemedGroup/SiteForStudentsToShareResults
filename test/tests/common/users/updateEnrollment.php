@@ -22,13 +22,17 @@ class Tests_updateEnrollment extends WP_UnitTestCase {
     $this->assertCount(1, $course); // enrolled in one course
     $this->assertEquals($courseId, $course[0]->Id);
 
-    GTCS_Users::updateStudentEnrollment(1, $studentId, false); 
+    GTCS_Users::updateStudentEnrollment($courseId, $studentId, false); 
     $course = GTCS_Courses::getCourseByStudentId($studentId);
     $this->assertCount(0, $course); // enrolled in no courses
   }
 
   function test_invalidCourseId() 
   {
+    $this->markTestIncomplete(
+      'Fail conditions have not been detailed for this function.'
+    );
+
     $studentId = $this->factory->user->create(array('role' => 'student'));
     $professorId = $this->factory->user->create(array('role' => 'professor'));
 
@@ -48,6 +52,10 @@ class Tests_updateEnrollment extends WP_UnitTestCase {
 
   function test_professorIdNotProfessor() 
   {
+    $this->markTestIncomplete(
+      'Fail conditions have not been detailed for this function.'
+    );
+
     $studentId = $this->factory->user->create(array('role' => 'student'));
 
     // creating a user without a professor role 
