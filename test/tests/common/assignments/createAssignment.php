@@ -1,40 +1,30 @@
 <?php
 
-include_once(get_template_directory() . '/common/global_functions.php');
+include_once(get_template_directory() . '/common/assignments.php');
+include_once(get_template_directory() . '/common/courses.php');
 
-class Tests_CreateAssignment extends WP_UnitTestCase {
-  /*
-  function setUp() {
-    parent::setUp(); 
-  }
-*/
-
+class Tests_createAssignment extends WP_UnitTestCase {
   function test_standard() {
-    $args = array(
+    $professorId = $this->factory->user->create(array('role' => 'professor'));
+    $courseId = GTCS_Courses::addCourse((object)array(
+      'title' => 'test course',
+      'quarter' => 'Fall',
+      'professorId' => $professorId
+    ));
+
+    $args = (object) array(
       'title' => 'test',
-      'courseId' => 0,
+      'courseId' => $courseId,
       'description' => 'test description',
-      'professorId' => '1',
-      'courseLink' => 'http://www.example.com',
+      'professorId' => $professorId,
+      'link' => 'http://www.example.com',
       'isEnabled' => true
     );
-    /*
-    switch_theme(wp_get_theme('GTCS12'));
-    include_once(get_template_directory() . '/common/users.php');
-    do_action('after_switch_theme', 'GTCS12');
-
-    //$id = GTCS_Users::addUser('james', 'abc', 'bb@example.com', 'James', 'Dean', 'student');
-
-    $user = new WP_User($id);
-    var_dump($user->roles);
-    //echo "isStudent: " . ($isAuthor ? "false" : "true");
-
-    */
-    global $wp_roles;
-    //var_dump($wp_roles->roles);
-    $id = $this->factory->user->create(array('role'=>'student'));
-    $isStudent = gtcs_user_has_role('student', $id);
-    $this->assertEquals(true, $isStudent);
-    $this->assertEquals("pass", "pass");
+   
+    $assignmentId = GTCS_Assignments::createAssignment($args);
+    
+    $this->assertEquals($courseId, get_post_meta($assignmentId, 'course', true));
+    $this->assertEquals(true, get_post_meta($assignmentId, 'isEnabled', true));
+    $this->assertEquals('http://www.example.com', get_post_meta($assignmentId, 'link', true));
   }
 }
