@@ -1,4 +1,5 @@
 <?php
+session_start();
 $pageState = new stdClass();
 
 initializePageState($pageState);
@@ -15,7 +16,7 @@ function initializePageState(&$ps)
 
   $action = ifsetor($_POST['action'], null);
 
-  $actionList = array(
+  $callAndRedirect = array(
     'create'   => 'createStudent',
     'csvUpload' => 'uploadFromCsv',
     'delete' => 'deleteStudent',
@@ -27,12 +28,23 @@ function initializePageState(&$ps)
   setupCourseSelector($ps);
   setupDefaultValues($ps);
   getSelectedCourseId($ps);
+
   if ($action != null) {
-    if (array_key_exists($action, $actionList)) {
-      $ps->userFeedback = call_user_func($actionList[$action], $ps);
+
+    if (array_key_exists($action, $callAndRedirect)) {
+      $_SESSION['userFeedback'] = call_user_func($callAndRedirect[$action], $ps);
+      wp_redirect($_SERVER["REQUEST_URI"]);
+
+    } else if (array_key_exists($action, $callAndPersist)) {
+      $ps->userFeedback = call_user_func($callAndPersist[$action], $ps);
+
     } else {
       trigger_error("An invalid action was provided.", E_USER_WARNING);
     }
+
+  } else {
+    $ps->userFeedback = ifsetor($_SESSION['userFeedback'], "");
+    $_SESSION['userFeedback'] = "";
   }
 
   setupStudentList($ps);

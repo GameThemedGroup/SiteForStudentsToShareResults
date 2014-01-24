@@ -1,4 +1,5 @@
 <?php
+session_start();
 $pageState = new stdClass();
 
 initializePageState($pageState);
@@ -6,6 +7,9 @@ extract((array)$pageState);
 
 function initializePageState(&$ps)
 {
+  setupDefaultValues($ps);
+  setupSubmissionForm($ps);
+
   $isProfessor = gtcs_user_has_role('professor');
   $ps->isUser = $isProfessor;
   if (!$isProfessor) {
@@ -15,27 +19,37 @@ function initializePageState(&$ps)
 
   $action = ifsetor($_POST['action'], null);
 
-  $actionList = array(
-    'edit'   => 'setupEdit',
+  $callAndRedirect = array(
     'delete' => 'deleteAssignment',
     'create' => 'createAssignment',
     'update' => 'updateAssignment',
     'upload' => 'uploadFromXml'
   );
 
-  setupDefaultValues($ps);
-  setupAssignmentSubmissionForm($ps);
-  setupCourseSelector(&$ps);
+  $callAndPersist = array(
+    'edit'   => 'setupEdit'
+  );
 
   if ($action != null) {
-    if (array_key_exists($action, $actionList)) {
-      $ps->userFeedback = call_user_func($actionList[$action], $ps);
+
+    if (array_key_exists($action, $callAndRedirect)) {
+      $_SESSION['userFeedback'] = call_user_func($callAndRedirect[$action], $ps);
+      wp_redirect($_SERVER["REQUEST_URI"]);
+
+    } else if (array_key_exists($action, $callAndPersist)) {
+      $ps->userFeedback = call_user_func($callAndPersist[$action], $ps);
+
     } else {
       trigger_error("An invalid action was provided.", E_USER_WARNING);
     }
+
+  } else {
+    $ps->userFeedback = ifsetor($_SESSION['userFeedback'], "");
+    $_SESSION['userFeedback'] = "";
   }
 
-  setupCourseAndAssignments($ps);
+  setupCourseSelector(&$ps);
+  setupAssignmentList($ps);
 }
 
 function setupCourseSelector(&$ps)
@@ -63,7 +77,7 @@ function setupCourseSelector(&$ps)
   $ps->pageCallback = site_url('/assignments/');
 }
 
-function setupAssignmentSubmissionForm(&$ps)
+function setupSubmissionForm(&$ps)
 {
   $assignmentId = ifsetor($_GET["id"], null);
 
@@ -93,7 +107,7 @@ function setupAssignmentSubmissionForm(&$ps)
   $ps->formUrlValue = '';
 }
 
-function setupCourseAndAssignments(&$ps)
+function setupAssignmentList(&$ps)
 {
   $courseId = ifsetor($ps->courseId, GTCS_Courses::getSelectedCourse());
 
@@ -108,10 +122,8 @@ function setupCourseAndAssignments(&$ps)
 
   include_once(get_template_directory() . '/common/courses.php');
   $professorId = get_current_user_id();
-  $courseList = GTCS_Courses::getCourseByFacultyId($professorId);
 
   $ps->assignmentList = $assignmentList;
-  $ps->courseList = $courseList;
   $ps->courseId = $courseId;
   $ps->hasAssignments = $hasAssignments;
 }

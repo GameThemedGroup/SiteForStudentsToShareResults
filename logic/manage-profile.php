@@ -1,4 +1,5 @@
 <?php
+  session_start();
   $pageState = new stdClass();
   initializePageState($pageState);
   extract((array) $pageState);
@@ -9,22 +10,34 @@
 
     $action = ifsetor($_POST['action'], null);
 
-    $actionList = array(
+    $callAndRedirect = array(
       'update'   => 'updateProfileInformation',
-      'changePassword'  => 'changePassword',
       'unlinkFacebook'  => 'unlinkFacebookAccount',
     );
 
-    $userFeedback = '';
-    if ($action == null) {
-    } else if (array_key_exists($action, $actionList)) {
-      $userFeedback = call_user_func($actionList[$action], $ps);
+    $callAndPersist = array(
+      'changePassword'  => 'changePassword',
+    );
+
+    if ($action != null) {
+
+      if (array_key_exists($action, $callAndRedirect)) {
+        $_SESSION['userFeedback'] = call_user_func($callAndRedirect[$action], $ps);
+        wp_redirect($_SERVER["REQUEST_URI"]);
+
+      } else if (array_key_exists($action, $callAndPersist)) {
+        $ps->userFeedback = call_user_func($callAndPersist[$action], $ps);
+
+      } else {
+        trigger_error("An invalid action was provided.", E_USER_WARNING);
+      }
+
     } else {
-      trigger_error("An invalid action was provided.", E_USER_WARNING);
+      $ps->userFeedback = ifsetor($_SESSION['userFeedback'], "");
+      $_SESSION['userFeedback'] = "";
     }
 
     setupProfileView($ps);
-    $ps->userFeedback = $userFeedback;
   }
 
   function verifyPermissionOrDie()

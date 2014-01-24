@@ -1,29 +1,46 @@
 <?php
-  global $url;
-  $pageState = new stdClass();
-  initializePageState($pageState);
-  extract((array)$pageState);
+
+session_start();
+$pageState = new stdClass();
+
+initializePageState($pageState);
+extract((array)$pageState);
 
 function initializePageState(&$ps)
 {
   $action = ifsetor($_POST['action'], null);
-  $actionList = array(
+
+  $callAndRedirect = array(
     'close'  => 'toggleAssignmentStatus',
     'create' => 'createSubmission',
     'delete' => 'deleteSubmission',
-    'edit'   => 'setupEdit',
     'open'   => 'toggleAssignmentStatus',
     'update' => 'updateSubmission'
+  );
+
+  $callAndPersist = array(
+    'edit'   => 'setupEdit'
   );
 
   setupSubmissionForm($ps);
 
   $ps->userFeedback = '';
-  if ($action == null) {
-  } else if (array_key_exists($action, $actionList)) {
-    $ps->userFeedback = call_user_func($actionList[$action], $ps);
+  if ($action != null) {
+
+    if (array_key_exists($action, $callAndRedirect)) {
+      $_SESSION['userFeedback'] = call_user_func($callAndRedirect[$action], $ps);
+      wp_redirect($_SERVER["REQUEST_URI"]);
+
+    } else if (array_key_exists($action, $callAndPersist)) {
+      $ps->userFeedback = call_user_func($callAndPersist[$action], $ps);
+
+    } else {
+      trigger_error("An invalid action was provided.", E_USER_WARNING);
+    }
+
   } else {
-    trigger_error("An invalid action was provided.", E_USER_WARNING);
+    $ps->userFeedback = ifsetor($_SESSION['userFeedback'], "");
+    $_SESSION['userFeedback'] = "";
   }
 
   setupAssignmentDisplay($ps);
@@ -50,6 +67,7 @@ function createSubmission(&$ps)
     compact('assignmentId', 'courseId', 'description', 'title',
     'entryClass'))) {
 
+    // TODO make this error message more understandable
     return "Invalid values when creating assignment.";
   }
 
