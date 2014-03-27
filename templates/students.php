@@ -101,7 +101,6 @@ get_header(); ?>
       </tr>
     </thead>
     <tbody>
-
 <?php if(false == $hasStudents): ?>
   <tr>
     <th class="center" colspan="4">This course has no enrolled students</th>
@@ -117,7 +116,7 @@ get_header(); ?>
         <form action="<?php echo site_url('/students/?courseid=') . $courseId; ?>"
           method="post">
 
-          <select name="action">
+          <select id="<?php echo $student->user_login;?>_action" name="action">
             <option disabled="disabled" selected>Choose an action</option>
             <option value="delete">Delete</option>
             <option value="resetPassword">Reset Password</option>
